@@ -1,1 +1,19 @@
-# Consulta para buscar repositórios populares no GitHub.
+query PopularRepositories($first: Int!, $after: String, $queryString: String!) {
+  search(query: $queryString, type: REPOSITORY, first: $first, after: $after) {
+    repositoryCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    nodes {
+      ... on Repository {
+        nameWithOwner
+        stargazerCount
+        createdAt
+        pullRequests(states: MERGED) {
+          totalCount
+        }
+      }
+    }
+  }
+}

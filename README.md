@@ -67,14 +67,20 @@ O trabalho é organizado por Issues no GitHub Projects, com cada tarefa associad
 
 ## Configuração
 
-O token da API deve ser configurado localmente por meio da variável:
+Instale as dependências do projeto:
 
 ```text
-GITHUB_TOKEN
+pip install -r requirements.txt
 ```
 
-O arquivo `.env` não deve ser versionado.
+Crie ou copie o arquivo `.env` a partir do modelo `.env.example` e preencha localmente:
+
+```text
+GITHUB_TOKEN=seu_token
+```
+
+O arquivo `.env` é local e não deve ser versionado. O arquivo `.env.example` serve apenas como modelo e não deve conter token verdadeiro.
 
 ## Status
 
-Sprint atual: Lab01S01 — configuração inicial e desenvolvimento da coleta para 100 repositórios.
+Sprint atual: Lab01S01 — arquitetura inicial e implementação da coleta para 100 repositórios com métricas das RQ01 e RQ02. A execução real da coleta depende da configuração local de `GITHUB_TOKEN`.

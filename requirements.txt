@@ -1,1 +1,1 @@
-# Dependências serão adicionadas conforme a implementação.
+python-dotenv
