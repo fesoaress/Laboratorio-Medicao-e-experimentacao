@@ -13,6 +13,15 @@ query PopularRepositories($first: Int!, $after: String, $queryString: String!) {
         pullRequests(states: MERGED) {
           totalCount
         }
+        primaryLanguage {
+          name
+        }
+        issues {
+          totalCount
+        }
+        closedIssues: issues(states: CLOSED) {
+          totalCount
+        }
       }
     }
   }

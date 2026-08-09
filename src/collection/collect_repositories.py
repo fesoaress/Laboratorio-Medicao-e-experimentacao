@@ -1,5 +1,4 @@
 """Orquestração da coleta dos repositórios populares."""
-
 from __future__ import annotations
 
 import argparse
@@ -7,7 +6,6 @@ import json
 import sys
 from pathlib import Path
 from typing import Any
-
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 QUERY_PATH = PROJECT_ROOT / "src" / "api" / "queries" / "repositories.graphql"
@@ -23,6 +21,7 @@ from src.metrics.rq01_rq02 import (
     calculate_repository_age_days,
     normalize_merged_pull_requests,
 )
+from src.metrics.rq05_rq06 import normalize_repository_rq05_rq06
 
 
 def load_repositories_query() -> str:
@@ -46,18 +45,19 @@ def fetch_popular_repositories(first: int = SPRINT_1_REPOSITORY_LIMIT) -> dict[s
 
 
 def normalize_repository(repository: dict[str, Any]) -> dict[str, Any]:
-    """Normaliza os campos necessários para RQ01 e RQ02."""
+    """Normaliza os campos necessários para RQ01, RQ02, RQ05 e RQ06."""
     pull_requests = repository.get("pullRequests") or {}
     merged_pull_requests = normalize_merged_pull_requests(pull_requests.get("totalCount"))
     created_at = repository.get("createdAt")
     age_days = calculate_repository_age_days(created_at)
-
+    rq05_rq06_fields = normalize_repository_rq05_rq06(repository)
     return {
         "name_with_owner": repository.get("nameWithOwner"),
         "stargazer_count": int(repository.get("stargazerCount") or 0),
         "created_at": created_at,
         "repository_age_days": age_days,
         "merged_pull_requests": merged_pull_requests,
+        **rq05_rq06_fields,
     }
 
 
@@ -65,13 +65,11 @@ def collect_repositories(limit: int = SPRINT_1_REPOSITORY_LIMIT) -> tuple[list[d
     """Coleta e normaliza os repositórios populares da Sprint 1."""
     search_data = fetch_popular_repositories(limit)
     nodes = search_data.get("nodes") or []
-
     repositories = [
         normalize_repository(node)
         for node in nodes
         if isinstance(node, dict) and node.get("nameWithOwner")
     ]
-
     return repositories, search_data.get("pageInfo") or {}
 
 
@@ -83,10 +81,8 @@ def validate_collection(
 ) -> dict[str, Any]:
     """Valida condições básicas e prepara uma amostra para inspeção."""
     errors: list[str] = []
-
     if len(repositories) != expected_count:
         errors.append(f"Quantidade coletada esperada: {expected_count}; obtida: {len(repositories)}.")
-
     for index, repository in enumerate(repositories, start=1):
         if not repository.get("name_with_owner"):
             errors.append(f"Repositório {index}: nome ausente.")
@@ -98,12 +94,16 @@ def validate_collection(
             errors.append(f"Repositório {index}: idade negativa.")
         if repository.get("merged_pull_requests", -1) < 0:
             errors.append(f"Repositório {index}: pull requests aceitas negativas.")
-
+        if repository.get("total_issues", -1) < 0:
+            errors.append(f"Repositório {index}: total de issues negativo.")
+        if repository.get("closed_issues", -1) < 0:
+            errors.append(f"Repositório {index}: issues fechadas negativas.")
+        if repository.get("closed_issues", 0) > repository.get("total_issues", 0):
+            errors.append(f"Repositório {index}: issues fechadas maior que o total de issues.")
     for previous, current in zip(repositories, repositories[1:]):
         if previous["stargazer_count"] < current["stargazer_count"]:
             errors.append("Ordenação por estrelas não está em ordem decrescente.")
             break
-
     sample = [
         {
             "name_with_owner": repository["name_with_owner"],
@@ -111,10 +111,13 @@ def validate_collection(
             "created_at": repository["created_at"],
             "repository_age_days": repository["repository_age_days"],
             "merged_pull_requests": repository["merged_pull_requests"],
+            "primary_language": repository["primary_language"],
+            "total_issues": repository["total_issues"],
+            "closed_issues": repository["closed_issues"],
+            "closed_issues_ratio": repository["closed_issues_ratio"],
         }
         for repository in repositories[:sample_size]
     ]
-
     return {
         "is_valid": not errors,
         "errors": errors,
@@ -132,21 +135,25 @@ def print_collection_summary(
     print(f"Próxima página disponível: {page_info.get('hasNextPage')}")
     print(f"Cursor final: {page_info.get('endCursor')}")
     print(f"Validação básica: {'ok' if validation['is_valid'] else 'falhou'}")
-
     if validation["errors"]:
         print("Erros de validação:")
         for error in validation["errors"]:
             print(f"- {error}")
-
     print("\nAmostra de validação:")
     for repository in validation["sample"]:
+        ratio = repository["closed_issues_ratio"]
+        ratio_display = f"{ratio:.2%}" if ratio is not None else "indefinida (0 issues)"
         print(
             "- "
             f"{repository['name_with_owner']} | "
             f"estrelas={repository['stargazer_count']} | "
             f"createdAt={repository['created_at']} | "
             f"idade_dias={repository['repository_age_days']} | "
-            f"prs_aceitas={repository['merged_pull_requests']}"
+            f"prs_aceitas={repository['merged_pull_requests']} | "
+            f"linguagem={repository['primary_language']} | "
+            f"issues_total={repository['total_issues']} | "
+            f"issues_fechadas={repository['closed_issues']} | "
+            f"razao_fechadas={ratio_display}"
         )
 
 
@@ -154,7 +161,6 @@ def save_raw_output(repositories: list[dict[str, Any]], output_path: Path) -> No
     """Salva a coleta normalizada em JSON, sem sobrescrever arquivos existentes."""
     if output_path.exists():
         raise FileExistsError(f"O arquivo de saída já existe: {output_path}")
-
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(
         json.dumps(repositories, ensure_ascii=False, indent=2),
@@ -164,26 +170,21 @@ def save_raw_output(repositories: list[dict[str, Any]], output_path: Path) -> No
 
 def main() -> None:
     """Executa a coleta e a validação da Sprint 1."""
-    parser = argparse.ArgumentParser(description="Coleta os 100 repositórios populares para RQ01 e RQ02.")
+    parser = argparse.ArgumentParser(description="Coleta os 100 repositórios populares para RQ01, RQ02, RQ05 e RQ06.")
     parser.add_argument(
         "--output",
         type=Path,
         help="Caminho opcional para salvar a coleta normalizada em JSON.",
     )
     args = parser.parse_args()
-
     try:
         repositories, page_info = collect_repositories()
     except GitHubClientError as error:
         raise SystemExit(f"Coleta não executada: {error}")
-
     validation = validate_collection(repositories)
-
     print_collection_summary(repositories, page_info, validation)
-
     if not validation["is_valid"]:
         raise SystemExit("Coleta interrompida: os dados retornados não passaram na validação.")
-
     if args.output:
         save_raw_output(repositories, args.output)
         print(f"\nColeta salva em: {args.output}")
