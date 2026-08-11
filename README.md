@@ -4,9 +4,9 @@ Este projeto investiga características dos 1.000 repositórios com maior númer
 
 ## Integrantes
 
-- Islayder
-- Fernanda
-- Vinicius
+- Islayder Jackson
+- Fernanda Soares
+- Vinicius Gomes
 
 ## Objetivo
 
