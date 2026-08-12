@@ -1,0 +1,43 @@
+query ProjectSnapshotOrganization($owner: String!, $number: Int!, $first: Int!, $after: String) {
+  organization(login: $owner) {
+    projectV2(number: $number) {
+      id
+      title
+      url
+      items(first: $first, after: $after) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          id
+          type
+          content {
+            __typename
+            ... on Issue {
+              number
+              title
+              state
+              url
+            }
+            ... on PullRequest {
+              number
+              title
+              state
+              url
+            }
+            ... on DraftIssue {
+              title
+              body
+            }
+          }
+          fieldValueByName(name: "Status") {
+            ... on ProjectV2ItemFieldSingleSelectValue {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}

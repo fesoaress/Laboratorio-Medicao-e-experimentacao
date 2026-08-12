@@ -21,6 +21,10 @@ from src.metrics.rq01_rq02 import (
     calculate_repository_age_days,
     normalize_merged_pull_requests,
 )
+from src.metrics.rq03_rq04 import (
+    calculate_days_since_last_update,
+    normalize_release_count,
+)
 from src.metrics.rq05_rq06 import normalize_repository_rq05_rq06
 
 
@@ -45,11 +49,17 @@ def fetch_popular_repositories(first: int = SPRINT_1_REPOSITORY_LIMIT) -> dict[s
 
 
 def normalize_repository(repository: dict[str, Any]) -> dict[str, Any]:
-    """Normaliza os campos necessários para RQ01, RQ02, RQ05 e RQ06."""
+    """Normaliza os campos necessários para RQ01–RQ06."""
     pull_requests = repository.get("pullRequests") or {}
     merged_pull_requests = normalize_merged_pull_requests(pull_requests.get("totalCount"))
     created_at = repository.get("createdAt")
     age_days = calculate_repository_age_days(created_at)
+
+    releases = repository.get("releases") or {}
+    release_count = normalize_release_count(releases.get("totalCount"))
+    pushed_at = repository.get("pushedAt")
+    days_since_last_update = calculate_days_since_last_update(pushed_at)
+
     rq05_rq06_fields = normalize_repository_rq05_rq06(repository)
     return {
         "name_with_owner": repository.get("nameWithOwner"),
@@ -57,6 +67,9 @@ def normalize_repository(repository: dict[str, Any]) -> dict[str, Any]:
         "created_at": created_at,
         "repository_age_days": age_days,
         "merged_pull_requests": merged_pull_requests,
+        "release_count": release_count,
+        "pushed_at": pushed_at,
+        "days_since_last_update": days_since_last_update,
         **rq05_rq06_fields,
     }
 
@@ -94,6 +107,12 @@ def validate_collection(
             errors.append(f"Repositório {index}: idade negativa.")
         if repository.get("merged_pull_requests", -1) < 0:
             errors.append(f"Repositório {index}: pull requests aceitas negativas.")
+        if repository.get("release_count", -1) < 0:
+            errors.append(f"Repositório {index}: total de releases negativo.")
+        if not repository.get("pushed_at"):
+            errors.append(f"Repositório {index}: pushedAt ausente.")
+        if repository.get("days_since_last_update", -1) < 0:
+            errors.append(f"Repositório {index}: dias desde última atualização negativos.")
         if repository.get("total_issues", -1) < 0:
             errors.append(f"Repositório {index}: total de issues negativo.")
         if repository.get("closed_issues", -1) < 0:
@@ -111,6 +130,9 @@ def validate_collection(
             "created_at": repository["created_at"],
             "repository_age_days": repository["repository_age_days"],
             "merged_pull_requests": repository["merged_pull_requests"],
+            "release_count": repository["release_count"],
+            "pushed_at": repository["pushed_at"],
+            "days_since_last_update": repository["days_since_last_update"],
             "primary_language": repository["primary_language"],
             "total_issues": repository["total_issues"],
             "closed_issues": repository["closed_issues"],
@@ -150,6 +172,9 @@ def print_collection_summary(
             f"createdAt={repository['created_at']} | "
             f"idade_dias={repository['repository_age_days']} | "
             f"prs_aceitas={repository['merged_pull_requests']} | "
+            f"releases={repository['release_count']} | "
+            f"pushedAt={repository['pushed_at']} | "
+            f"dias_desde_push={repository['days_since_last_update']} | "
             f"linguagem={repository['primary_language']} | "
             f"issues_total={repository['total_issues']} | "
             f"issues_fechadas={repository['closed_issues']} | "
@@ -170,7 +195,7 @@ def save_raw_output(repositories: list[dict[str, Any]], output_path: Path) -> No
 
 def main() -> None:
     """Executa a coleta e a validação da Sprint 1."""
-    parser = argparse.ArgumentParser(description="Coleta os 100 repositórios populares para RQ01, RQ02, RQ05 e RQ06.")
+    parser = argparse.ArgumentParser(description="Coleta os 100 repositórios populares para RQ01–RQ06.")
     parser.add_argument(
         "--output",
         type=Path,

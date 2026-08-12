@@ -13,6 +13,10 @@ query PopularRepositories($first: Int!, $after: String, $queryString: String!) {
         pullRequests(states: MERGED) {
           totalCount
         }
+        releases {
+          totalCount
+        }
+        pushedAt
         primaryLanguage {
           name
         }

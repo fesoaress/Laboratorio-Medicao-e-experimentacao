@@ -1,1 +1,10 @@
-# Consulta para gerar snapshots do GitHub Projects.
+# Snapshot do GitHub Projects (ProjectV2).
+#
+# Use uma das queries abaixo conforme o tipo de owner:
+# - project_snapshot_organization.graphql  (owner = organização)
+# - project_snapshot_user.graphql            (owner = usuário)
+#
+# Configure no .env:
+#   GITHUB_PROJECT_OWNER=login_do_owner
+#   GITHUB_PROJECT_NUMBER=1
+#   GITHUB_PROJECT_OWNER_TYPE=organization   # ou user
