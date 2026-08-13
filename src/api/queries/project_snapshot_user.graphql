@@ -19,12 +19,22 @@ query ProjectSnapshotUser($owner: String!, $number: Int!, $first: Int!, $after: 
               title
               state
               url
+              assignees(first: 10) {
+                nodes {
+                  login
+                }
+              }
             }
             ... on PullRequest {
               number
               title
               state
               url
+              assignees(first: 10) {
+                nodes {
+                  login
+                }
+              }
             }
             ... on DraftIssue {
               title

@@ -1,9 +1,9 @@
-item_type,number,title,state,status,url
-Issue,1,[Lab01] Configurar e acompanhar o GitHub Projects,OPEN,In progress,https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/1
-Issue,2,[Lab01S01] Implementar RQ03 (releases) e RQ04 (tempo desde ultima atualização),CLOSED,Done,https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/2
-Issue,3,[Lab01S01] Implementar requisição GraphQL e métricas das RQ01 e RQ02,CLOSED,Done,https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/3
-Issue,4,[Lab01S01] Configurar projeto e arquitetura do repositório,CLOSED,Done,https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/4
-Issue,5,[Lab01S01] Implementar linguagem primária RQ05 e percentual de issues fechadas RQ06,CLOSED,Done,https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/5
-Issue,6,[Lab01S02] Implementar paginação ate 1.000 repositórios e exportação para CSV,OPEN,Backlog,https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/6
-Issue,7,[Lab01S02] Validar RQ03/RQ04 nos 1.000 repositórios e formular hipóteses,OPEN,Backlog,https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/7
-Issue,8,[Lab01S02] Validar RQ05/RQ06 nos 1.000 repositórios e formular hipóteses;,OPEN,Backlog,https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/8
+item_type,number,title,state,status,assigned_to,url
+Issue,1,[Lab01] Configurar e acompanhar o GitHub Projects,OPEN,In progress,fesoaress,https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/1
+Issue,2,[Lab01S01] Implementar RQ03 (releases) e RQ04 (tempo desde ultima atualização),CLOSED,Done,fesoaress,https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/2
+Issue,3,[Lab01S01] Implementar requisição GraphQL e métricas das RQ01 e RQ02,CLOSED,Done,Islayder,https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/3
+Issue,4,[Lab01S01] Configurar projeto e arquitetura do repositório,CLOSED,Done,Islayder,https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/4
+Issue,5,[Lab01S01] Implementar linguagem primária RQ05 e percentual de issues fechadas RQ06,CLOSED,Done,viniciusgomesrod,https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/5
+Issue,6,[Lab01S02] Implementar paginação ate 1.000 repositórios e exportação para CSV,OPEN,Backlog,Islayder,https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/6
+Issue,7,[Lab01S02] Validar RQ03/RQ04 nos 1.000 repositórios e formular hipóteses,OPEN,Backlog,fesoaress,https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/7
+Issue,8,[Lab01S02] Validar RQ05/RQ06 nos 1.000 repositórios e formular hipóteses;,OPEN,Backlog,viniciusgomesrod,https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/8

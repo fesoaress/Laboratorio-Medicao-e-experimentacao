@@ -113,6 +113,18 @@ def fetch_project_page(
     return project, items
 
 
+def normalize_assignees(content: dict[str, Any]) -> str:
+    """Extrai os logins dos assignees da Issue/PR, separados por '; '."""
+    assignees = content.get("assignees") or {}
+    nodes = assignees.get("nodes") or []
+    logins = [
+        str(node.get("login"))
+        for node in nodes
+        if isinstance(node, dict) and node.get("login")
+    ]
+    return "; ".join(logins)
+
+
 def normalize_project_item(item: dict[str, Any]) -> dict[str, str | int | None]:
     """Normaliza um item do board para exportação."""
     content = item.get("content") or {}
@@ -125,11 +137,13 @@ def normalize_project_item(item: dict[str, Any]) -> dict[str, str | int | None]:
     title = content.get("title") or ""
     state = content.get("state")
     url = content.get("url")
+    assigned_to = normalize_assignees(content)
 
     if content_type == "DraftIssue":
         number = None
         state = "DRAFT"
         url = None
+        assigned_to = ""
 
     return {
         "item_type": str(content_type),
@@ -137,6 +151,7 @@ def normalize_project_item(item: dict[str, Any]) -> dict[str, str | int | None]:
         "title": title,
         "state": state,
         "status": status,
+        "assigned_to": assigned_to,
         "url": url,
     }
 
@@ -237,7 +252,7 @@ def export_snapshot_csv(items: list[dict[str, str | int | None]], output_path: P
         raise FileExistsError(f"O arquivo de saída já existe: {output_path}")
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    fieldnames = ["item_type", "number", "title", "state", "status", "url"]
+    fieldnames = ["item_type", "number", "title", "state", "status", "assigned_to", "url"]
 
     with output_path.open("w", encoding="utf-8", newline="") as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
