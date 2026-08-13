@@ -83,14 +83,4 @@ O arquivo `.env` é local e não deve ser versionado. O arquivo `.env.example` s
 
 ## Status
 
-Sprint atual: Lab01 — # Sprint 1 — Resumo do grupo
-
-Montamos a base do Lab01: arquitetura, cliente GraphQL com token no `.env`, e coleta dos 100 repositórios mais populares numa única query.
-
-| Integrante | O que fez |
-|---|---|
-| **Islayder** | Arquitetura do projeto, cliente GraphQL, RQ01 (idade) e RQ02 (PRs aceitas), validação |
-| **Fernanda** | GitHub Projects + WIP, RQ03 (releases) e RQ04 (dias desde o último push), validação, snapshot CSV |
-| **Vinicius** | RQ05 (linguagem) e RQ06 (% issues fechadas), validação e coleta dos 100 |
-
-**Resultado da sprint:** pipeline GraphQL com RQ01–RQ06 integrado, board do Projects organizado e snapshot da Sprint 1 exportado.
+Sprint atual: Lab01S01 — arquitetura inicial e implementação da coleta para 100 repositórios com métricas dos RQ01 ao RQ06. A execução real da coleta depende da configuração local de GITHUB_TOKEN.
