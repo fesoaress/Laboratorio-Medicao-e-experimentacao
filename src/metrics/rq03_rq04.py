@@ -25,18 +25,35 @@ def calculate_days_since_last_update(
     *,
     reference_datetime: datetime | None = None,
 ) -> int:
-    """Calcula quantos dias se passaram desde o último push (pushedAt)."""
-    if not pushed_at:
-        raise ValueError("pushedAt não pode estar vazio.")
+    """Calcula quantos dias se passaram desde o último push."""
 
-    last_push_datetime = _parse_github_datetime(pushed_at)
-    reference = reference_datetime or datetime.now(timezone.utc)
+    if not pushed_at:
+        raise ValueError(
+            "pushedAt não pode estar vazio."
+        )
+
+    last_push_datetime = _parse_github_datetime(
+        pushed_at
+    )
+
+    reference = (
+        reference_datetime
+        or datetime.now(timezone.utc)
+    )
 
     if reference.tzinfo is None:
-        reference = reference.replace(tzinfo=timezone.utc)
+        reference = reference.replace(
+            tzinfo=timezone.utc
+        )
 
-    days_since = (reference - last_push_datetime).days
+    days_since = (
+        reference.date()
+        - last_push_datetime.date()
+    ).days
+
     if days_since < 0:
-        raise ValueError("pushedAt não pode estar no futuro.")
+        raise ValueError(
+            "pushedAt está em uma data futura."
+        )
 
     return days_since
