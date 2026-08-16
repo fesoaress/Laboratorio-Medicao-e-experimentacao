@@ -1,0 +1,17 @@
+{
+  "output_path": "C:\\Users\\Islayder\\Downloads\\Laboratorio-Medicao-e-experimentacao\\data\\raw\\repositories_s02.csv",
+  "limit": 1000,
+  "page_size": 10,
+  "search_query": "stars:>0 sort:stars-desc",
+  "collected_count": 1000,
+  "last_cursor": "Y3Vyc29yOjEwMDA=",
+  "has_next_page": false,
+  "completed": true,
+  "pages_collected": 100,
+  "rate_limit": {
+    "cost": 1,
+    "remaining": 4882,
+    "resetAt": "2026-08-16T06:24:49Z"
+  },
+  "updated_at": "2026-08-16T05:34:16.848892+00:00"
+}

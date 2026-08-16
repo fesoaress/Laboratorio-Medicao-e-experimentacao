@@ -1,4 +1,9 @@
 query PopularRepositories($first: Int!, $after: String, $queryString: String!) {
+  rateLimit {
+    cost
+    remaining
+    resetAt
+  }
   search(query: $queryString, type: REPOSITORY, first: $first, after: $after) {
     repositoryCount
     pageInfo {

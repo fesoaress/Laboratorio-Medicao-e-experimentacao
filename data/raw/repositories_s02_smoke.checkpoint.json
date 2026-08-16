@@ -1,0 +1,17 @@
+{
+  "output_path": "data\\raw\\repositories_s02_smoke.csv",
+  "limit": 10,
+  "page_size": 10,
+  "search_query": "stars:>0 sort:stars-desc",
+  "collected_count": 10,
+  "last_cursor": "Y3Vyc29yOjEw",
+  "has_next_page": true,
+  "completed": true,
+  "pages_collected": 1,
+  "rate_limit": {
+    "cost": 1,
+    "remaining": 4993,
+    "resetAt": "2026-08-16T06:24:49Z"
+  },
+  "updated_at": "2026-08-16T05:26:28.385034+00:00"
+}

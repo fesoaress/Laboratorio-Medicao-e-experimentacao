@@ -15,7 +15,7 @@ O laboratório busca coletar, analisar e visualizar dados de repositórios popul
 ## Questões de Pesquisa
 
 - RQ01 — Sistemas populares são maduros/antigos?
-- RQ02 — Sistemas populares recebem muita contribuição externa?
+- RQ02 — Sistemas populares recebem muitas pull requests aceitas?
 - RQ03 — Sistemas populares lançam releases com frequência?
 - RQ04 — Sistemas populares são atualizados com frequência?
 - RQ05 — Sistemas populares são escritos nas linguagens mais populares?
@@ -81,6 +81,43 @@ GITHUB_TOKEN=seu_token
 
 O arquivo `.env` é local e não deve ser versionado. O arquivo `.env.example` serve apenas como modelo e não deve conter token verdadeiro.
 
+## Coleta da Sprint 2
+
+A coleta principal busca os repositorios mais populares em paginas sequenciais da API GraphQL, sem chamadas concorrentes agressivas. O tamanho padrao da pagina e 10, pois a query completa ja apresentou instabilidade quando enviada com 100 repositorios por requisicao.
+
+Coleta de 100 repositorios:
+
+```text
+python src/collection/collect_repositories.py --limit 100 --overwrite
+```
+
+Coleta de 1.000 repositorios:
+
+```text
+python src/collection/collect_repositories.py --limit 1000 --overwrite
+```
+
+Por padrao, o CSV incremental e gravado em:
+
+```text
+data/raw/repositories_s02.csv
+```
+
+O checkpoint da coleta fica em:
+
+```text
+data/raw/repositories_s02.checkpoint.json
+```
+
+Se a execucao for interrompida apos paginas ja persistidas, retome com:
+
+```text
+python src/collection/collect_repositories.py --limit 1000 --resume
+```
+
+A cada pagina, o coletor normaliza os dados, valida os registros, grava o CSV e atualiza o checkpoint com cursor, quantidade persistida, arquivo de saida e informacoes de rate limit. Erros temporarios de rede ou HTTP 502/503/504 usam retry com backoff limitado. Erros permanentes de autenticacao ou GraphQL encerram a coleta de forma controlada.
+
 ## Status
 
-Sprint atual: Lab01S01 — arquitetura inicial e implementação da coleta para 100 repositórios com métricas dos RQ01 ao RQ06. A execução real da coleta depende da configuração local de GITHUB_TOKEN.
+Atualizacao Sprint 2: o coletor foi preparado para ate 1.000 repositorios com CSV incremental, checkpoint/resume, retry/backoff, monitoramento de rate limit e validacoes automatizadas. A execucao real da coleta depende da configuracao local de GITHUB_TOKEN.
+
