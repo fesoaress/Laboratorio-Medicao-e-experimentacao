@@ -1,12 +1,10 @@
 """CLI para coleta dos repositorios populares do Lab01."""
-
 from __future__ import annotations
 
 import argparse
 import sys
 from pathlib import Path
 from typing import Any
-
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
@@ -42,7 +40,6 @@ def print_collection_summary(result: Any) -> None:
     validation = result.validation
     statistics = validation["statistics"]
     line = "-" * 118
-
     print()
     print("=" * 118)
     print("LAB01 - COLETA")
@@ -65,14 +62,38 @@ def print_collection_summary(result: Any) -> None:
         "RQ06 indefinida        : "
         f"{statistics['rq06_undefined_total_issues_zero']}"
     )
-
+    print()
+    print("RQ05 - TOP 15 LINGUAGENS")
+    print(line)
+    language_distribution = statistics.get("language_distribution") or {}
+    print(f"Linguagens distintas   : {language_distribution.get('unique_languages', '-')}")
+    for entry in language_distribution.get("top_languages", []):
+        print(
+            f"  {entry['language']:<20} {entry['count']:>5}  ({entry['percentage']:5.2f}%)"
+        )
+    print()
+    print("RQ06 - DISTRIBUICAO DA RAZAO DE ISSUES FECHADAS")
+    print(line)
+    ratio_distribution = statistics.get("closed_issues_ratio_distribution") or {}
+    if ratio_distribution.get("count_defined"):
+        print(f"Repositorios com razao definida : {ratio_distribution['count_defined']}")
+        print(f"Minimo                           : {ratio_distribution['min']:.2%}")
+        print(f"Maximo                           : {ratio_distribution['max']:.2%}")
+        print(f"Media                            : {ratio_distribution['mean']:.2%}")
+        print(f"Mediana                          : {ratio_distribution['median']:.2%}")
+        print(f"Q1 / Q3                          : {ratio_distribution['q1']:.2%} / {ratio_distribution['q3']:.2%}")
+        print(
+            "Outliers (regra IQR)             : "
+            f"{ratio_distribution['outlier_count']} ({ratio_distribution['outlier_pct']:.2f}%)"
+        )
+    else:
+        print("Nenhum valor definido de razao de issues fechadas encontrado.")
     if validation["errors"]:
         print()
         print("ERROS DE VALIDACAO")
         print(line)
         for error in validation["errors"]:
             print(f"- {error}")
-
     print()
     print("AMOSTRA TOP 10")
     print(line)
@@ -142,7 +163,6 @@ def main() -> None:
         rate_limit_threshold=args.rate_limit_threshold,
         max_rate_limit_wait_seconds=args.rate_limit_wait_seconds,
     )
-
     try:
         result = collect_popular_repositories(config)
     except FileExistsError as error:
@@ -153,9 +173,7 @@ def main() -> None:
         raise SystemExit(f"Coleta nao executada: {error}") from error
     except ValueError as error:
         raise SystemExit(f"Erro ao processar os dados: {error}") from error
-
     print_collection_summary(result)
-
     if not result.validation["is_valid"]:
         raise SystemExit(
             "Coleta interrompida: os dados retornados nao passaram na validacao."
