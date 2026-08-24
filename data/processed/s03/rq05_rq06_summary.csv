@@ -1,0 +1,37 @@
+rq,statistic,value,unit
+RQ05,total,1000.0,records
+RQ05,unique_languages,44.0,records
+RQ05,not_informed_count,87.0,records
+RQ05,not_informed_percentage,8.7,percent
+RQ05,top_language::Python,229.0,records
+RQ05,top_language::TypeScript,174.0,records
+RQ05,top_language::JavaScript,110.0,records
+RQ05,top_language::Não informado,87.0,records
+RQ05,top_language::Go,76.0,records
+RQ05,top_language::Rust,57.0,records
+RQ05,top_language::Java,41.0,records
+RQ05,top_language::C++,40.0,records
+RQ05,top_language::Jupyter Notebook,24.0,records
+RQ05,top_language::C,21.0,records
+RQ05,top_language::Shell,20.0,records
+RQ05,top_language::Ruby,13.0,records
+RQ05,top_language::HTML,11.0,records
+RQ05,top_language::Swift,10.0,records
+RQ05,top_language::Kotlin,9.0,records
+RQ05,tiobe_top_10_count,506.0,records
+RQ05,tiobe_top_10_percentage,50.6,percent
+RQ06,total,1000.0,records
+RQ06,valid,957.0,records
+RQ06,missing,43.0,records
+RQ06,undefined_zero_issues,43.0,records
+RQ06,minimum,0.0769230769230769,ratio
+RQ06,maximum,1.0,ratio
+RQ06,mean,0.8023374091342101,ratio
+RQ06,median,0.875,ratio
+RQ06,standard_deviation,0.21074759314485833,ratio
+RQ06,q1,0.7049180327868853,ratio
+RQ06,q3,0.967741935483871,ratio
+RQ06,iqr,0.26282390269698575,ratio
+RQ06,p10,0.4625984125453903,ratio
+RQ06,p90,0.9927575560930525,ratio
+RQ06,skewness,-1.330930850666857,dimensionless
