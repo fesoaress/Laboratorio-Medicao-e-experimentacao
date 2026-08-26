@@ -35,11 +35,11 @@ O roteiro atual tem aproximadamente 483 palavras de fala. Com ritmos planejados 
 
 ### RQ03 — cerca de 28–30s
 
-> Na RQ03 investigamos se sistemas populares lançam releases com frequência. Encontramos **[VALOR PRINCIPAL E UNIDADE]**, com **[MEDIANA/QUARTIS OU OUTRA ESTATÍSTICA CENTRAL]**. O gráfico mostra **[PADRÃO PRINCIPAL, SEM EXAGERAR A CONCLUSÃO]**. Assim, classificamos a hipótese como **[CONFIRMADA/PARCIALMENTE CONFIRMADA/REFUTADA]**, porque **[INTERPRETAÇÃO]**. É importante considerar **[LIMITAÇÃO ESPECÍFICA, COMO RELEASE FORMAL OU TETO DA API, SE CONFIRMADA NA ANÁLISE FINAL]**. Essa leitura deve manter os mil repositórios, sem excluir extremos da análise oficial.
+> Na RQ03 investigamos se sistemas populares lançam releases com frequência. A mediana foi de 39,5 releases por repositório, com forte assimetria à direita. O gráfico mostra que 28% dos repositórios têm zero releases — não por falta de atividade, mas porque projetos de documentação e curadoria não usam esse mecanismo do GitHub. Assim, classificamos a hipótese como parcialmente confirmada: projetos de software ativo lançam releases com frequência moderada, mas uma parcela relevante do top 1.000 simplesmente não adota esse fluxo. Vale destacar que a API retorna no máximo 1.000 releases; 21 repositórios atingiram esse teto e o valor real pode ser superior.
 
 ### RQ04 — cerca de 28–30s
 
-> Na RQ04 analisamos se sistemas populares são atualizados com frequência. O resultado principal foi **[VALOR E UNIDADE]**, e **[PERCENTUAL OU QUARTIL RELEVANTE]**. A visualização indica **[PADRÃO]**, com **[EXCEÇÃO OU CAUDA, SE HOUVER]**. Portanto, a hipótese foi **[CONFIRMADA/PARCIALMENTE CONFIRMADA/REFUTADA]**, pois **[INTERPRETAÇÃO]**. A medida representa o estado observado na data da coleta e deve ser lida com essa limitação temporal.
+> Na RQ04 analisamos se sistemas populares são atualizados com frequência. A mediana foi de apenas 3 dias desde o último push, e 60% dos repositórios tiveram push nos últimos 7 dias. A visualização confirma forte concentração em valores baixos, com uma cauda de projetos sem atualização há mais de um ano — como editores descontinuados que mantêm as estrelas do passado. Portanto, a hipótese foi confirmada para a maioria: repositórios populares são ativamente mantidos. A medida representa o estado na data da coleta, agosto de 2026, e não pode ser extrapolada para outros momentos.
 
 ### Transição
 
