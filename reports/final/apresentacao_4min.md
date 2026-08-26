@@ -8,10 +8,12 @@ A apresentação deve contar a sequência: objetivo → 1.000 repositórios → 
 |---|---|---:|---:|
 | Pessoa 1 — Islayder | objetivo/metodologia, RQ01, RQ02 e robustez | 1min20s | 175–195 |
 | Pessoa 2 — Fernanda | RQ03 e RQ04 | 1min05s–1min10s | 145–165 após preencher |
-| Pessoa 3 — Vinicius | RQ05, RQ06 e conclusão | 1min05s–1min10s | 145–165 após preencher |
+| Pessoa 3 — Vinicius | RQ05, RQ06 e conclusão | 1min05s–1min10s | 162 (preenchido) |
 | **Total planejado** | — | **3min40s–3min50s** | **aprox. 480–500** |
 
-O roteiro atual tem aproximadamente 483 palavras de fala. Com ritmos planejados de 140 ppm para a Pessoa 1, 130 ppm para a Pessoa 2 e 135 ppm para a Pessoa 3, mais 10–15 segundos de pausas e transições, a estimativa é de 3min44s–3min49s. As falas de RQ03–RQ06 abaixo são templates; o tempo deve ser confirmado novamente depois que os campos forem preenchidos e ensaiados.
+O roteiro atual tem aproximadamente 483 palavras de fala nos blocos já fechados (Pessoa 1 e Pessoa 3). Com ritmos planejados de 140 ppm para a Pessoa 1, 130 ppm para a Pessoa 2 e 135 ppm para a Pessoa 3, mais 10–15 segundos de pausas e transições, a estimativa é de 3min44s–3min49s. A fala de RQ03–RQ04 abaixo é template; o tempo deve ser confirmado novamente depois que os campos forem preenchidos e ensaiados.
+
+**Nota sobre RQ07 (bônus):** a análise comparando RQ02/RQ03/RQ04 por linguagem foi feita, mas não entra na fala cronometrada — incluí-la junto de RQ05/RQ06/Conclusão levaria a Pessoa 3 a ~1min29s, estourando o orçamento de 1min05s–1min10s. Em vez disso, o RQ07 vira a pergunta preparada nº 16, pronta para caso o professor pergunte ou sobre tempo no ensaio.
 
 ## Pessoa 1 — fala completa
 
@@ -45,19 +47,21 @@ O roteiro atual tem aproximadamente 483 palavras de fala. Com ritmos planejados 
 
 > Em seguida, o Vinicius apresenta as RQ05 e RQ06 e integra a conclusão do estudo.
 
-## Pessoa 3 — templates para preencher
+## Pessoa 3 — fala completa (Vinicius)
 
 ### RQ05 — cerca de 25–27s
 
-> Na RQ05 verificamos se os sistemas populares usam as linguagens mais populares. A distribuição foi liderada por **[LINGUAGENS E PERCENTUAIS PRINCIPAIS]**. Comparando com o **TIOBE Index de agosto de 2026**, observamos **[CONVERGÊNCIAS E DIVERGÊNCIAS]**. Assim, a hipótese foi **[CONFIRMADA/PARCIALMENTE CONFIRMADA/REFUTADA]**, porque **[INTERPRETAÇÃO]**. Os dois rankings usam conceitos diferentes de popularidade, o que limita uma comparação direta.
+> Na RQ05, a distribuição foi liderada por Python (22,9%), TypeScript (17,4%) e JavaScript (11%). Comparando com o TIOBE Index de agosto de 2026, Python lidera nos dois rankings, mas TypeScript e Go ficam fora do top 10 do TIOBE. A hipótese foi parcialmente confirmada: metade da amostra está em linguagens do TIOBE top 10. Os rankings usam conceitos diferentes de popularidade.
 
 ### RQ06 — cerca de 25–27s
 
-> Na RQ06 avaliamos o percentual de issues fechadas. Encontramos **[MEDIANA OU VALOR PRINCIPAL]**, com **[QUARTIS, AMPLITUDE OU PERCENTUAL RELEVANTE]**. O gráfico mostra **[PADRÃO E POSSÍVEIS EXCEÇÕES]**. A hipótese foi **[CONFIRMADA/PARCIALMENTE CONFIRMADA/REFUTADA]**, pois **[INTERPRETAÇÃO]**. Repositórios sem issues devem permanecer identificados como razão indefinida, e não como zero.
+> Na RQ06, encontramos mediana de 87,5% de issues fechadas, com Q1 em 70,5% e Q3 em 96,8%. O gráfico mostra concentração em taxas altas, com uma cauda de outliers em taxas bem mais baixas. A hipótese foi confirmada: repositórios populares concentram alta taxa de fechamento. Repositórios sem issues permanecem identificados como razão indefinida, não como zero.
 
 ### Conclusão — cerca de 15–18s
 
-> Em conjunto, os resultados indicam **[SÍNTESE REAL DE RQ01–RQ06]**. Os projetos são heterogêneos, e métricas como estrelas, PRs, releases, linguagem principal e issues funcionam como proxies com limitações. A análise complementar mostrou **[CONTRIBUIÇÃO DA ROBUSTEZ]**. Assim, concluímos **[CONCLUSÃO GERAL APOIADA PELOS SEIS RESULTADOS]**.
+> Em conjunto, os resultados indicam que repositórios populares são heterogêneos: idade estável mesmo sem outliers, mas PRs merged caem quase 24% na mediana ao remover extremos — **[padrão de RQ03/RQ04, segundo a Fernanda]**. Concluímos que popularidade no GitHub não implica um perfil único de projeto.
+
+**Contagem:** RQ05 = 61 palavras · RQ06 = 56 palavras · Conclusão = 45 palavras · **Total = 162 palavras**, dentro da faixa de 145–165.
 
 ## O que mostrar na tela
 
@@ -65,7 +69,8 @@ O roteiro atual tem aproximadamente 483 palavras de fala. Com ritmos planejados 
 2. **Pessoa 1 — RQ02:** trocar uma única vez para a página 7, com `rq02_merged_prs_log_histogram.png`.
 3. **Robustez:** mencionar sem trocar de página. O gráfico `rq01_rq02_robustness_percent_change.png`, na página 8, fica como apoio para pergunta do professor.
 4. **Pessoa 2:** depois de concluir RQ03/RQ04, mostrar as respectivas figuras finais, preferencialmente sem mais de uma troca de página.
-5. **Pessoa 3:** mostrar as figuras finais de RQ05/RQ06 e terminar na conclusão consolidada.
+5. **Pessoa 3:** mostrar `rq05_language_ranking.png` na RQ05 e `rq06_closed_ratio_histogram.png` na RQ06, terminando na conclusão consolidada.
+6. **Reserva (só se perguntarem sobre RQ07):** `rq07_tiobe_comparison.png` fica preparado para abrir rapidamente, sem precisar navegar por várias páginas.
 
 Não abrir classes, funções, `.env`, token, checkpoint ou CSV durante a fala principal. Esses artefatos ficam apenas como evidência de apoio.
 
@@ -131,9 +136,14 @@ Cada página foi persistida incrementalmente e o cursor ficou salvo em checkpoin
 
 A contribuição adicional foi a análise de robustez pelo critério IQR. Ela compara as medidas da amostra completa com uma visão sem extremos, sem modificar a análise oficial.
 
+### 16. Vocês fizeram algo além das seis RQs do enunciado?
+
+Sim — como bônus, comparamos RQ02, RQ03 e RQ04 por linguagem, agrupando entre TIOBE top 10 e as demais. O resultado foi contraintuitivo: o grupo fora do top 10, puxado por TypeScript e Go, teve medianas mais altas nas três métricas — mediana de PRs merged de 1.075 contra 754,5; releases de 83 contra 40; e atualização mais recente (2 dias contra 3). A hipótese foi refutada: pertencer ao TIOBE top 10 não indica mais atividade de desenvolvimento, reforçando que os dois rankings de popularidade medem coisas diferentes.
+
 ## Verificação antes do ensaio final
 
-- Substituir todos os campos entre colchetes somente por resultados verificados.
-- Recontar as palavras das Pessoas 2 e 3 após o preenchimento.
+- Substituir os campos entre colchetes de RQ03/RQ04 e da Conclusão (padrão de RQ03/RQ04) somente por resultados verificados pela Fernanda.
+- Recontar as palavras da Pessoa 2 após o preenchimento.
 - Ensaiar com cronômetro e cortar detalhes antes de acelerar a fala.
 - Manter a apresentação abaixo de 3min50s no ensaio para absorver pausas e transições.
+- Preparar a resposta da RQ07 (pergunta 16) de cabeça, sem precisar ler — é a mais provável de vir do professor, já que é a contribuição de inovação do grupo.
