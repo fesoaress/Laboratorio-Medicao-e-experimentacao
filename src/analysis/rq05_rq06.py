@@ -373,7 +373,7 @@ def generate_figures(
         ),
         _boxplot(
             ratio,
-            title="Dispersão da razão de issues fechadas",
+            title="Boxplot da razão de issues fechadas",
             subtitle=sample_ratio,
             x_label="Razão de issues fechadas",
             output_path=output_dir / "rq06_closed_ratio_boxplot.png",
