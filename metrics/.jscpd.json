@@ -1,0 +1,30 @@
+{
+  "minLines": 5,
+  "minTokens": 50,
+  "mode": "mild",
+  "format": ["python"],
+  "reporters": ["console", "json"],
+  "ignore": [
+    "**/test_*.py",
+    "**/tests/**",
+    "**/gabarito/**",
+    "**/.venv/**",
+    "**/venv/**",
+    "**/node_modules/**",
+    "**/__pycache__/**",
+    "**/.pytest_cache/**",
+    "**/lab02/metrics/node_modules/**",
+    "**/lab02/metrics/report/**",
+    "**/lab02/metrics/results/**",
+    "**/lab02/metrics/run_metrics.py",
+    "**/src/api/**",
+    "**/src/collection/**",
+    "**/src/analysis/**",
+    "**/src/metrics/**",
+    "**/data/**",
+    "**/reports/**",
+    "**/snapshots/**"
+  ],
+  "absolute": true,
+  "gitignore": true
+}

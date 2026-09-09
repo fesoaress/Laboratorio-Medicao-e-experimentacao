@@ -1,0 +1,2 @@
+participant,kata,treatment,loc,avg_cyclomatic_complexity,duplication_percentage,cyclomatic_complexity_max,duplicated_lines,duplicated_blocks,analyzed_functions,solution_path,collected_at,json_path
+Validacao,exemplo_cc,Manual,28,2.0,11.11111111111111,3,6,1,4,lab02/metrics/examples/exemplo_validacao/solucao.py,2026-09-09T20:01:00.650752+00:00,lab02/metrics/results/Validacao_exemplo_cc_Manual_20260909T200100Z.json
