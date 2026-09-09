@@ -15,6 +15,14 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 
+# Lab02 métricas estruturais (RQ3)
+lab02/metrics/node_modules/
+lab02/metrics/report/
+# JSONs individuais por execução (auditoria local); o CSV consolidado é versionável
+lab02/metrics/results/*_*.json
+jscpd-report.json
+**/jscpd-report.json
+
 *.tmp
 *.temp
 *.log
