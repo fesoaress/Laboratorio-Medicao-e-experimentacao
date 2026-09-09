@@ -1,123 +1,53 @@
-# Laboratório 01 — Características de Repositórios Populares
+# Lab02 — Katas e Testes Automatizados (Vinicius)
 
-Este projeto investiga características dos 1.000 repositórios com maior número de estrelas no GitHub por meio de mineração de dados utilizando a API GraphQL.
+Linguagem: **Python 3.11+**
+Dependência única: `pytest` (`pip install pytest`)
 
-## Integrantes
+## Estrutura
 
-- Islayder Jackson
-- Fernanda Soares
-- Vinicius Gomes
-
-## Objetivo
-
-O laboratório busca coletar, analisar e visualizar dados de repositórios populares para responder às questões de pesquisa propostas. A estrutura do projeto foi organizada para separar as etapas de comunicação com a API, coleta, cálculo de métricas, análise e produção de relatórios.
-
-## Questões de Pesquisa
-
-- RQ01 — Sistemas populares são maduros/antigos?
-- RQ02 — Sistemas populares recebem muitas pull requests aceitas?
-- RQ03 — Sistemas populares lançam releases com frequência?
-- RQ04 — Sistemas populares são atualizados com frequência?
-- RQ05 — Sistemas populares são escritos nas linguagens mais populares?
-- RQ06 — Sistemas populares possuem alto percentual de issues fechadas?
-- RQ07 — Bônus: relação entre popularidade da linguagem, contribuição externa, releases e frequência de atualização.
-
-## Tecnologias
-
-- Python
-- GitHub GraphQL API
-- GitHub Projects
-
-## Estrutura do Projeto
-
-```text
-src/
-  api/
-  collection/
-  metrics/
-  analysis/
-
-data/
-  raw/
-  processed/
-
-snapshots/
-
-reports/
-  sprints/
-  figures/
-
-docs/
+```
+lab02-katas/
+├── kata1_normalizador_etiquetas/
+│   ├── solucao.py        <- arquivo que o participante edita durante o trial
+│   └── test_solucao.py   <- testes de aceitação (não editar)
+├── kata2_balanceamento_turnos/
+├── kata3_compactador_sensor/
+├── kata4_manutencao_preditiva/
+└── gabarito/              <- uso interno do grupo, NÃO entregar ao participante
 ```
 
-- `src/api`: comunicação e consultas com a API GraphQL;
-- `src/collection`: scripts responsáveis pela coleta;
-- `src/metrics`: cálculo das métricas das questões de pesquisa;
-- `src/analysis`: análise e visualização dos dados;
-- `data/raw`: dados originais;
-- `data/processed`: dados tratados;
-- `snapshots`: estados históricos do GitHub Projects;
-- `reports/sprints`: relatórios individuais das sprints;
-- `reports/figures`: gráficos e figuras;
-- `docs`: documentação complementar.
+## Como rodar um trial
 
-## Organização do Desenvolvimento
+1. Copiar a pasta do kata (ex: `kata1_normalizador_etiquetas/`) para o ambiente do trial.
+2. Cronômetro do Islayder começa.
+3. Participante edita **apenas** `solucao.py` (com ou sem IA, conforme tratamento sorteado).
+4. Rodar os testes quantas vezes quiser durante o trial:
+   ```
+   pytest kata1_normalizador_etiquetas/test_solucao.py -v
+   ```
+5. Trial encerra em sucesso (todos os testes verdes) ou ao atingir 35 min (time-box).
+6. Script de coleta do Islayder registra, a cada rodada de teste, quantos passaram — é isso que dá o "número de ciclos até o green" da nossa inovação.
 
-O trabalho é organizado por Issues no GitHub Projects, com cada tarefa associada a um responsável. Os commits devem referenciar o número da Issue correspondente, e o board utiliza o fluxo Backlog → To Do → Doing → Review → Done.
+## Por que esses 4 katas
 
-## Configuração
+Critério pedido pelo professor: **dificuldade comparável** e **baixa indexação** (evitar exercícios clássicos tipo LeetCode/HackerRank que a IA pode ter "decorado").
 
-Instale as dependências do projeto:
+| Kata | Domínio | Padrão algorítmico de base | Por que baixa indexação |
+|---|---|---|---|
+| 1 — Normalizador de Etiquetas | Estoque/manufatura | Parsing + validação de formato | Regras de normalização são específicas nossas (formato "AA-9999", tratamento de espaços/hífens), não é um exercício nomeado conhecido |
+| 2 — Balanceamento de Turnos | RH/operações | Redistribuição em array com restrição de capacidade | Formulação de "nº mínimo de transferências" com capacidade máxima é uma variação própria, não o enunciado padrão de nenhum kata famoso |
+| 3 — Compactador de Leituras de Sensor | IoT/monitoramento | Run-length encoding com limiar mínimo | RLE clássico existe, mas a regra do limiar (só comprime run ≥ N) e a saída em tuplas mistas é uma variação autoral |
+| 4 — Manutenção Preditiva | Manutenção industrial | Média móvel sobre janela | Média móvel é conhecida, mas a regra de janela parcial no início + retorno de índices de alerta é específica do enunciado |
 
-```text
-pip install -r requirements.txt
-```
+Todos os 4 são **funções puras, single-file, sem libs externas**, resolvíveis por alguém com Python intermediário em até ~35 min — isso equaliza a dificuldade entre eles (nenhum depende de bibliotecas externas ou setup de ambiente diferente).
 
-Crie ou copie o arquivo `.env` a partir do modelo `.env.example` e preencha localmente:
+## Validação de equivalência
 
-```text
-GITHUB_TOKEN=seu_token
-```
+Ver `VALIDACAO.md` — cada kata foi resolvido com o gabarito de referência e todos os testes passam (script rodado e evidenciado).
 
-O arquivo `.env` é local e não deve ser versionado. O arquivo `.env.example` serve apenas como modelo e não deve conter token verdadeiro.
+## Ameaças à validade (apoio a este bloco no desenho do experimento)
 
-## Coleta da Sprint 2
-
-A coleta principal busca os repositorios mais populares em paginas sequenciais da API GraphQL, sem chamadas concorrentes agressivas. O tamanho padrao da pagina e 10, pois a query completa ja apresentou instabilidade quando enviada com 100 repositorios por requisicao.
-
-Coleta de 100 repositorios:
-
-```text
-python src/collection/collect_repositories.py --limit 100 --overwrite
-```
-
-Coleta de 1.000 repositorios:
-
-```text
-python src/collection/collect_repositories.py --limit 1000 --overwrite
-```
-
-Por padrao, o CSV incremental e gravado em:
-
-```text
-data/raw/repositories_s02.csv
-```
-
-O checkpoint da coleta fica em:
-
-```text
-data/raw/repositories_s02.checkpoint.json
-```
-
-Se a execucao for interrompida apos paginas ja persistidas, retome com:
-
-```text
-python src/collection/collect_repositories.py --limit 1000 --resume
-```
-
-A cada pagina, o coletor normaliza os dados, valida os registros, grava o CSV e atualiza o checkpoint com cursor, quantidade persistida, arquivo de saida e informacoes de rate limit. Erros temporarios de rede ou HTTP 502/503/504 usam retry com backoff limitado. Erros permanentes de autenticacao ou GraphQL encerram a coleta de forma controlada.
-
-## Status
-
-Atualizacao Sprint 2: o coletor foi preparado para ate 1.000 repositorios com CSV incremental, checkpoint/resume, retry/backoff, monitoramento de rate limit e validacoes automatizadas. A execucao real da coleta depende da configuracao local de GITHUB_TOKEN.
-
+- **Efeito de aprendizado entre katas**: como o mesmo participante resolve os 4 (2 com IA, 2 sem, ordem contrabalanceada), a ordem de apresentação foi desenhada para ser diferente entre os 3 integrantes — evita que "o último kata sempre fica mais rápido só por prática".
+- **Vazamento de solução já vista**: nenhum dos 4 katas é uma cópia literal de exercício público amplamente indexado; são variações autorais sobre padrões conhecidos (parsing, RLE, média móvel, alocação em array), então mesmo que a IA reconheça o *padrão* geral, ela não pode colar uma solução pronta de memória — precisa adaptar às regras específicas de cada enunciado.
+- **Memorização pela IA**: caso o grupo perceba, ao testar, que a IA acerta de primeira sem iteração em algum kata, isso deve ser registrado como observação qualitativa (nº de prompts) e discutido no relatório como limitação.
+- **Dificuldade desigual entre katas**: mitigada por todos serem funções isoladas de complexidade comparável (sem dependências externas, ~20-35 linhas de solução de referência cada) — ver `VALIDACAO.md` para os tempos de referência.
