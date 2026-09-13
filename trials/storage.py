@@ -1,9 +1,18 @@
-import csv
+"""Persistência idempotente e atômica dos resultados dos trials."""
 
-from config import RESULTS_DIR, TRIALS_CSV, CYCLES_CSV
+from __future__ import annotations
+
+import csv
+import os
+import tempfile
+from pathlib import Path
+
+from .config import CYCLES_CSV, TRIALS_CSV
 
 
 TRIAL_FIELDS = [
+    "trial_id",
+    "issue",
     "participante",
     "kata",
     "tratamento",
@@ -14,9 +23,15 @@ TRIAL_FIELDS = [
     "taxa_sucesso",
     "ciclos",
     "status",
+    "codigo_path",
+    "iniciado_em",
+    "finalizado_em",
+    "erro_execucao",
 ]
 
 CYCLE_FIELDS = [
+    "trial_id",
+    "issue",
     "participante",
     "kata",
     "tratamento",
@@ -26,52 +41,76 @@ CYCLE_FIELDS = [
     "testes_falhando",
     "total_testes",
     "taxa_sucesso",
+    "pytest_exit_code",
+    "erro_execucao",
 ]
 
 
-def garantir_arquivos():
-    """
-    Cria a pasta de resultados e os CSVs com cabeçalho,
-    caso ainda não existam.
-    """
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-
-    if not TRIALS_CSV.exists():
-        _criar_csv(TRIALS_CSV, TRIAL_FIELDS)
-
-    if not CYCLES_CSV.exists():
-        _criar_csv(CYCLES_CSV, CYCLE_FIELDS)
+class StorageError(RuntimeError):
+    """CSV ausente ou incompatível com o schema atual."""
 
 
-def _criar_csv(caminho, campos):
-    with caminho.open("w", newline="", encoding="utf-8") as arquivo:
-        writer = csv.DictWriter(arquivo, fieldnames=campos)
-        writer.writeheader()
+def _read_rows(path: Path, fields: list[str]) -> list[dict[str, str]]:
+    if not path.exists():
+        return []
+    with path.open("r", newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        if reader.fieldnames != fields:
+            raise StorageError(
+                f"Cabeçalho incompatível em {path}. Faça backup do arquivo antes de migrar."
+            )
+        return list(reader)
 
 
-def registrar_trial(dados: dict):
-    """
-    Registra o resultado final de um trial.
-    """
-    garantir_arquivos()
+def _atomic_write(path: Path, fields: list[str], rows: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temp_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".tmp", dir=path.parent
+    )
+    try:
+        with os.fdopen(descriptor, "w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(handle, fieldnames=fields)
+            writer.writeheader()
+            writer.writerows({field: row.get(field, "") for field in fields} for row in rows)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temp_name, path)
+    finally:
+        if os.path.exists(temp_name):
+            os.unlink(temp_name)
 
-    with TRIALS_CSV.open("a", newline="", encoding="utf-8") as arquivo:
-        writer = csv.DictWriter(
-            arquivo,
-            fieldnames=TRIAL_FIELDS,
-        )
-        writer.writerow(dados)
+
+def _upsert(path: Path, fields: list[str], row: dict, key_fields: tuple[str, ...]) -> None:
+    rows = _read_rows(path, fields)
+    key = tuple(str(row.get(field, "")) for field in key_fields)
+    kept = [
+        existing
+        for existing in rows
+        if tuple(str(existing.get(field, "")) for field in key_fields) != key
+    ]
+    kept.append(row)
+    _atomic_write(path, fields, kept)
 
 
-def registrar_ciclo(dados: dict):
-    """
-    Registra uma execução intermediária dos testes.
-    """
-    garantir_arquivos()
+def ensure_files(
+    trials_csv: Path = TRIALS_CSV, cycles_csv: Path = CYCLES_CSV
+) -> None:
+    trials_csv.parent.mkdir(parents=True, exist_ok=True)
+    if not trials_csv.exists():
+        _atomic_write(trials_csv, TRIAL_FIELDS, [])
+    if not cycles_csv.exists():
+        _atomic_write(cycles_csv, CYCLE_FIELDS, [])
 
-    with CYCLES_CSV.open("a", newline="", encoding="utf-8") as arquivo:
-        writer = csv.DictWriter(
-            arquivo,
-            fieldnames=CYCLE_FIELDS,
-        )
-        writer.writerow(dados)
+
+def register_trial(data: dict, csv_path: Path = TRIALS_CSV) -> None:
+    _upsert(csv_path, TRIAL_FIELDS, data, ("trial_id",))
+
+
+def register_cycle(data: dict, csv_path: Path = CYCLES_CSV) -> None:
+    _upsert(csv_path, CYCLE_FIELDS, data, ("trial_id", "ciclo"))
+
+
+# Compatibilidade nominal com a implementação da S01.
+garantir_arquivos = ensure_files
+registrar_trial = register_trial
+registrar_ciclo = register_cycle
