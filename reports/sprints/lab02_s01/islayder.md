@@ -48,7 +48,18 @@ Esses dados permitirão analisar posteriormente a velocidade de progresso e a qu
 
 ## Como utilizar
 
-A instrumentação é iniciada por:
+A auditoria de integração da S01 identificou e corrigiu os seguintes pontos antes da S02:
 
-```bash
-python lab02/trials/run_trial.py
+- execução passou a ocorrer sobre um workspace isolado, nunca sobre `src/katas`;
+- uso do mesmo interpretador Python do runner, compatível com Windows e Linux;
+- validação de participante, kata, tratamento, Issue e integridade dos testes;
+- time-box efetivo mesmo enquanto o programa aguarda ENTER;
+- registro final no time-box e em `Ctrl+C`;
+- erros de sintaxe/importação/coleta do pytest são contabilizados sem falso `green`;
+- CSVs são gravados de forma atômica e idempotente por `trial_id`.
+
+O procedimento completo e os comandos estão em `lab02/trials/README.md`. A execução de um workspace já preparado é iniciada por:
+
+```powershell
+.\.venv\Scripts\python.exe -m lab02.trials.run_trial --workspace <pasta_do_trial>
+```

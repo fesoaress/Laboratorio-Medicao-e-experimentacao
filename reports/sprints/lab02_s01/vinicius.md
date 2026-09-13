@@ -6,13 +6,13 @@ Foram desenvolvidos os katas do experimento e os respectivos testes automatizado
 
 Artefatos implementados:
 
-- `lab02/katas/kata1_normalizador_etiquetas/solucao.py` + `test_solucao.py`;
-- `lab02/katas/kata2_balanceamento_turnos/solucao.py` + `test_solucao.py`;
-- `lab02/katas/kata3_compactador_sensor/solucao.py` + `test_solucao.py`;
-- `lab02/katas/kata4_manutencao_preditiva/solucao.py` + `test_solucao.py`;
-- `lab02/katas/gabarito/` (soluções de referência, uso interno do grupo, não distribuído aos participantes);
-- `lab02/katas/README.md`: documentação dos katas e do fluxo de execução de um trial;
-- `lab02/katas/VALIDACAO.md`: evidência da validação de equivalência entre os katas.
+- `src/katas/kata1_normalizador_etiquetas/solucao.py` + `test_solucao.py`;
+- `src/katas/kata2_balanceamento_turnos/solucao.py` + `test_solucao.py`;
+- `src/katas/kata3_compactador_sensor/solucao.py` + `test_solucao.py`;
+- `src/katas/kata4_manutencao_preditiva/solucao.py` + `test_solucao.py`;
+- `src/katas/gabarito/` (soluções de referência, uso interno do grupo, não copiado para os workspaces);
+- `README.md`: documentação dos katas e do fluxo de execução;
+- `VALIDACAO.md`: evidência da validação de equivalência entre os katas.
 
 Cada kata é uma função pura em Python, sem dependências externas, resolvível em até 35 minutos:
 
@@ -23,7 +23,7 @@ Cada kata é uma função pura em Python, sem dependências externas, resolvíve
 
 ## Critérios de seleção
 
-- Dificuldade comparável entre os 4 katas: função única, sem I/O, sem bibliotecas externas, solução de referência entre 6 e 12 linhas.
+- Escopo funcional semelhante entre os 4 katas: funções puras, sem I/O e sem bibliotecas externas. A auditoria estrutural encontrou variação de 4 a 15 LOC lógicos e exige piloto temporal antes dos trials reais; ver `VALIDACAO.md`.
 - Baixa indexação: nenhum é cópia literal de exercício público amplamente conhecido (LeetCode/HackerRank); todos usam regras de negócio autorais sobre padrões algorítmicos comuns, reduzindo o risco de a IA reproduzir uma solução já vista no treinamento em vez de efetivamente resolver o problema.
 - Número par (4), permitindo divisão exata entre trials com e sem IA por participante.
 
@@ -44,7 +44,7 @@ O stub original (entregue ao participante) começa em 0% de testes passando em t
 
 - **Efeito de aprendizado entre katas**: mitigado pela ordem contrabalanceada entre os 3 integrantes, já que todos resolvem os mesmos 4 katas.
 - **Vazamento de solução já vista / memorização pela IA**: reduzido pelo uso de enunciados autorais, mesmo quando o padrão algorítmico de base é conhecido (parsing, RLE, média móvel, alocação em array).
-- **Dificuldade desigual entre katas**: mitigada pela padronização estrutural (função pura, sem libs externas, 7 a 10 casos de teste por kata cobrindo caso feliz, caso vazio e casos de borda).
+- **Dificuldade desigual entre katas**: a padronização estrutural reduz, mas não elimina a ameaça. O Kata 2 é menor em LOC e o Kata 1 tem maior CC; é obrigatório pilotar com não participantes e contrabalançar cada kata entre tratamentos.
 
 ## Decisões metodológicas
 
@@ -58,6 +58,6 @@ O stub original (entregue ao participante) começa em 0% de testes passando em t
 Rodar os testes de um kata:
 
 ```bash
-cd lab02/katas/kata1_normalizador_etiquetas
+cd src/katas/kata1_normalizador_etiquetas
 pytest test_solucao.py -v
 ```

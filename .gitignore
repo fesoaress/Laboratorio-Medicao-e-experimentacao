@@ -20,8 +20,12 @@ lab02/metrics/node_modules/
 lab02/metrics/report/
 # JSONs individuais por execução (auditoria local); o CSV consolidado é versionável
 lab02/metrics/results/*_*.json
+lab02/metrics/validation_results/
 jscpd-report.json
 **/jscpd-report.json
+
+# Workspaces são ambientes transitórios; o snapshot final fica em results/solutions.
+lab02/trials/workspaces/
 
 *.tmp
 *.temp
