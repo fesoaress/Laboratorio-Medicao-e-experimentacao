@@ -1,0 +1,2 @@
+# Dependência de execução dos testes de aceitação dos trials.
+pytest==9.1.1

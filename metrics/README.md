@@ -17,6 +17,10 @@ Instrumentação da Sprint 1 para a pergunta:
 
 Testes ficam de fora de propósito: são iguais para todos e não representam código produzido pelo participante.
 
+Para uma solução menor que a janela congelada do jscpd (`minLines=5`, `minTokens=50`), a ferramenta informa zero fontes comparáveis. O coletor registra corretamente `0%` de duplicação; o tamanho continua disponível em `loc`.
+
+Se o código final tiver erro de sintaxe, a linha do trial ainda é preservada: métricas que o Radon não consegue calcular ficam vazias e `analysis_error` registra o motivo. Isso evita excluir silenciosamente os trials não verdes.
+
 ## Pré-requisitos
 
 - Python 3.11+ (venv do projeto)
@@ -42,11 +46,14 @@ Versões fixadas:
 .\.venv\Scripts\python.exe lab02\metrics\run_metrics.py <caminho_do_trial> `
   --participant Fernanda `
   --kata kata1 `
-  --treatment AI
+  --treatment IA `
+  --trial-id <trial_id_de_trials.csv> `
+  --issue <numero_da_issue>
 ```
 
 `<caminho_do_trial>` pode ser a pasta do trial (com `solucao.py`) ou o próprio arquivo `solucao.py`.  
-`--treatment` aceita apenas `AI` ou `Manual`.
+`--treatment` grava os valores canônicos `IA` ou `Manual` (`AI` é aceito apenas como alias de entrada).
+Para trials reais, informe também `--trial-id` e `--issue`; o ID passa a ser a chave de *upsert* e mantém repetições rastreáveis. Eles podem ser omitidos somente em exemplos de validação.
 
 ### Saídas
 
@@ -65,10 +72,12 @@ participant,kata,treatment,loc,avg_cyclomatic_complexity,duplication_percentage
 .\.venv\Scripts\python.exe lab02\metrics\run_metrics.py lab02\metrics\examples\exemplo_validacao `
   --participant Validacao `
   --kata exemplo_cc `
-  --treatment Manual
+  --treatment Manual `
+  --output-dir lab02\metrics\validation_results
 ```
 
 Conferência manual da CC no exemplo: média esperada **2.0** (ver comentários em `examples/exemplo_validacao/solucao.py` e `expected.json`).
+Essa saída fica separada e ignorada pelo Git, portanto não contamina `results/metrics.csv`.
 
 ## Estrutura
 
