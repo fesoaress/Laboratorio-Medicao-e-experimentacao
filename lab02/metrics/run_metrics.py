@@ -3,7 +3,7 @@
 
 Uso:
   python lab02/metrics/run_metrics.py <caminho_do_trial> \\
-      --participant Fernanda --kata kata1 --treatment AI
+      --participant Fernanda --kata kata1 --treatment IA
 
 Saídas (formato padronizado):
   - JSON detalhado por trial em lab02/metrics/results/
@@ -18,10 +18,13 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
+import re
 import shutil
 import subprocess
 import sys
 import tempfile
+import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -32,12 +35,15 @@ REPO_ROOT = METRICS_DIR.parent.parent
 JSCPD_CONFIG = METRICS_DIR / ".jscpd.json"
 DEFAULT_RESULTS_DIR = METRICS_DIR / "results"
 DEFAULT_CSV_NAME = "metrics.csv"
+FINAL_TRIAL_SOLUTIONS_DIR = REPO_ROOT / "lab02" / "trials" / "results" / "solutions"
 
 # Colunas do CSV consolidado — ordem fixa para leitura com Pandas.
 CSV_COLUMNS: list[str] = [
     "participant",
     "kata",
     "treatment",
+    "trial_id",
+    "issue",
     "loc",
     "avg_cyclomatic_complexity",
     "duplication_percentage",
@@ -45,6 +51,7 @@ CSV_COLUMNS: list[str] = [
     "duplicated_lines",
     "duplicated_blocks",
     "analyzed_functions",
+    "analysis_error",
     "solution_path",
     "collected_at",
     "json_path",
@@ -64,6 +71,35 @@ def to_repo_relative(path: Path) -> str:
 
 class MetricsError(Exception):
     """Erro recuperável da coleta (mensagem clara para o usuário)."""
+
+
+def normalize_treatment(value: str) -> str:
+    normalized = value.strip().casefold()
+    if normalized in {"ia", "ai"}:
+        return "IA"
+    if normalized == "manual":
+        return "Manual"
+    raise argparse.ArgumentTypeError("use IA ou Manual")
+
+
+def safe_filename_part(value: str, field: str) -> str:
+    cleaned = value.strip()
+    if not cleaned:
+        raise MetricsError(f"{field} não pode ficar vazio.")
+    ascii_value = unicodedata.normalize("NFKD", cleaned).encode("ascii", "ignore").decode()
+    slug = re.sub(r"[^a-zA-Z0-9_-]+", "-", ascii_value).strip("-_")
+    if not slug:
+        raise MetricsError(f"{field} não contém caracteres válidos.")
+    return slug
+
+
+def normalize_issue(value: str) -> str:
+    if not value.strip():
+        return ""
+    number = value.strip().removeprefix("#")
+    if not number.isdigit() or int(number) <= 0:
+        raise MetricsError("issue inválida; informe apenas o número positivo.")
+    return f"#{int(number)}"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -88,8 +124,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--treatment",
         required=True,
-        choices=["AI", "Manual"],
-        help="Tratamento experimental: AI ou Manual.",
+        type=normalize_treatment,
+        help="Tratamento experimental: IA ou Manual (AI é aceito como alias).",
+    )
+    parser.add_argument(
+        "--trial-id",
+        default="",
+        help="trial_id de trials.csv (obrigatório para dados reais da S02).",
+    )
+    parser.add_argument(
+        "--issue",
+        default="",
+        help="Número da Issue vinculada ao trial (ex.: 23).",
     )
     parser.add_argument(
         "--output-dir",
@@ -215,7 +261,30 @@ def collect_cyclomatic(solution: Path, radon_cmd: list[str]) -> dict[str, Any]:
     else:
         blocks = next(iter(payload.values()))
 
-    complexities = [int(block["complexity"]) for block in blocks]
+    if isinstance(blocks, dict) and blocks.get("error"):
+        return {
+            "analyzed_functions": 0,
+            "avg_cyclomatic_complexity": None,
+            "cyclomatic_complexity_max": None,
+            "cyclomatic_complexity_total": None,
+            "functions": [],
+            "error": str(blocks["error"]),
+            "raw": payload,
+        }
+    if not isinstance(blocks, list):
+        raise MetricsError("Formato inesperado no JSON de Radon cc.")
+
+    # A unidade operacional é função/método. O Radon também devolve uma
+    # entrada agregada para cada classe; incluí-la distorceria a média e
+    # contaria a mesma estrutura duas vezes.
+    callables: list[dict[str, Any]] = []
+    for block in blocks:
+        # No JSON do Radon, métodos já aparecem como blocos de primeiro nível;
+        # a classe traz apenas uma visão agregada e deve ser descartada.
+        if block.get("methods") is None:
+            callables.append(block)
+
+    complexities = [int(block["complexity"]) for block in callables]
     analyzed = len(complexities)
     average = round(sum(complexities) / analyzed, 4) if analyzed else None
     maximum = max(complexities) if complexities else None
@@ -226,6 +295,7 @@ def collect_cyclomatic(solution: Path, radon_cmd: list[str]) -> dict[str, Any]:
         "avg_cyclomatic_complexity": average,
         "cyclomatic_complexity_max": maximum,
         "cyclomatic_complexity_total": total,
+        "error": "",
         "functions": [
             {
                 "name": block.get("name"),
@@ -233,7 +303,7 @@ def collect_cyclomatic(solution: Path, radon_cmd: list[str]) -> dict[str, Any]:
                 "complexity": block.get("complexity"),
                 "lineno": block.get("lineno"),
             }
-            for block in blocks
+            for block in callables
         ],
         "raw": payload,
     }
@@ -250,6 +320,18 @@ def collect_loc(solution: Path, radon_cmd: list[str]) -> dict[str, Any]:
         raise MetricsError("Radon raw retornou objeto vazio.")
 
     stats = next(iter(payload.values()))
+    if isinstance(stats, dict) and stats.get("error"):
+        return {
+            "loc": None,
+            "lloc": None,
+            "sloc": None,
+            "loc_physical": None,
+            "blank": None,
+            "comments": None,
+            "multi": None,
+            "error": str(stats["error"]),
+            "raw": payload,
+        }
     return {
         "loc": int(stats["lloc"]),  # definição operacional (Etapa 2)
         "lloc": int(stats["lloc"]),
@@ -258,6 +340,7 @@ def collect_loc(solution: Path, radon_cmd: list[str]) -> dict[str, Any]:
         "blank": int(stats["blank"]),
         "comments": int(stats.get("comments", 0)),
         "multi": int(stats.get("multi", 0)),
+        "error": "",
         "raw": payload,
     }
 
@@ -279,15 +362,10 @@ def collect_duplication(solution: Path, jscpd_cmd: list[str]) -> dict[str, Any]:
 
         report_path = output_dir / "jscpd-report.json"
         if not report_path.is_file():
-            # Algumas versões gravam na cwd; cobrimos o caso.
-            fallback = METRICS_DIR / "report" / "jscpd-report.json"
-            if fallback.is_file():
-                report_path = fallback
-            else:
-                raise MetricsError(
-                    "jscpd não gerou jscpd-report.json. "
-                    "Verifique a instalação (npm ci em lab02/metrics)."
-                )
+            raise MetricsError(
+                "jscpd não gerou jscpd-report.json no diretório temporário. "
+                "Verifique a instalação (npm ci em lab02/metrics)."
+            )
 
         try:
             report = json.loads(report_path.read_text(encoding="utf-8"))
@@ -296,18 +374,17 @@ def collect_duplication(solution: Path, jscpd_cmd: list[str]) -> dict[str, Any]:
 
     total = report.get("statistics", {}).get("total", {})
     sources = int(total.get("sources", 0))
-    if sources < 1:
-        raise MetricsError(
-            "jscpd analisou 0 arquivos.\n"
-            "Confira se o path aponta para solucao.py e se o arquivo "
-            "não está nas exclusões de .jscpd.json (ex.: pasta gabarito/)."
-        )
+    # O jscpd reporta sources=0 quando o arquivo é menor que a janela fixa
+    # minTokens/minLines. Como resolve_solution_file já garante um solucao.py
+    # real e o path é passado explicitamente, isso significa "nenhum clone
+    # comparável", não falha de coleta. LOC continua sendo medido pelo Radon.
 
     return {
         "duplication_percentage": float(total.get("percentage", 0.0)),
         "duplicated_lines": int(total.get("duplicatedLines", 0)),
         "duplicated_blocks": int(total.get("clones", 0)),
         "lines_analyzed": int(total.get("lines", 0)),
+        "sources_analyzed": sources,
         "raw": report,
     }
 
@@ -320,11 +397,21 @@ def build_result(
     loc: dict[str, Any],
     dup: dict[str, Any],
 ) -> dict[str, Any]:
+    analysis_error = "; ".join(
+        error
+        for error in (
+            f"radon cc: {cc['error']}" if cc.get("error") else "",
+            f"radon raw: {loc['error']}" if loc.get("error") else "",
+        )
+        if error
+    )
     return {
         "schema_version": 1,
         "participant": args.participant,
         "kata": args.kata,
         "treatment": args.treatment,
+        "trial_id": args.trial_id,
+        "issue": args.issue,
         "solution_path": to_repo_relative(solution),
         "collected_at": datetime.now(timezone.utc).isoformat(),
         "metrics": {
@@ -336,15 +423,18 @@ def build_result(
             "analyzed_functions": cc["analyzed_functions"],
             "duplicated_lines": dup["duplicated_lines"],
             "duplicated_blocks": dup["duplicated_blocks"],
+            "analysis_error": analysis_error,
         },
         "details": {
             "loc": {k: v for k, v in loc.items() if k != "raw"},
             "cyclomatic": {
                 "functions": cc["functions"],
                 "analyzed_functions": cc["analyzed_functions"],
+                "error": cc.get("error", ""),
             },
             "duplication": {
                 "lines_analyzed": dup["lines_analyzed"],
+                "sources_analyzed": dup["sources_analyzed"],
                 "duplicated_lines": dup["duplicated_lines"],
                 "duplicated_blocks": dup["duplicated_blocks"],
                 "duplication_percentage": dup["duplication_percentage"],
@@ -364,6 +454,8 @@ def result_to_csv_row(result: dict[str, Any], json_path: Path) -> dict[str, Any]
         "participant": result["participant"],
         "kata": result["kata"],
         "treatment": result["treatment"],
+        "trial_id": result["trial_id"],
+        "issue": result["issue"],
         "loc": metrics["loc"],
         "avg_cyclomatic_complexity": metrics["avg_cyclomatic_complexity"],
         "duplication_percentage": metrics["duplication_percentage"],
@@ -371,14 +463,19 @@ def result_to_csv_row(result: dict[str, Any], json_path: Path) -> dict[str, Any]
         "duplicated_lines": metrics["duplicated_lines"],
         "duplicated_blocks": metrics["duplicated_blocks"],
         "analyzed_functions": metrics["analyzed_functions"],
+        "analysis_error": metrics["analysis_error"],
         "solution_path": result["solution_path"],
         "collected_at": result["collected_at"],
         "json_path": to_repo_relative(json_path),
     }
 
 
-def trial_key(row: dict[str, Any]) -> tuple[str, str, str]:
+def trial_key(row: dict[str, Any]) -> tuple[str, ...]:
+    trial_id = str(row.get("trial_id", "")).strip()
+    if trial_id:
+        return ("trial_id", trial_id)
     return (
+        "legacy",
         str(row.get("participant", "")),
         str(row.get("kata", "")),
         str(row.get("treatment", "")),
@@ -410,8 +507,9 @@ def upsert_csv_row(csv_path: Path, new_row: dict[str, Any]) -> None:
     merged: list[dict[str, Any]] = []
     for row in rows:
         if trial_key(row) == key:
-            merged.append(new_row)
-            updated = True
+            if not updated:
+                merged.append(new_row)
+                updated = True
         else:
             # Garante todas as colunas na ordem oficial.
             merged.append({col: row.get(col, "") for col in CSV_COLUMNS})
@@ -419,11 +517,21 @@ def upsert_csv_row(csv_path: Path, new_row: dict[str, Any]) -> None:
         merged.append(new_row)
 
     csv_path.parent.mkdir(parents=True, exist_ok=True)
-    with csv_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=CSV_COLUMNS)
-        writer.writeheader()
-        for row in merged:
-            writer.writerow({col: row.get(col, "") for col in CSV_COLUMNS})
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=".metrics-", suffix=".csv.tmp", dir=csv_path.parent
+    )
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=CSV_COLUMNS)
+            writer.writeheader()
+            for row in merged:
+                writer.writerow({col: row.get(col, "") for col in CSV_COLUMNS})
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary_name, csv_path)
+    finally:
+        if os.path.exists(temporary_name):
+            os.unlink(temporary_name)
 
 
 def print_summary(result: dict[str, Any]) -> None:
@@ -439,18 +547,29 @@ def print_summary(result: dict[str, Any]) -> None:
         f" kata={result['kata']}"
         f" treatment={result['treatment']}"
     )
-    print(f"LOC (lloc): {metrics['loc']}")
+    loc_display = "n/a" if metrics["loc"] is None else metrics["loc"]
+    print(f"LOC (lloc): {loc_display}")
     print(f"Average Cyclomatic Complexity: {avg_display}")
     print(f"Analyzed functions: {metrics['analyzed_functions']}")
     print(f"Duplicated Lines: {metrics['duplicated_lines']}")
     print(f"Duplication: {metrics['duplication_percentage']}%")
+    if metrics["analysis_error"]:
+        print(f"Structural analysis warning: {metrics['analysis_error']}")
 
 
 def save_json_result(result: dict[str, Any], output_dir: Path) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    participant = safe_filename_part(result["participant"], "participant")
+    kata = safe_filename_part(result["kata"], "kata")
+    treatment = safe_filename_part(result["treatment"], "treatment")
+    trial_suffix = (
+        "_" + safe_filename_part(result["trial_id"], "trial_id")
+        if result.get("trial_id")
+        else ""
+    )
     filename = (
-        f"{result['participant']}_{result['kata']}_{result['treatment']}_{stamp}.json"
+        f"{participant}_{kata}_{treatment}{trial_suffix}_{stamp}.json"
     )
     out_path = output_dir / filename
     out_path.write_text(
@@ -463,7 +582,21 @@ def save_json_result(result: dict[str, Any], output_dir: Path) -> Path:
 def main(argv: list[str] | None = None) -> int:
     try:
         args = parse_args(argv)
+        args.participant = args.participant.strip()
+        args.kata = args.kata.strip()
+        args.trial_id = args.trial_id.strip()
+        args.issue = normalize_issue(args.issue)
+        safe_filename_part(args.participant, "participant")
+        safe_filename_part(args.kata, "kata")
         solution = resolve_solution_file(args.trial_path)
+        if bool(args.trial_id) != bool(args.issue):
+            raise MetricsError("--trial-id e --issue devem ser informados juntos.")
+        if solution.is_relative_to(FINAL_TRIAL_SOLUTIONS_DIR.resolve()) and not args.trial_id:
+            raise MetricsError(
+                "Snapshots reais da S02 exigem --trial-id e --issue para rastreabilidade."
+            )
+        if args.trial_id:
+            safe_filename_part(args.trial_id, "trial_id")
         radon_cmd = require_radon()
         jscpd_cmd = require_jscpd_runner()
 

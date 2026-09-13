@@ -26,11 +26,10 @@ Isso confirma:
   pytest quando dois `test_solucao.py` de pastas diferentes são coletados
   juntos — rodar sempre kata por kata, não a raiz inteira).
 
-## Equivalência de dificuldade (avaliação qualitativa)
+## Comparabilidade de dificuldade (avaliação qualitativa e estrutural)
 
 Todos os 4 katas compartilham as mesmas características estruturais:
 - Função pura, single-file, sem I/O e sem bibliotecas externas.
-- Solução de referência entre 6 e 12 linhas de código útil.
 - 1 a 2 conceitos centrais por kata (parsing+regex / soma condicional /
   agrupamento de sequência / janela deslizante), sem combinar múltiplos
   algoritmos no mesmo kata.
@@ -41,9 +40,31 @@ Nenhum dos katas exige estrutura de dados além de listas/tuplas nativas do
 Python, o que reduz variância de dificuldade ligada a familiaridade com
 bibliotecas.
 
+Uma auditoria estrutural posterior, executada com Radon 6.0.1 sobre cópias
+temporárias dos gabaritos, encontrou:
+
+| Kata | LOC lógico | Funções | CC média | CC máxima |
+|---|---:|---:|---:|---:|
+| 1 — Normalizador de Etiquetas | 14 | 1 | 6,0 | 6 |
+| 2 — Balanceamento de Turnos | 4 | 1 | 4,0 | 4 |
+| 3 — Compactador de Sensor | 15 | 2 | 3,0 | 4 |
+| 4 — Manutenção Preditiva | 10 | 1 | 3,0 | 3 |
+
+Portanto, os katas têm escopo funcional semelhante, mas a equivalência de
+dificuldade **não está demonstrada** apenas por LOC/CC; o Kata 2 é
+estruturalmente menor e o Kata 1 concentra mais decisões. Antes dos trials
+reais, o grupo deve fazer um piloto de tempo com pessoas que não participarão
+da amostra. Além disso, a alocação dos três integrantes deve contrabalançar
+cada kata entre IA e Manual. Na análise, mantenha o identificador do kata e
+discuta-o como possível fator de confusão, sem agregar tratamentos de forma
+ingênua.
+
 ## Observação para a S02
 
 Ao copiar a pasta de um kata para um trial, copiar **apenas** `solucao.py`
 (resetado para o stub original) + `test_solucao.py`. A pasta `gabarito/`
 não deve estar acessível ao participante durante o trial, para não vazar a
 solução.
+
+Use `python -m lab02.trials.prepare_trial` para fazer essa cópia; o comando
+exclui o gabarito e recusa sobrescrever um workspace existente.

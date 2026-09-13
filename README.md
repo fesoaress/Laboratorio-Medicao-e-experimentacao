@@ -1,12 +1,12 @@
 # Lab02 — Katas e Testes Automatizados (Vinicius)
 
 Linguagem: **Python 3.11+**
-Dependência única: `pytest` (`pip install pytest`)
+Dependência dos trials: `pytest` (versão fixada em `lab02/trials/requirements.txt`)
 
 ## Estrutura
 
 ```
-lab02-katas/
+src/katas/
 ├── kata1_normalizador_etiquetas/
 │   ├── solucao.py        <- arquivo que o participante edita durante o trial
 │   └── test_solucao.py   <- testes de aceitação (não editar)
@@ -18,15 +18,7 @@ lab02-katas/
 
 ## Como rodar um trial
 
-1. Copiar a pasta do kata (ex: `kata1_normalizador_etiquetas/`) para o ambiente do trial.
-2. Cronômetro do Islayder começa.
-3. Participante edita **apenas** `solucao.py` (com ou sem IA, conforme tratamento sorteado).
-4. Rodar os testes quantas vezes quiser durante o trial:
-   ```
-   pytest kata1_normalizador_etiquetas/test_solucao.py -v
-   ```
-5. Trial encerra em sucesso (todos os testes verdes) ou ao atingir 35 min (time-box).
-6. Script de coleta do Islayder registra, a cada rodada de teste, quantos passaram — é isso que dá o "número de ciclos até o green" da nossa inovação.
+Use obrigatoriamente o preparador e o runner documentados em `lab02/trials/README.md`. O preparador copia somente o stub e os testes para um workspace isolado; o runner registra cada ciclo, impõe o time-box e arquiva o código final sem alterar `src/katas` nem `gabarito/`.
 
 ## Por que esses 4 katas
 
@@ -39,7 +31,7 @@ Critério pedido pelo professor: **dificuldade comparável** e **baixa indexaç�
 | 3 — Compactador de Leituras de Sensor | IoT/monitoramento | Run-length encoding com limiar mínimo | RLE clássico existe, mas a regra do limiar (só comprime run ≥ N) e a saída em tuplas mistas é uma variação autoral |
 | 4 — Manutenção Preditiva | Manutenção industrial | Média móvel sobre janela | Média móvel é conhecida, mas a regra de janela parcial no início + retorno de índices de alerta é específica do enunciado |
 
-Todos os 4 são **funções puras, single-file, sem libs externas**, resolvíveis por alguém com Python intermediário em até ~35 min — isso equaliza a dificuldade entre eles (nenhum depende de bibliotecas externas ou setup de ambiente diferente).
+Todos os 4 usam **funções puras, um único arquivo de solução e nenhuma biblioteca externa**, o que reduz diferenças de setup. Isso não prova equivalência de dificuldade: a auditoria em `VALIDACAO.md` encontrou variação estrutural e exige piloto temporal com não participantes antes da S02.
 
 ## Validação de equivalência
 
@@ -50,4 +42,4 @@ Ver `VALIDACAO.md` — cada kata foi resolvido com o gabarito de referência e t
 - **Efeito de aprendizado entre katas**: como o mesmo participante resolve os 4 (2 com IA, 2 sem, ordem contrabalanceada), a ordem de apresentação foi desenhada para ser diferente entre os 3 integrantes — evita que "o último kata sempre fica mais rápido só por prática".
 - **Vazamento de solução já vista**: nenhum dos 4 katas é uma cópia literal de exercício público amplamente indexado; são variações autorais sobre padrões conhecidos (parsing, RLE, média móvel, alocação em array), então mesmo que a IA reconheça o *padrão* geral, ela não pode colar uma solução pronta de memória — precisa adaptar às regras específicas de cada enunciado.
 - **Memorização pela IA**: caso o grupo perceba, ao testar, que a IA acerta de primeira sem iteração em algum kata, isso deve ser registrado como observação qualitativa (nº de prompts) e discutido no relatório como limitação.
-- **Dificuldade desigual entre katas**: mitigada por todos serem funções isoladas de complexidade comparável (sem dependências externas, ~20-35 linhas de solução de referência cada) — ver `VALIDACAO.md` para os tempos de referência.
+- **Dificuldade desigual entre katas**: permanece como risco; deve ser mitigada por piloto temporal, contrabalanceamento de cada kata entre tratamentos e controle do identificador do kata na análise — ver `VALIDACAO.md`.

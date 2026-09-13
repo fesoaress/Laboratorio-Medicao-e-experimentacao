@@ -18,6 +18,9 @@ Artefato de código para coleta reproduzível das métricas estáticas da RQ3:
 - Excluir testes automatizados (iguais para todos; não são código do participante).
 - LOC operacional = `lloc` do Radon.
 - Configuração do jscpd congelada (mesmos limiares em todos os trials).
+- Tratamentos gravados de forma canônica como `IA` ou `Manual`, compatíveis com os CSVs de trials.
+- Classes não entram como uma falsa função adicional: a média usa funções e métodos individualmente.
+- Relatórios jscpd são sempre lidos do diretório temporário da execução, evitando reaproveitar saída antiga.
 
 ## Como validar
 
