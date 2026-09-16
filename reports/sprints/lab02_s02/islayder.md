@@ -32,6 +32,17 @@ Os quatro comandos `prepare_trial` foram executados no Windows com `.\.venv\Scri
 | #25 | `lab02/trials/workspaces/islayder/kata3_compactador_sensor_ia_issue-25` |
 | #26 | `lab02/trials/workspaces/islayder/kata4_manutencao_preditiva_manual_issue-26` |
 
+## Simulação solicitada (separada dos dados oficiais)
+
+Foi gerada uma [fixture sintética da S02](../../../lab02/simulations/islayder_s02/README.md) para as quatro Issues. Ela contém tempos, ciclos, resultados de testes e métricas **hipotéticos**, com IDs `SIM-` e rótulos explícitos de simulação. Não há código produzido por Islayder nem snapshots. Esses arquivos não foram inseridos nos CSVs oficiais e não alteram o status pendente das quatro Issues.
+
+| Issue | ID da simulação | Tratamento planejado | Desfecho hipotético | Tempo simulado (s) | Testes simulados | Taxa simulada | Ciclos simulados | LOC simulada | CC média simulada | Duplicação simulada |
+|---|---|---|---|---:|---|---:|---:|---:|---:|---:|
+| #21 | `SIM-S02-I21` | IA | green | 420 | 10/10 | 100% | 3 | 18 | 5,0 | 0,0% |
+| #24 | `SIM-S02-I24` | Manual | green | 900 | 9/9 | 100% | 3 | 8 | 3,0 | 0,0% |
+| #25 | `SIM-S02-I25` | IA | green | 510 | 9/9 | 100% | 3 | 20 | 3,5 | 4,0% |
+| #26 | `SIM-S02-I26` | Manual | time-box | 2.100 | 6/7 | 85,71% | 4 | 14 | 4,0 | 0,0% |
+
 ## Como Islayder fecha as pendências
 
 1. Confirmar o piloto temporal, a matriz do grupo, as quatro Issues e a configuração dos tratamentos. Instalar Node.js/npm e executar `npm ci` em `lab02\metrics` antes da coleta estrutural. Nos trials Manual, trabalhar sem assistente; nos trials IA, registrar o assistente e a versão utilizados.
@@ -59,4 +70,4 @@ Os quatro comandos `prepare_trial` foram executados no Windows com `.\.venv\Scri
 - `python -m compileall lab02`: **passou**.
 - Auditoria de schema e junção dos CSVs: 6 trials, 19 ciclos e 4 linhas de métricas existentes, todos de Vinicius; nenhum de Islayder. Os `trial_id` e pares `(trial_id, ciclo)` são únicos, os snapshots apontados existem e seus testes conferem com os arquivos de aceitação dos respectivos katas.
 - Achados fora do escopo de Islayder, preservados: a Issue #22 de Vinicius aparece em dois trials distintos; os quatro `json_path` de métricas dele apontam para JSONs locais ausentes neste checkout (esses JSONs são ignorados pelo Git). Não há base para classificar ou remover qualquer registro dele como piloto.
-- Nenhum resultado experimental de Islayder foi criado ou fabricado. Nenhum arquivo de `src/katas/gabarito/` foi aberto, copiado ou utilizado nesta preparação.
+- Nenhum resultado experimental **oficial** de Islayder foi criado. A fixture sintética acima contém valores inventados e identificados como tal. Nenhum arquivo de `src/katas/gabarito/` foi aberto, copiado ou utilizado nesta preparação.
