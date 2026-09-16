@@ -131,16 +131,25 @@ def test_storage_upserts_without_duplicate_rows(tmp_path):
 
 
 def test_end_to_end_green_uses_workspace_and_archives_solution(tmp_path):
+    # Kata mínimo isolado: exercita o runner sem recorrer a soluções de referência.
+    katas_dir = tmp_path / "katas"
+    source = katas_dir / "kata1_normalizador_etiquetas"
+    source.mkdir(parents=True)
+    (source / "solucao.py").write_text(
+        "def identidade(valor):\n    return valor\n", encoding="utf-8"
+    )
+    (source / "test_solucao.py").write_text(
+        "from solucao import identidade\n\n"
+        "def test_identidade():\n    assert identidade(7) == 7\n",
+        encoding="utf-8",
+    )
     workspace = prepare_trial(
         "Islayder",
         "kata1_normalizador_etiquetas",
         "IA",
         "103",
+        katas_dir=katas_dir,
         workspaces_dir=tmp_path / "workspaces",
-    )
-    shutil.copy2(
-        KATAS_DIR / "gabarito" / "kata1_solucao_referencia.py",
-        workspace / "solucao.py",
     )
     output = tmp_path / "results"
 
@@ -154,7 +163,7 @@ def test_end_to_end_green_uses_workspace_and_archives_solution(tmp_path):
     )
 
     assert result["status"] == "green"
-    assert result["testes_passando"] == 10
+    assert result["testes_passando"] == 1
     assert result["testes_falhando"] == 0
     assert result["ciclos"] == 1
     assert (output / "solutions" / result["trial_id"] / "solucao.py").is_file()
