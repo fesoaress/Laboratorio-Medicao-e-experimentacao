@@ -13,7 +13,7 @@ import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .config import ISLAYDER_ALLOCATION, KATAS_DIR, WORKSPACES_DIR
+from .config import FERNANDA_ALLOCATION, ISLAYDER_ALLOCATION, KATAS_DIR, WORKSPACES_DIR
 
 
 class PreparationError(ValueError):
@@ -99,12 +99,15 @@ def prepare_trial(
         choices = ", ".join(katas) or "nenhum kata encontrado"
         raise PreparationError(f"Kata inválido: {kata!r}. Disponíveis: {choices}.")
 
-    if participant.casefold() == "islayder":
-        expected = ISLAYDER_ALLOCATION.get(kata)
-        if expected != treatment:
-            raise PreparationError(
-                f"Alocação de Islayder para {kata}: {expected}; recebido: {treatment}."
-            )
+    allocation_by_participant = {
+        "islayder": ISLAYDER_ALLOCATION,
+        "fernanda": FERNANDA_ALLOCATION,
+    }
+    expected = allocation_by_participant.get(participant.casefold(), {}).get(kata)
+    if expected is not None and expected != treatment:
+        raise PreparationError(
+            f"Alocação de {participant} para {kata}: {expected}; recebido: {treatment}."
+        )
 
     participant_slug = safe_slug(participant)
     issue_number = issue.removeprefix("#")

@@ -59,6 +59,25 @@ def test_prepare_trial_enforces_islayder_allocation_and_no_overwrite(tmp_path):
         prepare_trial(*arguments, workspaces_dir=tmp_path)
 
 
+def test_prepare_trial_enforces_fernanda_allocation(tmp_path):
+    with pytest.raises(PreparationError, match="Alocação"):
+        prepare_trial(
+            "Fernanda",
+            "kata1_normalizador_etiquetas",
+            "IA",
+            "108",
+            workspaces_dir=tmp_path,
+        )
+
+    prepare_trial(
+        "Fernanda",
+        "kata1_normalizador_etiquetas",
+        "Manual",
+        "108",
+        workspaces_dir=tmp_path,
+    )
+
+
 def test_prepare_trial_rejects_issue_already_used_by_another_trial(tmp_path):
     prepare_trial(
         "Islayder",
@@ -70,7 +89,7 @@ def test_prepare_trial_rejects_issue_already_used_by_another_trial(tmp_path):
     with pytest.raises(PreparationError, match="já está vinculada"):
         prepare_trial(
             "Fernanda",
-            "kata2_balanceamento_turnos",
+            "kata1_normalizador_etiquetas",
             "Manual",
             "107",
             workspaces_dir=tmp_path,
