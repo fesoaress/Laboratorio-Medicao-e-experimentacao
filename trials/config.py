@@ -24,11 +24,28 @@ CYCLES_CSV = RESULTS_DIR / "trial_cycles.csv"
 TIME_BOX_MINUTES = 35
 TIME_BOX_SECONDS = TIME_BOX_MINUTES * 60
 
-# Alocação definida para Islayder na S02. Os valores são canônicos e também
-# são usados nas saídas CSV para permitir junção direta com as métricas RQ3.
+# Alocações definidas na S02. Os valores são canônicos e também são usados
+# nas saídas CSV para permitir junção direta com as métricas RQ3.
+# Islayder e Vinicius compartilham a mesma matriz; Fernanda recebe o
+# tratamento oposto em cada kata para contrabalancear o grupo (2:1 por kata).
 ISLAYDER_ALLOCATION = {
     "kata1_normalizador_etiquetas": "IA",
     "kata2_balanceamento_turnos": "Manual",
     "kata3_compactador_sensor": "IA",
     "kata4_manutencao_preditiva": "Manual",
 }
+
+FERNANDA_ALLOCATION = {
+    "kata1_normalizador_etiquetas": "Manual",
+    "kata2_balanceamento_turnos": "IA",
+    "kata3_compactador_sensor": "Manual",
+    "kata4_manutencao_preditiva": "IA",
+}
+
+# Ordem de execução contrabalanceada entre participantes (Vinicius/Islayder: 1→2→3→4).
+FERNANDA_EXECUTION_ORDER = (
+    "kata2_balanceamento_turnos",
+    "kata1_normalizador_etiquetas",
+    "kata4_manutencao_preditiva",
+    "kata3_compactador_sensor",
+)

@@ -11,7 +11,9 @@ python -m venv .venv
 
 No Linux/macOS, substitua `.\.venv\Scripts\python.exe` por `.venv/bin/python`.
 
-## Alocação de Islayder na S02
+## Alocação na S02
+
+### Islayder e Vinicius
 
 | Ordem | Kata | Tratamento |
 |---:|---|---|
@@ -21,6 +23,17 @@ No Linux/macOS, substitua `.\.venv\Scripts\python.exe` por `.venv/bin/python`.
 | 4 | `kata4_manutencao_preditiva` | Manual |
 
 O preparador rejeita uma combinação diferente para Islayder.
+
+### Fernanda (tratamento oposto + ordem contrabalanceada)
+
+| Ordem | Kata | Tratamento |
+|---:|---|---|
+| 1 | `kata2_balanceamento_turnos` | IA |
+| 2 | `kata1_normalizador_etiquetas` | Manual |
+| 3 | `kata4_manutencao_preditiva` | IA |
+| 4 | `kata3_compactador_sensor` | Manual |
+
+O preparador rejeita uma combinação diferente para Fernanda. Roteiro completo: `lab02/trials/FERNANDA_S02.md`.
 
 ## Procedimento obrigatório para cada trial
 
