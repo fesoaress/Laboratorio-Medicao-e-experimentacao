@@ -1,0 +1,5 @@
+simulation_id,source_kind,issue,participant_label,kata,planned_treatment,simulated_loc,simulated_avg_cyclomatic_complexity,simulated_duplication_percentage
+SIM-S02-I21,synthetic_fixture,#21,SIMULACAO_ISLAYDER,kata1_normalizador_etiquetas,IA,18,5.0,0.0
+SIM-S02-I24,synthetic_fixture,#24,SIMULACAO_ISLAYDER,kata2_balanceamento_turnos,Manual,8,3.0,0.0
+SIM-S02-I25,synthetic_fixture,#25,SIMULACAO_ISLAYDER,kata3_compactador_sensor,IA,20,3.5,4.0
+SIM-S02-I26,synthetic_fixture,#26,SIMULACAO_ISLAYDER,kata4_manutencao_preditiva,Manual,14,4.0,0.0
