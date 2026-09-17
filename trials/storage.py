@@ -27,6 +27,7 @@ TRIAL_FIELDS = [
     "iniciado_em",
     "finalizado_em",
     "erro_execucao",
+    "source_kind",
 ]
 
 CYCLE_FIELDS = [
@@ -43,6 +44,7 @@ CYCLE_FIELDS = [
     "taxa_sucesso",
     "pytest_exit_code",
     "erro_execucao",
+    "source_kind",
 ]
 
 
@@ -55,11 +57,14 @@ def _read_rows(path: Path, fields: list[str]) -> list[dict[str, str]]:
         return []
     with path.open("r", newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
-        if reader.fieldnames != fields:
+        if reader.fieldnames not in (fields, fields[:-1]):
             raise StorageError(
                 f"Cabeçalho incompatível em {path}. Faça backup do arquivo antes de migrar."
             )
-        return list(reader)
+        rows = list(reader)
+        for row in rows:
+            row.setdefault("source_kind", "observed")
+        return rows
 
 
 def _atomic_write(path: Path, fields: list[str], rows: list[dict]) -> None:
@@ -82,6 +87,7 @@ def _atomic_write(path: Path, fields: list[str], rows: list[dict]) -> None:
 
 def _upsert(path: Path, fields: list[str], row: dict, key_fields: tuple[str, ...]) -> None:
     rows = _read_rows(path, fields)
+    row = {**row, "source_kind": row.get("source_kind") or "observed"}
     key = tuple(str(row.get(field, "")) for field in key_fields)
     kept = [
         existing

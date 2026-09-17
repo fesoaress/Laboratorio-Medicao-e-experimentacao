@@ -86,6 +86,8 @@ Repita o procedimento para os quatro katas, alterando `--kata`, `--treatment` e 
 
 Os CSVs são escritos de forma atômica e usam `trial_id` para evitar duplicatas. Erros de importação, sintaxe ou coleta contam os testes não executados como não passantes, sem produzir falso `green`.
 
+Os coletores de execuções reais gravam `source_kind=observed`. Cenários simulados autorizados para ensaio metodológico usam `source_kind=observed_simulated`, ID `SIM-*` e status `simulated-*`. Esses registros não têm snapshot nem tempo observado e devem ser identificados separadamente de qualquer resultado experimental humano.
+
 ## Interrupções
 
 `Ctrl+C` gera o status `interrupted`, salva o snapshot possível e persiste uma linha final coerente. Esse registro não deve ser tratado como trial válido na análise; registre a ocorrência e repita apenas com uma nova Issue, conforme decisão do grupo.

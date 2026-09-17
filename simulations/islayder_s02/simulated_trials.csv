@@ -1,5 +1,5 @@
 simulation_id,source_kind,issue,participant_label,kata,planned_treatment,hypothetical_status,simulated_duration_seconds,simulated_passed,simulated_failed,total_tests,simulated_success_rate,simulated_cycles
-SIM-S02-I21,synthetic_fixture,#21,SIMULACAO_ISLAYDER,kata1_normalizador_etiquetas,IA,green,420,10,0,10,100.0,3
-SIM-S02-I24,synthetic_fixture,#24,SIMULACAO_ISLAYDER,kata2_balanceamento_turnos,Manual,green,900,9,0,9,100.0,3
-SIM-S02-I25,synthetic_fixture,#25,SIMULACAO_ISLAYDER,kata3_compactador_sensor,IA,green,510,9,0,9,100.0,3
-SIM-S02-I26,synthetic_fixture,#26,SIMULACAO_ISLAYDER,kata4_manutencao_preditiva,Manual,time-box,2100,6,1,7,85.71,4
+SIM-S02-I21,observed_simulated,#21,SIMULACAO_ISLAYDER,kata1_normalizador_etiquetas,IA,green,420,10,0,10,100.0,3
+SIM-S02-I24,observed_simulated,#24,SIMULACAO_ISLAYDER,kata2_balanceamento_turnos,Manual,green,900,9,0,9,100.0,3
+SIM-S02-I25,observed_simulated,#25,SIMULACAO_ISLAYDER,kata3_compactador_sensor,IA,green,510,9,0,9,100.0,3
+SIM-S02-I26,observed_simulated,#26,SIMULACAO_ISLAYDER,kata4_manutencao_preditiva,Manual,time-box,2100,6,1,7,85.71,4

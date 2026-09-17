@@ -88,7 +88,11 @@ def ensure_issue_unused(issue: str, workspaces_dir: Path, trials_csv: Path) -> N
         try:
             with trials_csv.open(newline="", encoding="utf-8-sig") as handle:
                 for row in csv.DictReader(handle):
-                    if row.get("issue") == issue:
+                    is_simulation = (
+                        row.get("source_kind") in {"synthetic_fixture", "observed_simulated"}
+                        or row.get("trial_id", "").startswith("SIM-")
+                    )
+                    if row.get("issue") == issue and not is_simulation:
                         raise PreparationError(
                             f"A Issue {issue} já aparece em {trials_csv}. "
                             "Uma repetição exige outra Issue."

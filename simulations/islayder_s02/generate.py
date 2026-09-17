@@ -14,7 +14,7 @@ from lab02.trials.test_runner import count_expected_tests
 
 
 OUTPUT_DIR = Path(__file__).resolve().parent
-SOURCE_KIND = "synthetic_fixture"
+SOURCE_KIND = "observed_simulated"
 PARTICIPANT_LABEL = "SIMULACAO_ISLAYDER"
 
 # (Issue, kata, tratamento planejado, desfecho hipotético, ciclos (s, passando),
