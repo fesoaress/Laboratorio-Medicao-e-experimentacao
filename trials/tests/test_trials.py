@@ -59,6 +59,25 @@ def test_prepare_trial_enforces_islayder_allocation_and_no_overwrite(tmp_path):
         prepare_trial(*arguments, workspaces_dir=tmp_path)
 
 
+def test_prepare_trial_enforces_fernanda_allocation(tmp_path):
+    with pytest.raises(PreparationError, match="Alocação"):
+        prepare_trial(
+            "Fernanda",
+            "kata1_normalizador_etiquetas",
+            "IA",
+            "108",
+            workspaces_dir=tmp_path,
+        )
+
+    prepare_trial(
+        "Fernanda",
+        "kata1_normalizador_etiquetas",
+        "Manual",
+        "108",
+        workspaces_dir=tmp_path,
+    )
+
+
 def test_prepare_trial_rejects_issue_already_used_by_another_trial(tmp_path):
     prepare_trial(
         "Islayder",
@@ -70,11 +89,30 @@ def test_prepare_trial_rejects_issue_already_used_by_another_trial(tmp_path):
     with pytest.raises(PreparationError, match="já está vinculada"):
         prepare_trial(
             "Fernanda",
-            "kata2_balanceamento_turnos",
+            "kata1_normalizador_etiquetas",
             "Manual",
             "107",
             workspaces_dir=tmp_path,
         )
+
+
+def test_prepare_trial_rejects_issue_already_recorded_in_trials_csv(tmp_path):
+    trials_csv = tmp_path / "trials.csv"
+    with trials_csv.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=["trial_id", "issue"])
+        writer.writeheader()
+        writer.writerow({"trial_id": "previous", "issue": "#109"})
+
+    with pytest.raises(PreparationError, match="já aparece"):
+        prepare_trial(
+            "Islayder",
+            "kata1_normalizador_etiquetas",
+            "IA",
+            "109",
+            workspaces_dir=tmp_path / "workspaces",
+            trials_csv=trials_csv,
+        )
+    assert not (tmp_path / "workspaces").exists()
 
 
 @pytest.mark.parametrize(
@@ -131,16 +169,25 @@ def test_storage_upserts_without_duplicate_rows(tmp_path):
 
 
 def test_end_to_end_green_uses_workspace_and_archives_solution(tmp_path):
+    # Kata mínimo isolado: exercita o runner sem recorrer a soluções de referência.
+    katas_dir = tmp_path / "katas"
+    source = katas_dir / "kata1_normalizador_etiquetas"
+    source.mkdir(parents=True)
+    (source / "solucao.py").write_text(
+        "def identidade(valor):\n    return valor\n", encoding="utf-8"
+    )
+    (source / "test_solucao.py").write_text(
+        "from solucao import identidade\n\n"
+        "def test_identidade():\n    assert identidade(7) == 7\n",
+        encoding="utf-8",
+    )
     workspace = prepare_trial(
         "Islayder",
         "kata1_normalizador_etiquetas",
         "IA",
         "103",
+        katas_dir=katas_dir,
         workspaces_dir=tmp_path / "workspaces",
-    )
-    shutil.copy2(
-        KATAS_DIR / "gabarito" / "kata1_solucao_referencia.py",
-        workspace / "solucao.py",
     )
     output = tmp_path / "results"
 
@@ -154,7 +201,7 @@ def test_end_to_end_green_uses_workspace_and_archives_solution(tmp_path):
     )
 
     assert result["status"] == "green"
-    assert result["testes_passando"] == 10
+    assert result["testes_passando"] == 1
     assert result["testes_falhando"] == 0
     assert result["ciclos"] == 1
     assert (output / "solutions" / result["trial_id"] / "solucao.py").is_file()
