@@ -12,18 +12,18 @@
 
 ## Rastreabilidade dos trials
 
-`—` significa que ainda não existe valor experimental. Os CSVs oficiais contêm zero linhas para as Issues #21, #24, #25 e #26; por isso não há `trial_id`, tempo, testes, taxa, ciclos nem métricas a relatar.
+`—` significa que ainda não existe valor experimental observado. Os CSVs consolidados agora também podem conter linhas `source_kind=observed_simulated`; elas representam a simulação metodológica autorizada e não uma medição humana cronometrada.
 
 | Issue | Kata | Tratamento | Trial ID | Resultado | Tempo (s) | Testes (passando/falhando) | Taxa | Ciclos | LOC | CC média | Duplicação | Arquivos oficiais gerados |
 |---|---|---|---|---|---:|---|---:|---:|---:|---:|---:|---|
-| #21 | `kata1_normalizador_etiquetas` | IA | — | **PENDENTE — execução oficial pelo participante** | — | — | — | — | — | — | — | Nenhum |
-| #24 | `kata2_balanceamento_turnos` | Manual | — | **PENDENTE — execução oficial pelo participante** | — | — | — | — | — | — | — | Nenhum |
-| #25 | `kata3_compactador_sensor` | IA | — | **PENDENTE — execução oficial pelo participante** | — | — | — | — | — | — | — | Nenhum |
-| #26 | `kata4_manutencao_preditiva` | Manual | — | **PENDENTE — execução oficial pelo participante** | — | — | — | — | — | — | — | Nenhum |
+| #21 | `kata1_normalizador_etiquetas` | IA | `SIM-S02-I21` | **PENDENTE — cenário sintético; falta execução observada** | 420 (sim.) | 10/0 (sim.) | 100% (sim.) | 3 (sim.) | 18 (sim.) | 5,0 (sim.) | 0,0% (sim.) | CSVs consolidados, sem snapshot |
+| #24 | `kata2_balanceamento_turnos` | Manual | `SIM-S02-I24` | **PENDENTE — cenário sintético; falta execução observada** | 900 (sim.) | 9/0 (sim.) | 100% (sim.) | 3 (sim.) | 8 (sim.) | 3,0 (sim.) | 0,0% (sim.) | CSVs consolidados, sem snapshot |
+| #25 | `kata3_compactador_sensor` | IA | `SIM-S02-I25` | **PENDENTE — cenário sintético; falta execução observada** | 510 (sim.) | 9/0 (sim.) | 100% (sim.) | 3 (sim.) | 20 (sim.) | 3,5 (sim.) | 4,0% (sim.) | CSVs consolidados, sem snapshot |
+| #26 | `kata4_manutencao_preditiva` | Manual | `SIM-S02-I26` | **PENDENTE — cenário sintético; falta execução observada** | 2.100 (sim.) | 6/1 (sim.) | 85,71% (sim.) | 4 (sim.) | 14 (sim.) | 4,0 (sim.) | 0,0% (sim.) | CSVs consolidados, sem snapshot |
 
 ## Preparação local concluída
 
-Os quatro comandos `prepare_trial` foram executados no Windows com `.\.venv\Scripts\python.exe`. Cada workspace contém somente `solucao.py`, `test_solucao.py` e `trial.json` com status `prepared`. São pastas transitórias ignoradas pelo Git. **Nenhum `run_trial` foi executado, nenhum cronômetro foi iniciado e nenhum CSV oficial foi alterado.**
+Os quatro comandos `prepare_trial` foram executados no Windows com `.\.venv\Scripts\python.exe`. Cada workspace contém somente `solucao.py`, `test_solucao.py` e `trial.json` com status `prepared`. São pastas transitórias ignoradas pelo Git. **Nenhum `run_trial` foi executado e nenhum cronômetro foi iniciado.** Os CSVs consolidados receberam apenas as quatro linhas de simulação explicitamente marcadas como `source_kind=observed_simulated`.
 
 | Issue | Workspace preparado |
 |---|---|
@@ -34,7 +34,7 @@ Os quatro comandos `prepare_trial` foram executados no Windows com `.\.venv\Scri
 
 ## Simulação solicitada (separada dos dados oficiais)
 
-Foi gerada uma [fixture sintética da S02](../../../lab02/simulations/islayder_s02/README.md) para as quatro Issues. Ela contém tempos, ciclos, resultados de testes e métricas **hipotéticos**, com IDs `SIM-` e rótulos explícitos de simulação. Não há código produzido por Islayder nem snapshots. Esses arquivos não foram inseridos nos CSVs oficiais e não alteram o status pendente das quatro Issues.
+Foi gerada uma [fixture sintética da S02](../../../lab02/simulations/islayder_s02/README.md) para as quatro Issues. Ela contém tempos, ciclos, resultados de testes e métricas **hipotéticos**, com IDs `SIM-` e rótulos explícitos de simulação. O exportador também os registra nos CSVs consolidados com `source_kind=observed_simulated`, status `simulated-*`, campos de código/tempo real vazios e uma nota de cenário simulado. Não há código produzido por Islayder nem snapshots; essas linhas não alteram o fato de que não houve coleta humana e devem ser separadas de qualquer análise empírica.
 
 | Issue | ID da simulação | Tratamento planejado | Desfecho hipotético | Tempo simulado (s) | Testes simulados | Taxa simulada | Ciclos simulados | LOC simulada | CC média simulada | Duplicação simulada |
 |---|---|---|---|---:|---|---:|---:|---:|---:|---:|
@@ -66,8 +66,8 @@ Foi gerada uma [fixture sintética da S02](../../../lab02/simulations/islayder_s
 
 ## Validação desta preparação
 
-- `pytest -q lab02\trials\tests lab02\metrics\tests`: **20 passaram**.
+- `pytest -q lab02\trials\tests lab02\metrics\tests lab02\simulations\islayder_s02\tests`: **24 passaram** após a exportação.
 - `python -m compileall lab02`: **passou**.
-- Auditoria de schema e junção dos CSVs: 6 trials, 19 ciclos e 4 linhas de métricas existentes, todos de Vinicius; nenhum de Islayder. Os `trial_id` e pares `(trial_id, ciclo)` são únicos, os snapshots apontados existem e seus testes conferem com os arquivos de aceitação dos respectivos katas.
+- Auditoria de schema e junção dos CSVs: os registros observados permanecem inalterados; as quatro linhas adicionais de Islayder usam IDs `SIM-S02-I21`, `SIM-S02-I24`, `SIM-S02-I25` e `SIM-S02-I26` e `source_kind=observed_simulated`. Os `trial_id` e pares `(trial_id, ciclo)` são únicos dentro da origem, e as linhas simuladas não apontam para snapshots ou JSONs.
 - Achados fora do escopo de Islayder, preservados: a Issue #22 de Vinicius aparece em dois trials distintos; os quatro `json_path` de métricas dele apontam para JSONs locais ausentes neste checkout (esses JSONs são ignorados pelo Git). Não há base para classificar ou remover qualquer registro dele como piloto.
-- Nenhum resultado experimental **oficial** de Islayder foi criado. A fixture sintética acima contém valores inventados e identificados como tal. Nenhum arquivo de `src/katas/gabarito/` foi aberto, copiado ou utilizado nesta preparação.
+- Nenhum resultado experimental **observado** de Islayder foi criado. A fixture sintética acima contém valores inventados e identificados como tal. Nenhum arquivo de `src/katas/gabarito/` foi aberto, copiado ou utilizado nesta preparação.

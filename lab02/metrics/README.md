@@ -60,6 +60,8 @@ Para trials reais, informe também `--trial-id` e `--issue`; o ID passa a ser a 
 1. **JSON detalhado** em `lab02/metrics/results/<participante>_<kata>_<treatment>_<timestamp>.json`
 2. **CSV consolidado** em `lab02/metrics/results/metrics.csv` (uma linha por trial; reexecução do mesmo trial faz *upsert*)
 
+O coletor marca medições reais com `source_kind=observed`. Linhas de cenários simulados autorizados para ensaio metodológico usam `source_kind=observed_simulated` e `analysis_error` explícito; seus números não foram medidos por Radon/jscpd sobre um código final do participante e devem ser analisados separadamente.
+
 Colunas principais do CSV (Pandas):
 
 ```text
