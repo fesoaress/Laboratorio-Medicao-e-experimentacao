@@ -96,6 +96,25 @@ def test_prepare_trial_rejects_issue_already_used_by_another_trial(tmp_path):
         )
 
 
+def test_prepare_trial_rejects_issue_already_recorded_in_trials_csv(tmp_path):
+    trials_csv = tmp_path / "trials.csv"
+    with trials_csv.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=["trial_id", "issue"])
+        writer.writeheader()
+        writer.writerow({"trial_id": "previous", "issue": "#109"})
+
+    with pytest.raises(PreparationError, match="já aparece"):
+        prepare_trial(
+            "Islayder",
+            "kata1_normalizador_etiquetas",
+            "IA",
+            "109",
+            workspaces_dir=tmp_path / "workspaces",
+            trials_csv=trials_csv,
+        )
+    assert not (tmp_path / "workspaces").exists()
+
+
 @pytest.mark.parametrize(
     ("kata", "total"),
     [
