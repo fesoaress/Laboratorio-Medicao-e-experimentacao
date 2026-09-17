@@ -55,6 +55,7 @@ CSV_COLUMNS: list[str] = [
     "solution_path",
     "collected_at",
     "json_path",
+    "source_kind",
 ]
 
 TRIAL_KEY_FIELDS = ("participant", "kata", "treatment")
@@ -467,6 +468,7 @@ def result_to_csv_row(result: dict[str, Any], json_path: Path) -> dict[str, Any]
         "solution_path": result["solution_path"],
         "collected_at": result["collected_at"],
         "json_path": to_repo_relative(json_path),
+        "source_kind": "observed",
     }
 
 
@@ -489,14 +491,17 @@ def load_csv_rows(csv_path: Path) -> list[dict[str, Any]]:
         reader = csv.DictReader(handle)
         if reader.fieldnames is None:
             return []
-        missing = [col for col in CSV_COLUMNS if col not in reader.fieldnames]
+        missing = [col for col in CSV_COLUMNS[:-1] if col not in reader.fieldnames]
         if missing:
             raise MetricsError(
                 f"CSV existente com colunas incompatíveis ({csv_path}).\n"
                 f"Colunas ausentes: {', '.join(missing)}\n"
                 "Apague o arquivo ou alinhe o cabeçalho antes de continuar."
             )
-        return list(reader)
+        rows = list(reader)
+        for row in rows:
+            row.setdefault("source_kind", "observed")
+        return rows
 
 
 def upsert_csv_row(csv_path: Path, new_row: dict[str, Any]) -> None:

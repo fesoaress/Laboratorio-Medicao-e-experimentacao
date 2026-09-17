@@ -11,7 +11,9 @@ python -m venv .venv
 
 No Linux/macOS, substitua `.\.venv\Scripts\python.exe` por `.venv/bin/python`.
 
-## Alocação de Islayder na S02
+## Alocação na S02
+
+### Islayder e Vinicius
 
 | Ordem | Kata | Tratamento |
 |---:|---|---|
@@ -22,11 +24,22 @@ No Linux/macOS, substitua `.\.venv\Scripts\python.exe` por `.venv/bin/python`.
 
 O preparador rejeita uma combinação diferente para Islayder.
 
+### Fernanda (tratamento oposto + ordem contrabalanceada)
+
+| Ordem | Kata | Tratamento |
+|---:|---|---|
+| 1 | `kata2_balanceamento_turnos` | IA |
+| 2 | `kata1_normalizador_etiquetas` | Manual |
+| 3 | `kata4_manutencao_preditiva` | IA |
+| 4 | `kata3_compactador_sensor` | Manual |
+
+O preparador rejeita uma combinação diferente para Fernanda. Roteiro completo: `lab02/trials/FERNANDA_S02.md`.
+
 ## Procedimento obrigatório para cada trial
 
 Antes do primeiro trial real, confirme que o grupo concluiu o piloto temporal com pessoas fora da amostra e definiu a matriz contrabalanceada dos três integrantes. O piloto não deve usar Islayder, Fernanda ou Vinicius nem entrar nos CSVs oficiais.
 
-1. Crie primeiro a Issue individual no GitHub Projects, atribua-a a Islayder e anote seu número. Não inicie dois trials ao mesmo tempo.
+1. Antes da execução, confirme no GitHub que a Issue individual existe, está atribuída ao participante e corresponde ao kata e tratamento definidos na matriz. Anote seu número. O preparador impede reutilizar uma Issue presente em um workspace ou em `trials.csv`, mas não consulta o GitHub. Não inicie dois trials ao mesmo tempo.
 2. Confirme o tratamento. Nos trials `IA`, use sempre o mesmo assistente e versão. Nos trials `Manual`, desabilite assistentes e não consulte chatbots ou soluções externas.
 3. Prepare uma cópia isolada, trocando `<ISSUE>` pelo número real:
 
@@ -38,7 +51,7 @@ Antes do primeiro trial real, confirme que o grupo concluiu o piloto temporal co
      --issue <ISSUE>
    ```
 
-4. Abra no editor **somente** a pasta exibida pelo comando. Ela contém apenas `solucao.py`, `test_solucao.py` e `trial.json`; o gabarito não é copiado. Edite somente `solucao.py`.
+4. Abra no editor **somente** a pasta exibida pelo comando. Ela contém apenas `solucao.py`, `test_solucao.py` e `trial.json`; o gabarito não é copiado. **Não edite a solução nem consulte a IA antes de iniciar o cronômetro.**
 5. Inicie o cronômetro instrumentado apontando para a pasta exibida:
 
    ```powershell
@@ -46,7 +59,7 @@ Antes do primeiro trial real, confirme que o grupo concluiu o piloto temporal co
      --workspace lab02\trials\workspaces\islayder\<PASTA_EXIBIDA>
    ```
 
-6. Pressione ENTER sempre que quiser executar os testes. Cada execução vira um ciclo em `trial_cycles.csv`.
+6. Depois que o cronômetro começar, edite somente `solucao.py` e, nos trials IA, inicie a interação com o assistente. Pressione ENTER sempre que quiser executar os testes. Cada execução vira um ciclo em `trial_cycles.csv`.
 7. Pare de editar quando aparecer `green` ou `time-box`. No time-box, o script encerra o período aos 35 minutos, executa uma leitura final dos testes e registra o tempo censurado como 2.100 segundos.
 8. Consulte em `trials.csv` o campo `codigo_path`. Ele aponta para o snapshot final que deve ser usado nas métricas estruturais e referenciado no relatório S02.
 9. Colete RQ3 sobre esse snapshot, sem analisar testes:
@@ -72,6 +85,8 @@ Repita o procedimento para os quatro katas, alterando `--kata`, `--treatment` e 
 - `lab02/trials/workspaces/`: área transitória ignorada pelo Git; os katas originais e o gabarito nunca são modificados pelo runner.
 
 Os CSVs são escritos de forma atômica e usam `trial_id` para evitar duplicatas. Erros de importação, sintaxe ou coleta contam os testes não executados como não passantes, sem produzir falso `green`.
+
+Os coletores de execuções reais gravam `source_kind=observed`. Cenários simulados autorizados para ensaio metodológico usam `source_kind=observed_simulated`, ID `SIM-*` e status `simulated-*`. Esses registros não têm snapshot nem tempo observado e devem ser identificados separadamente de qualquer resultado experimental humano.
 
 ## Interrupções
 
