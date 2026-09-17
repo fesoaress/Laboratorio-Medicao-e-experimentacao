@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import json
 import os
@@ -13,7 +14,13 @@ import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .config import FERNANDA_ALLOCATION, ISLAYDER_ALLOCATION, KATAS_DIR, WORKSPACES_DIR
+from .config import (
+    FERNANDA_ALLOCATION,
+    ISLAYDER_ALLOCATION,
+    KATAS_DIR,
+    TRIALS_CSV,
+    WORKSPACES_DIR,
+)
 
 
 class PreparationError(ValueError):
@@ -61,22 +68,35 @@ def available_katas(katas_dir: Path = KATAS_DIR) -> tuple[str, ...]:
     )
 
 
-def ensure_issue_unused(issue: str, workspaces_dir: Path) -> None:
-    if not workspaces_dir.exists():
-        return
-    for manifest_path in workspaces_dir.rglob("trial.json"):
+def ensure_issue_unused(issue: str, workspaces_dir: Path, trials_csv: Path) -> None:
+    if workspaces_dir.exists():
+        for manifest_path in workspaces_dir.rglob("trial.json"):
+            try:
+                manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError) as exc:
+                raise PreparationError(
+                    f"Manifesto existente inválido; revise antes de preparar outro trial: "
+                    f"{manifest_path}: {exc}"
+                ) from exc
+            if manifest.get("issue") == issue:
+                raise PreparationError(
+                    f"A Issue {issue} já está vinculada ao workspace {manifest_path.parent}. "
+                    "Cada trial precisa de uma Issue individual."
+                )
+
+    if trials_csv.exists():
         try:
-            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
+            with trials_csv.open(newline="", encoding="utf-8-sig") as handle:
+                for row in csv.DictReader(handle):
+                    if row.get("issue") == issue:
+                        raise PreparationError(
+                            f"A Issue {issue} já aparece em {trials_csv}. "
+                            "Uma repetição exige outra Issue."
+                        )
+        except (OSError, csv.Error) as exc:
             raise PreparationError(
-                f"Manifesto existente inválido; revise antes de preparar outro trial: "
-                f"{manifest_path}: {exc}"
+                f"Não foi possível verificar as Issues em {trials_csv}: {exc}"
             ) from exc
-        if manifest.get("issue") == issue:
-            raise PreparationError(
-                f"A Issue {issue} já está vinculada ao workspace {manifest_path.parent}. "
-                "Cada trial precisa de uma Issue individual."
-            )
 
 
 def prepare_trial(
@@ -87,6 +107,7 @@ def prepare_trial(
     *,
     katas_dir: Path = KATAS_DIR,
     workspaces_dir: Path = WORKSPACES_DIR,
+    trials_csv: Path = TRIALS_CSV,
 ) -> Path:
     participant = participant.strip()
     if not participant:
@@ -121,7 +142,7 @@ def prepare_trial(
             f"Workspace já existe e não será sobrescrito: {workspace}\n"
             "Use a pasta existente ou crie uma nova Issue para uma repetição válida."
         )
-    ensure_issue_unused(issue, workspaces_dir)
+    ensure_issue_unused(issue, workspaces_dir, trials_csv)
 
     source = katas_dir / kata
     workspace.parent.mkdir(parents=True, exist_ok=True)
