@@ -17,6 +17,7 @@ __pycache__/
 
 # Lab02 métricas estruturais (RQ3)
 lab02/metrics/node_modules/
+.pnpm-store/
 lab02/metrics/report/
 # JSONs individuais por execução (auditoria local); o CSV consolidado é versionável
 lab02/metrics/results/*_*.json

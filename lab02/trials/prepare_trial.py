@@ -16,6 +16,8 @@ from pathlib import Path
 
 from .config import (
     FERNANDA_ALLOCATION,
+    FERNANDA_INSTRUMENT_TRIAL_IDS,
+    FERNANDA_ISSUES,
     ISLAYDER_ALLOCATION,
     KATAS_DIR,
     TRIALS_CSV,
@@ -68,7 +70,13 @@ def available_katas(katas_dir: Path = KATAS_DIR) -> tuple[str, ...]:
     )
 
 
-def ensure_issue_unused(issue: str, workspaces_dir: Path, trials_csv: Path) -> None:
+def ensure_issue_unused(
+    issue: str,
+    workspaces_dir: Path,
+    trials_csv: Path,
+    *,
+    allowed_existing_trial_ids: frozenset[str] = frozenset(),
+) -> None:
     if workspaces_dir.exists():
         for manifest_path in workspaces_dir.rglob("trial.json"):
             try:
@@ -92,7 +100,14 @@ def ensure_issue_unused(issue: str, workspaces_dir: Path, trials_csv: Path) -> N
                         row.get("source_kind") in {"synthetic_fixture", "observed_simulated"}
                         or row.get("trial_id", "").startswith("SIM-")
                     )
-                    if row.get("issue") == issue and not is_simulation:
+                    allowed_instrument_trial = (
+                        row.get("trial_id") in allowed_existing_trial_ids
+                    )
+                    if (
+                        row.get("issue") == issue
+                        and not is_simulation
+                        and not allowed_instrument_trial
+                    ):
                         raise PreparationError(
                             f"A Issue {issue} já aparece em {trials_csv}. "
                             "Uma repetição exige outra Issue."
@@ -144,9 +159,19 @@ def prepare_trial(
     if workspace.exists():
         raise PreparationError(
             f"Workspace já existe e não será sobrescrito: {workspace}\n"
-            "Use a pasta existente ou crie uma nova Issue para uma repetição válida."
+            "Use a pasta existente; um workspace concluído nunca é reutilizado."
         )
-    ensure_issue_unused(issue, workspaces_dir, trials_csv)
+    allowed_existing_trial_ids: frozenset[str] = frozenset()
+    if participant.casefold() == "fernanda" and FERNANDA_ISSUES.get(kata) == issue:
+        allowed_existing_trial_ids = frozenset(
+            {FERNANDA_INSTRUMENT_TRIAL_IDS[kata]}
+        )
+    ensure_issue_unused(
+        issue,
+        workspaces_dir,
+        trials_csv,
+        allowed_existing_trial_ids=allowed_existing_trial_ids,
+    )
 
     source = katas_dir / kata
     workspace.parent.mkdir(parents=True, exist_ok=True)

@@ -62,3 +62,21 @@ do Wilcoxon, resumo de RQ2, resumo e detalhe da inovação. Em
 
 O texto interpretativo e a proveniência estão em
 [`reports/sprints/s03/relatorio_s03.md`](../../reports/sprints/s03/relatorio_s03.md).
+
+## RQ3 e reexecução de Fernanda
+
+O validador abaixo só retorna sucesso quando existem quatro novos trials
+oficiais de Fernanda, com dois tratamentos IA, dois Manual, quatro katas, Issues
+novas e a ordem contrabalanceada. Os quatro ensaios antigos continuam no CSV
+bruto por rastreabilidade, mas são excluídos pela mesma auditoria usada em RQ1
+e RQ2.
+
+```powershell
+.\.venv\Scripts\python.exe -m lab02.analysis.validate_fernanda_official
+.\.venv\Scripts\python.exe -m lab02.analysis.analyze_rq3 --require-fernanda
+```
+
+`analyze_rq3.py` cruza `metrics.csv` com os `trial_id` elegíveis da auditoria,
+confere participante, kata, tratamento e Issue, e gera `rq3_detalhe.csv`,
+`rq3_resumo.csv` e os três gráficos `rq3_*_ia_vs_manual.png`. O resumo contém
+valores do grupo e de Fernanda, com mediana, Q1, Q3 e IQR.

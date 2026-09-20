@@ -133,30 +133,41 @@ entre IA e Manual pode refletir os katas, e não o tratamento.
 ## 6. RQ3 — Qualidade estrutural
 
 **Responsável:** Fernanda  
-**Status:** aguardando consolidação da Issue #34.
+**Status:** instrumento e análise validados; aguardando quatro reexecuções
+oficiais de Fernanda para consolidar a Issue #34.
 
-### LOC
+### Método e métricas
 
-A preencher por Fernanda com os snapshots elegíveis e a definição de LOC
-lógico do coletor (`lab02/metrics/README.md`).
+O coletor usa LOC lógico (`lloc`) do Radon 6.0.1, complexidade ciclomática
+média por função/método (com máximo preservado) e percentual de linhas
+duplicadas do jscpd 5.2.0. O escopo é somente `solucao.py`; testes, gabaritos,
+dependências e caches ficam fora. A janela do jscpd permanece congelada em
+5 linhas e 50 tokens. LOC acompanhará a interpretação de complexidade e
+duplicação para evitar comparar códigos de tamanhos muito diferentes sem
+contexto.
 
-### Complexidade ciclomática
+### Pipeline preparado
 
-A preencher por Fernanda com média por função/método e distribuição por
-tratamento.
+`lab02/analysis/analyze_rq3.py` reutiliza a auditoria de elegibilidade de
+RQ1/RQ2, cruza os snapshots pelo `trial_id`, valida metadados e produz detalhe,
+mediana, Q1, Q3 e IQR para IA e Manual, além de gráficos com os valores
+individuais visíveis. `validate_fernanda_official.py` exige exatamente quatro
+novos trials de Fernanda, 2 IA + 2 Manual, quatro katas e a ordem 2 → 1 → 4 → 3.
 
-### Duplicação
+### Resultados IA × Manual
 
-A preencher por Fernanda com percentual e limites do jscpd.
+Ainda não calculados para Fernanda. Os quatro registros anteriores continuam
+documentados como ensaios do instrumento e são excluídos por `trial_id`; seus
+tempos, códigos e métricas não entram na RQ3 oficial. Inserir aqui os resultados
+gerados somente após o validador confirmar os quatro novos trials.
 
-### Análise IA × Manual
+### Interpretação e limitações
 
-A preencher por Fernanda, preservando participante e kata e excluindo
-simulações/ensaios inválidos conforme a auditoria de proveniência.
-
-### Interpretação
-
-A preencher por Fernanda com achados, incerteza e limitações da RQ3.
+A análise será descritiva e preservará participante e kata. Com apenas dois
+trials por tratamento por participante, quartis serão instáveis e não haverá
+afirmação causal ou significância estatística sem amostra adequada. Diferenças
+de complexidade e duplicação serão discutidas junto do LOC e da possível
+diferença de dificuldade entre katas.
 
 ## 7. Dashboard
 

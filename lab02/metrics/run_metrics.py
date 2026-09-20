@@ -25,6 +25,7 @@ import subprocess
 import sys
 import tempfile
 import unicodedata
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -148,6 +149,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--csv-name",
         default=DEFAULT_CSV_NAME,
         help=f"Nome do CSV consolidado (default: {DEFAULT_CSV_NAME}).",
+    )
+    parser.add_argument(
+        "--source-kind",
+        choices=("observed", "technical_preparatory"),
+        default="observed",
+        help=(
+            "Proveniência da medição. Use technical_preparatory somente para "
+            "validações do instrumento que não são dados experimentais."
+        ),
     )
     return parser.parse_args(argv)
 
@@ -413,6 +423,7 @@ def build_result(
         "treatment": args.treatment,
         "trial_id": args.trial_id,
         "issue": args.issue,
+        "source_kind": args.source_kind,
         "solution_path": to_repo_relative(solution),
         "collected_at": datetime.now(timezone.utc).isoformat(),
         "metrics": {
@@ -468,7 +479,7 @@ def result_to_csv_row(result: dict[str, Any], json_path: Path) -> dict[str, Any]
         "solution_path": result["solution_path"],
         "collected_at": result["collected_at"],
         "json_path": to_repo_relative(json_path),
-        "source_kind": "observed",
+        "source_kind": result["source_kind"],
     }
 
 
@@ -573,8 +584,9 @@ def save_json_result(result: dict[str, Any], output_dir: Path) -> Path:
         if result.get("trial_id")
         else ""
     )
+    unique_suffix = uuid.uuid4().hex[:8]
     filename = (
-        f"{participant}_{kata}_{treatment}{trial_suffix}_{stamp}.json"
+        f"{participant}_{kata}_{treatment}{trial_suffix}_{stamp}_{unique_suffix}.json"
     )
     out_path = output_dir / filename
     out_path.write_text(

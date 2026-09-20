@@ -39,7 +39,7 @@ O preparador rejeita uma combinação diferente para Fernanda. Roteiro completo:
 
 Antes do primeiro trial real, confirme que o grupo concluiu o piloto temporal com pessoas fora da amostra e definiu a matriz contrabalanceada dos três integrantes. O piloto não deve usar Islayder, Fernanda ou Vinicius nem entrar nos CSVs oficiais.
 
-1. Antes da execução, confirme no GitHub que a Issue individual existe, está atribuída ao participante e corresponde ao kata e tratamento definidos na matriz. Anote seu número. O preparador impede reutilizar uma Issue presente em um workspace ou em `trials.csv`, mas não consulta o GitHub. Não inicie dois trials ao mesmo tempo.
+1. Antes da execução, confirme no GitHub que a Issue individual existe, está atribuída ao participante e corresponde ao kata e tratamento definidos na matriz. Anote seu número. O preparador normalmente impede reutilizar uma Issue presente em um workspace ou em `trials.csv`, mas permite a reexecução oficial de Fernanda nas Issues `#19`, `#27`, `#29` e `#28` somente quando a ocorrência anterior é o ensaio inválido documentado. Não inicie dois trials ao mesmo tempo.
 2. Confirme o tratamento. Nos trials `IA`, use sempre o mesmo assistente e versão. Nos trials `Manual`, desabilite assistentes e não consulte chatbots ou soluções externas.
 3. Prepare uma cópia isolada, trocando `<ISSUE>` pelo número real:
 
@@ -75,7 +75,7 @@ Antes do primeiro trial real, confirme que o grupo concluiu o piloto temporal co
 
 10. Preencha `reports/sprints/lab02_s02/islayder.md` e depois faça manualmente o commit referenciando a Issue.
 
-Repita o procedimento para os quatro katas, alterando `--kata`, `--treatment` e `--issue` conforme a tabela. O workspace nunca é sobrescrito nem reutilizado; uma repetição exige outra Issue e outro workspace.
+Repita o procedimento para os quatro katas, alterando `--kata`, `--treatment` e `--issue` conforme a tabela. O workspace nunca é sobrescrito nem reutilizado. A reexecução oficial de Fernanda reaproveita as quatro Issues antigas, mas cria novos workspaces e novos `trial_id`; outras repetições continuam exigindo decisão explícita do grupo.
 
 ## Saídas
 

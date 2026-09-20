@@ -115,6 +115,51 @@ def test_prepare_trial_rejects_issue_already_recorded_in_trials_csv(tmp_path):
     assert not (tmp_path / "workspaces").exists()
 
 
+def test_prepare_trial_allows_fernanda_to_reuse_documented_instrument_issue(tmp_path):
+    trials_csv = tmp_path / "trials.csv"
+    with trials_csv.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=["trial_id", "issue"])
+        writer.writeheader()
+        writer.writerow(
+            {
+                "trial_id": "31c7f16ce79c478ab8f81cd8628e6e3c",
+                "issue": "#27",
+            }
+        )
+
+    workspace = prepare_trial(
+        "Fernanda",
+        "kata1_normalizador_etiquetas",
+        "Manual",
+        "27",
+        workspaces_dir=tmp_path / "workspaces",
+        trials_csv=trials_csv,
+    )
+
+    assert workspace.is_dir()
+    assert json.loads((workspace / "trial.json").read_text(encoding="utf-8"))[
+        "issue"
+    ] == "#27"
+
+
+def test_prepare_trial_rejects_unrecognized_reuse_of_fernanda_issue(tmp_path):
+    trials_csv = tmp_path / "trials.csv"
+    with trials_csv.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=["trial_id", "issue"])
+        writer.writeheader()
+        writer.writerow({"trial_id": "outro-trial", "issue": "#27"})
+
+    with pytest.raises(PreparationError, match="já aparece"):
+        prepare_trial(
+            "Fernanda",
+            "kata1_normalizador_etiquetas",
+            "Manual",
+            "27",
+            workspaces_dir=tmp_path / "workspaces",
+            trials_csv=trials_csv,
+        )
+
+
 @pytest.mark.parametrize(
     ("kata", "total"),
     [
