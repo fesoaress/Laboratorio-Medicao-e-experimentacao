@@ -49,3 +49,20 @@ FERNANDA_EXECUTION_ORDER = (
     "kata4_manutencao_preditiva",
     "kata3_compactador_sensor",
 )
+
+# As Issues originais serão reutilizadas na reexecução oficial. A distinção
+# entre ensaio e execução oficial é feita por trial_id; somente os IDs de
+# ensaio abaixo podem ser ignorados pelo preparador.
+FERNANDA_ISSUES = {
+    "kata1_normalizador_etiquetas": "#27",
+    "kata2_balanceamento_turnos": "#19",
+    "kata3_compactador_sensor": "#28",
+    "kata4_manutencao_preditiva": "#29",
+}
+
+FERNANDA_INSTRUMENT_TRIAL_IDS = {
+    "kata1_normalizador_etiquetas": "31c7f16ce79c478ab8f81cd8628e6e3c",
+    "kata2_balanceamento_turnos": "5e85c97fc84f4819a10aa87970316abf",
+    "kata3_compactador_sensor": "4dfbe8c44c964a65ae003d35d6a60754",
+    "kata4_manutencao_preditiva": "bd057b8dcaef41a6a9503c053b9d57f3",
+}

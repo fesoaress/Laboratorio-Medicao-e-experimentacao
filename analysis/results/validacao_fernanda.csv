@@ -1,0 +1,8 @@
+criterio,status,evidencia
+exatamente_4_trials,pendente,encontrados=0
+dois_ia_dois_manual,pendente,IA=0; Manual=0
+quatro_katas_unicos,pendente,
+ordem_contrabalanceada,pendente,
+issues_unicas,ok,
+ensaios_antigos_excluidos,ok,
+status_final_valido,pendente,

@@ -1,0 +1,5 @@
+trial_id,issue,participante,kata,tratamento,loc,avg_cyclomatic_complexity,duplication_percentage,analysis_error,metricas_completas,solution_path
+3e505698c1834835b9610787e16f8e30,#22,Vinicius,kata1_normalizador_etiquetas,IA,15,6.0,0.0,,True,lab02/trials/results/solutions/3e505698c1834835b9610787e16f8e30/solucao.py
+c1a52ff9328f47e280fbf65650ac5c82,#30,Vinicius,kata2_balanceamento_turnos,Manual,10,4.0,0.0,,True,lab02/trials/results/solutions/c1a52ff9328f47e280fbf65650ac5c82/solucao.py
+445ecd175db145fa8e036a732e2bd08d,#31,Vinicius,kata3_compactador_sensor,IA,16,3.0,0.0,,True,lab02/trials/results/solutions/445ecd175db145fa8e036a732e2bd08d/solucao.py
+bee52a404549418498f55c6e0e2b2690,#32,Vinicius,kata4_manutencao_preditiva,Manual,11,3.0,0.0,,True,lab02/trials/results/solutions/bee52a404549418498f55c6e0e2b2690/solucao.py

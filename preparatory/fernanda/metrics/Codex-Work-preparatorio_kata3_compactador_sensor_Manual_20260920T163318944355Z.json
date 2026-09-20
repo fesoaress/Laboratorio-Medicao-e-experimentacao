@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "participant": "Codex Work (preparatório)",
+  "kata": "kata3_compactador_sensor",
+  "treatment": "Manual",
+  "trial_id": "",
+  "issue": "",
+  "source_kind": "technical_preparatory",
+  "solution_path": "lab02/preparatory/fernanda/trial4_kata3_manual/solucao.py",
+  "collected_at": "2026-09-20T16:33:18.943354+00:00",
+  "metrics": {
+    "loc": 13,
+    "avg_cyclomatic_complexity": 4.0,
+    "duplication_percentage": 0.0,
+    "cyclomatic_complexity_max": 5,
+    "cyclomatic_complexity_total": 8,
+    "analyzed_functions": 2,
+    "duplicated_lines": 0,
+    "duplicated_blocks": 0,
+    "analysis_error": ""
+  },
+  "details": {
+    "loc": {
+      "loc": 13,
+      "lloc": 13,
+      "sloc": 14,
+      "loc_physical": 20,
+      "blank": 5,
+      "comments": 0,
+      "multi": 0,
+      "error": ""
+    },
+    "cyclomatic": {
+      "functions": [
+        {
+          "name": "compactar_leituras",
+          "type": "function",
+          "complexity": 5,
+          "lineno": 6
+        },
+        {
+          "name": "descompactar",
+          "type": "function",
+          "complexity": 3,
+          "lineno": 19
+        }
+      ],
+      "analyzed_functions": 2,
+      "error": ""
+    },
+    "duplication": {
+      "lines_analyzed": 20,
+      "sources_analyzed": 1,
+      "duplicated_lines": 0,
+      "duplicated_blocks": 0,
+      "duplication_percentage": 0.0
+    }
+  },
+  "tool_raw": {
+    "radon_cc": {
+      "C:\\Users\\fefes\\OneDrive\\Documentos\\GitHub\\Laboratorio-Medicao-e-experimentacao\\lab02\\preparatory\\fernanda\\trial4_kata3_manual\\solucao.py": [
+        {
+          "type": "function",
+          "rank": "A",
+          "name": "compactar_leituras",
+          "col_offset": 0,
+          "endline": 16,
+          "complexity": 5,
+          "lineno": 6,
+          "closures": []
+        },
+        {
+          "type": "function",
+          "rank": "A",
+          "name": "descompactar",
+          "col_offset": 0,
+          "endline": 20,
+          "complexity": 3,
+          "lineno": 19,
+          "closures": []
+        }
+      ]
+    },
+    "radon_raw": {
+      "C:\\Users\\fefes\\OneDrive\\Documentos\\GitHub\\Laboratorio-Medicao-e-experimentacao\\lab02\\preparatory\\fernanda\\trial4_kata3_manual\\solucao.py": {
+        "loc": 20,
+        "lloc": 13,
+        "sloc": 14,
+        "comments": 0,
+        "multi": 0,
+        "blank": 5,
+        "single_comments": 1
+      }
+    },
+    "jscpd": {
+      "duplicates": [],
+      "statistics": {
+        "detectionDate": "2026-09-20T16:33:18.930Z",
+        "formats": {
+          "python": {
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "lines": 20,
+            "newClones": 0,
+            "newDuplicatedLines": 0,
+            "percentage": 0.0,
+            "percentageTokens": 0.0,
+            "sources": 1,
+            "tokens": 135
+          }
+        },
+        "total": {
+          "clones": 0,
+          "duplicatedLines": 0,
+          "duplicatedTokens": 0,
+          "lines": 20,
+          "newClones": 0,
+          "newDuplicatedLines": 0,
+          "percentage": 0.0,
+          "percentageTokens": 0.0,
+          "sources": 1,
+          "tokens": 135
+        }
+      }
+    }
+  }
+}

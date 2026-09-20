@@ -1,5 +1,10 @@
 # S02 — Roteiro de execução de Fernanda
 
+> **Ressalva posterior:** os quatro registros abaixo são ensaios do instrumento
+> e não dados experimentais oficiais. O protocolo vigente para a reexecução está
+> em `lab02/trials/FERNANDA_REEXECUCAO.md`. Não reutilize os códigos, tempos ou
+> Issues desta página como resultados de Fernanda.
+
 Execução concluída em 16/09/2026. Evidências em `reports/sprints/lab02_s02/fernanda.md`.
 
 ## Alocação executada

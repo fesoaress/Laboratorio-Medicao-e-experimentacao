@@ -39,6 +39,23 @@ def test_cli_parses_traceability_fields():
     assert args.issue == "23"
 
 
+def test_cli_marks_technical_preparatory_measurements():
+    args = parse_args(
+        [
+            "solucao.py",
+            "--participant",
+            "Codex Work",
+            "--kata",
+            "kata1",
+            "--treatment",
+            "IA",
+            "--source-kind",
+            "technical_preparatory",
+        ]
+    )
+    assert args.source_kind == "technical_preparatory"
+
+
 def test_cyclomatic_average_uses_methods_not_class_aggregate(tmp_path):
     solution = tmp_path / "solucao.py"
     solution.write_text(

@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "participant": "Codex Work (preparatório)",
+  "kata": "kata4_manutencao_preditiva",
+  "treatment": "IA",
+  "trial_id": "",
+  "issue": "",
+  "source_kind": "technical_preparatory",
+  "solution_path": "lab02/preparatory/fernanda/trial3_kata4_ia/solucao.py",
+  "collected_at": "2026-09-20T16:33:12.569748+00:00",
+  "metrics": {
+    "loc": 14,
+    "avg_cyclomatic_complexity": 5.0,
+    "duplication_percentage": 0.0,
+    "cyclomatic_complexity_max": 5,
+    "cyclomatic_complexity_total": 5,
+    "analyzed_functions": 1,
+    "duplicated_lines": 0,
+    "duplicated_blocks": 0,
+    "analysis_error": ""
+  },
+  "details": {
+    "loc": {
+      "loc": 14,
+      "lloc": 14,
+      "sloc": 15,
+      "loc_physical": 19,
+      "blank": 3,
+      "comments": 0,
+      "multi": 0,
+      "error": ""
+    },
+    "cyclomatic": {
+      "functions": [
+        {
+          "name": "precisa_manutencao",
+          "type": "function",
+          "complexity": 5,
+          "lineno": 4
+        }
+      ],
+      "analyzed_functions": 1,
+      "error": ""
+    },
+    "duplication": {
+      "lines_analyzed": 19,
+      "sources_analyzed": 1,
+      "duplicated_lines": 0,
+      "duplicated_blocks": 0,
+      "duplication_percentage": 0.0
+    }
+  },
+  "tool_raw": {
+    "radon_cc": {
+      "C:\\Users\\fefes\\OneDrive\\Documentos\\GitHub\\Laboratorio-Medicao-e-experimentacao\\lab02\\preparatory\\fernanda\\trial3_kata4_ia\\solucao.py": [
+        {
+          "type": "function",
+          "rank": "A",
+          "endline": 19,
+          "col_offset": 0,
+          "name": "precisa_manutencao",
+          "lineno": 4,
+          "complexity": 5,
+          "closures": []
+        }
+      ]
+    },
+    "radon_raw": {
+      "C:\\Users\\fefes\\OneDrive\\Documentos\\GitHub\\Laboratorio-Medicao-e-experimentacao\\lab02\\preparatory\\fernanda\\trial3_kata4_ia\\solucao.py": {
+        "loc": 19,
+        "lloc": 14,
+        "sloc": 15,
+        "comments": 0,
+        "multi": 0,
+        "blank": 3,
+        "single_comments": 1
+      }
+    },
+    "jscpd": {
+      "duplicates": [],
+      "statistics": {
+        "detectionDate": "2026-09-20T16:33:12.555Z",
+        "formats": {
+          "python": {
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "lines": 19,
+            "newClones": 0,
+            "newDuplicatedLines": 0,
+            "percentage": 0.0,
+            "percentageTokens": 0.0,
+            "sources": 1,
+            "tokens": 100
+          }
+        },
+        "total": {
+          "clones": 0,
+          "duplicatedLines": 0,
+          "duplicatedTokens": 0,
+          "lines": 19,
+          "newClones": 0,
+          "newDuplicatedLines": 0,
+          "percentage": 0.0,
+          "percentageTokens": 0.0,
+          "sources": 1,
+          "tokens": 100
+        }
+      }
+    }
+  }
+}

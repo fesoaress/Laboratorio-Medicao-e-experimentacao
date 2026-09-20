@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "participant": "Codex Work (preparatório)",
+  "kata": "kata2_balanceamento_turnos",
+  "treatment": "IA",
+  "trial_id": "",
+  "issue": "",
+  "source_kind": "technical_preparatory",
+  "solution_path": "lab02/preparatory/fernanda/trial1_kata2_ia/solucao.py",
+  "collected_at": "2026-09-20T16:33:03.060289+00:00",
+  "metrics": {
+    "loc": 5,
+    "avg_cyclomatic_complexity": 3.0,
+    "duplication_percentage": 0.0,
+    "cyclomatic_complexity_max": 3,
+    "cyclomatic_complexity_total": 3,
+    "analyzed_functions": 1,
+    "duplicated_lines": 0,
+    "duplicated_blocks": 0,
+    "analysis_error": ""
+  },
+  "details": {
+    "loc": {
+      "loc": 5,
+      "lloc": 5,
+      "sloc": 4,
+      "loc_physical": 7,
+      "blank": 2,
+      "comments": 0,
+      "multi": 0,
+      "error": ""
+    },
+    "cyclomatic": {
+      "functions": [
+        {
+          "name": "minimo_transferencias",
+          "type": "function",
+          "complexity": 3,
+          "lineno": 4
+        }
+      ],
+      "analyzed_functions": 1,
+      "error": ""
+    },
+    "duplication": {
+      "lines_analyzed": 7,
+      "sources_analyzed": 1,
+      "duplicated_lines": 0,
+      "duplicated_blocks": 0,
+      "duplication_percentage": 0.0
+    }
+  },
+  "tool_raw": {
+    "radon_cc": {
+      "C:\\Users\\fefes\\OneDrive\\Documentos\\GitHub\\Laboratorio-Medicao-e-experimentacao\\lab02\\preparatory\\fernanda\\trial1_kata2_ia\\solucao.py": [
+        {
+          "type": "function",
+          "rank": "A",
+          "endline": 7,
+          "complexity": 3,
+          "col_offset": 0,
+          "name": "minimo_transferencias",
+          "lineno": 4,
+          "closures": []
+        }
+      ]
+    },
+    "radon_raw": {
+      "C:\\Users\\fefes\\OneDrive\\Documentos\\GitHub\\Laboratorio-Medicao-e-experimentacao\\lab02\\preparatory\\fernanda\\trial1_kata2_ia\\solucao.py": {
+        "loc": 7,
+        "lloc": 5,
+        "sloc": 4,
+        "comments": 0,
+        "multi": 0,
+        "blank": 2,
+        "single_comments": 1
+      }
+    },
+    "jscpd": {
+      "duplicates": [],
+      "statistics": {
+        "detectionDate": "2026-09-20T16:33:03.047Z",
+        "formats": {
+          "python": {
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "lines": 7,
+            "newClones": 0,
+            "newDuplicatedLines": 0,
+            "percentage": 0.0,
+            "percentageTokens": 0.0,
+            "sources": 1,
+            "tokens": 53
+          }
+        },
+        "total": {
+          "clones": 0,
+          "duplicatedLines": 0,
+          "duplicatedTokens": 0,
+          "lines": 7,
+          "newClones": 0,
+          "newDuplicatedLines": 0,
+          "percentage": 0.0,
+          "percentageTokens": 0.0,
+          "sources": 1,
+          "tokens": 53
+        }
+      }
+    }
+  }
+}

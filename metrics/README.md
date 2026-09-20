@@ -55,6 +55,11 @@ Versões fixadas:
 `--treatment` grava os valores canônicos `IA` ou `Manual` (`AI` é aceito apenas como alias de entrada).
 Para trials reais, informe também `--trial-id` e `--issue`; o ID passa a ser a chave de *upsert* e mantém repetições rastreáveis. Eles podem ser omitidos somente em exemplos de validação.
 
+Validações autônomas do instrumento devem usar uma pasta de saída separada e
+`--source-kind technical_preparatory`. O valor padrão continua sendo
+`observed` para as medições oficiais. Nunca misture o CSV preparatório com
+`lab02/metrics/results/metrics.csv`.
+
 ### Saídas
 
 1. **JSON detalhado** em `lab02/metrics/results/<participante>_<kata>_<treatment>_<timestamp>.json`
