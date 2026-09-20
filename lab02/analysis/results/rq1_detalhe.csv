@@ -1,0 +1,5 @@
+trial_id,issue,participante,kata,tratamento,status,tempo_segundos,testes_passando,testes_falhando,total_testes,taxa_sucesso,ciclos,tempo_min,censurado_35min
+3e505698c1834835b9610787e16f8e30,#22,Vinicius,kata1_normalizador_etiquetas,IA,green,49.95,10,0,10,100.0,1,0.8325,False
+c1a52ff9328f47e280fbf65650ac5c82,#30,Vinicius,kata2_balanceamento_turnos,Manual,green,365.99,9,0,9,100.0,1,6.099833333333334,False
+445ecd175db145fa8e036a732e2bd08d,#31,Vinicius,kata3_compactador_sensor,IA,green,324.52,9,0,9,100.0,1,5.408666666666666,False
+bee52a404549418498f55c6e0e2b2690,#32,Vinicius,kata4_manutencao_preditiva,Manual,green,451.74,7,0,7,100.0,2,7.529,False
