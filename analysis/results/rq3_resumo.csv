@@ -1,10 +1,10 @@
 escopo,tratamento,metrica,unidade,n,mediana,q1,q3,iqr
-grupo,IA,loc,LOC lógico (lloc),4,14.5,11.75,15.25,3.5
-grupo,IA,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,4,4.0,3.0,5.25,2.25
-grupo,IA,duplication_percentage,Linhas duplicadas (%),4,0.0,0.0,0.0,0.0
-grupo,Manual,loc,LOC lógico (lloc),4,12.0,10.75,13.0,2.25
-grupo,Manual,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,4,4.0,3.75,4.0,0.25
-grupo,Manual,duplication_percentage,Linhas duplicadas (%),4,0.0,0.0,0.0,0.0
+grupo,IA,loc,LOC lógico (lloc),6,15.5,14.25,17.5,3.25
+grupo,IA,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,6,4.25,3.125,5.0,1.875
+grupo,IA,duplication_percentage,Linhas duplicadas (%),6,0.0,0.0,0.0,0.0
+grupo,Manual,loc,LOC lógico (lloc),6,12.0,10.25,13.0,2.75
+grupo,Manual,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,6,4.0,3.25,4.0,0.75
+grupo,Manual,duplication_percentage,Linhas duplicadas (%),6,0.0,0.0,0.0,0.0
 Fernanda,IA,loc,LOC lógico (lloc),2,9.5,7.25,11.75,4.5
 Fernanda,IA,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,2,4.0,3.5,4.5,1.0
 Fernanda,IA,duplication_percentage,Linhas duplicadas (%),2,0.0,0.0,0.0,0.0
