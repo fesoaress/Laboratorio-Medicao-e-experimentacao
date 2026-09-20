@@ -109,7 +109,14 @@ def load_and_audit() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
                                       "testes_falhando", "total_testes", "taxa_sucesso",
                                       "ciclos", "status", "source_kind") if not trial[field]]
         require(not missing, f"{tid}: campos obrigatórios ausentes: {missing}")
-        require(source in {"observed", "observed_simulated"}, f"{tid}: origem inválida")
+        require(
+            source in {
+                "observed",
+                "observed_simulated",
+                "agent_delegated_codex_work",
+            },
+            f"{tid}: origem inválida",
+        )
         require(trial.participante in VALID_PARTICIPANTS, f"{tid}: participante inválido")
         require(trial.kata in VALID_KATAS, f"{tid}: kata inválido")
         require(trial.tratamento in {"IA", "Manual"}, f"{tid}: tratamento inválido")
@@ -119,7 +126,7 @@ def load_and_audit() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         expected_treatment = (FERNANDA_ALLOCATION if trial.participante == "Fernanda"
                               else ISLAYDER_ALLOCATION)[trial.kata]
         require(trial.tratamento == expected_treatment, f"{tid}: tratamento fora da matriz")
-        if source == "observed":
+        if source in {"observed", "agent_delegated_codex_work"}:
             require(trial.iniciado_em != "" and trial.finalizado_em != "",
                     f"{tid}: timestamps de execução ausentes")
             started = pd.to_datetime(trial.iniciado_em, utc=True)
@@ -164,7 +171,7 @@ def load_and_audit() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         for field in ("testes_passando", "testes_falhando", "total_testes"):
             require(integer(trial[field], field, tid) == integer(last[field], field, tid),
                     f"{tid}: resultado final difere do último ciclo")
-        if source == "observed":
+        if source in {"observed", "agent_delegated_codex_work"}:
             if trial.status == "green":
                 require(integer(trial.testes_falhando, "testes_falhando", tid) == 0,
                         f"{tid}: green com falhas")
@@ -176,6 +183,8 @@ def load_and_audit() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
             decision, reason = "excluído", DOCUMENTED_EXCLUSIONS[tid]
         elif trial.status in {"interrupted", "error"}:
             decision, reason = "excluído", f"status {trial.status}; trial incompleto"
+        elif source == "agent_delegated_codex_work":
+            decision, reason = "incluído", "execução delegada ao Codex Work"
         else:
             decision, reason = "incluído", "observado e sem incidente documentado"
         audit_rows.append({

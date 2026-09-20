@@ -123,6 +123,7 @@ def prepare_trial(
     kata: str,
     treatment: str,
     issue: str,
+    source_kind: str = "observed",
     *,
     katas_dir: Path = KATAS_DIR,
     workspaces_dir: Path = WORKSPACES_DIR,
@@ -134,6 +135,10 @@ def prepare_trial(
 
     treatment = normalize_treatment(treatment)
     issue = normalize_issue(issue)
+    if source_kind not in {"observed", "agent_delegated_codex_work"}:
+        raise PreparationError(
+            "Origem inválida. Use observed ou agent_delegated_codex_work."
+        )
     katas = available_katas(katas_dir)
     if kata not in katas:
         choices = ", ".join(katas) or "nenhum kata encontrado"
@@ -186,6 +191,7 @@ def prepare_trial(
             "kata": kata,
             "treatment": treatment,
             "issue": issue,
+            "source_kind": source_kind,
             "status": "prepared",
             "created_at": datetime.now(timezone.utc).isoformat(),
             "source_path": source.resolve().as_posix(),
@@ -209,6 +215,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--kata", required=True, choices=available_katas())
     parser.add_argument("--treatment", required=True, help="IA ou Manual")
     parser.add_argument("--issue", required=True, help="Número da Issue do trial")
+    parser.add_argument(
+        "--source-kind",
+        choices=("observed", "agent_delegated_codex_work"),
+        default="observed",
+        help="Proveniência da execução (default: observed).",
+    )
     return parser.parse_args(argv)
 
 
@@ -216,7 +228,11 @@ def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     try:
         workspace = prepare_trial(
-            args.participant, args.kata, args.treatment, args.issue
+            args.participant,
+            args.kata,
+            args.treatment,
+            args.issue,
+            args.source_kind,
         )
     except PreparationError as exc:
         print(f"ERRO: {exc}")
