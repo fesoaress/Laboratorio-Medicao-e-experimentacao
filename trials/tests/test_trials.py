@@ -34,6 +34,7 @@ def test_prepare_trial_copies_only_stub_tests_and_manifest(tmp_path):
     manifest = json.loads((workspace / "trial.json").read_text(encoding="utf-8"))
     assert manifest["treatment"] == "IA"
     assert manifest["issue"] == "#101"
+    assert manifest["source_kind"] == "observed"
     assert manifest["status"] == "prepared"
     assert "gabarito" not in {path.name for path in workspace.rglob("*")}
 
@@ -277,6 +278,31 @@ def test_time_box_records_final_cycle_and_censored_time(tmp_path):
     assert result["testes_passando"] == 0
     assert result["testes_falhando"] == 9
     assert result["ciclos"] == 1
+
+
+def test_delegated_source_kind_propagates_to_trial_and_cycle(tmp_path):
+    workspace = prepare_trial(
+        "Fernanda",
+        "kata2_balanceamento_turnos",
+        "IA",
+        "119",
+        "agent_delegated_codex_work",
+        workspaces_dir=tmp_path / "workspaces",
+    )
+    output = tmp_path / "results"
+
+    result = execute_trial(
+        workspace,
+        time_box_seconds=0.1,
+        wait_action=lambda _remaining: "timeout",
+        trials_csv=output / "trials.csv",
+        cycles_csv=output / "trial_cycles.csv",
+        solutions_dir=output / "solutions",
+    )
+
+    assert result["source_kind"] == "agent_delegated_codex_work"
+    assert read_csv(output / "trials.csv")[0]["source_kind"] == result["source_kind"]
+    assert read_csv(output / "trial_cycles.csv")[0]["source_kind"] == result["source_kind"]
 
 
 def test_ctrl_c_still_persists_consistent_trial(tmp_path):

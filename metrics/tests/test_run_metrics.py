@@ -56,6 +56,23 @@ def test_cli_marks_technical_preparatory_measurements():
     assert args.source_kind == "technical_preparatory"
 
 
+def test_cli_marks_agent_delegated_measurements():
+    args = parse_args(
+        [
+            "solucao.py",
+            "--participant",
+            "Fernanda",
+            "--kata",
+            "kata2_balanceamento_turnos",
+            "--treatment",
+            "IA",
+            "--source-kind",
+            "agent_delegated_codex_work",
+        ]
+    )
+    assert args.source_kind == "agent_delegated_codex_work"
+
+
 def test_cyclomatic_average_uses_methods_not_class_aggregate(tmp_path):
     solution = tmp_path / "solucao.py"
     solution.write_text(

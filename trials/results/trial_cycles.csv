@@ -18,12 +18,6 @@ c825af06fdf34b8383348801c0fc5782,#1,Vinicius,kata1_normalizador_etiquetas,IA,13,
 c1a52ff9328f47e280fbf65650ac5c82,#30,Vinicius,kata2_balanceamento_turnos,Manual,1,365.99,9,0,9,100.0,0,,observed
 bee52a404549418498f55c6e0e2b2690,#32,Vinicius,kata4_manutencao_preditiva,Manual,1,435.35,0,7,7,0.0,1,,observed
 bee52a404549418498f55c6e0e2b2690,#32,Vinicius,kata4_manutencao_preditiva,Manual,2,451.73,7,0,7,100.0,0,,observed
-5e85c97fc84f4819a10aa87970316abf,#19,Fernanda,kata2_balanceamento_turnos,IA,1,0.86,9,0,9,100.0,0,,observed
-31c7f16ce79c478ab8f81cd8628e6e3c,#27,Fernanda,kata1_normalizador_etiquetas,Manual,1,0.88,3,7,10,30.0,1,,observed
-31c7f16ce79c478ab8f81cd8628e6e3c,#27,Fernanda,kata1_normalizador_etiquetas,Manual,2,1.75,10,0,10,100.0,0,,observed
-bd057b8dcaef41a6a9503c053b9d57f3,#29,Fernanda,kata4_manutencao_preditiva,IA,1,0.89,7,0,7,100.0,0,,observed
-4dfbe8c44c964a65ae003d35d6a60754,#28,Fernanda,kata3_compactador_sensor,Manual,1,0.89,4,5,9,44.44,1,,observed
-4dfbe8c44c964a65ae003d35d6a60754,#28,Fernanda,kata3_compactador_sensor,Manual,2,1.8,9,0,9,100.0,0,,observed
 SIM-S02-I21,#21,Islayder,kata1_normalizador_etiquetas,IA,1,120,4,6,10,40.0,,CENARIO_SINTETICO: valores hipoteticos; nao houve execucao humana cronometrada,observed_simulated
 SIM-S02-I21,#21,Islayder,kata1_normalizador_etiquetas,IA,2,250,8,2,10,80.0,,CENARIO_SINTETICO: valores hipoteticos; nao houve execucao humana cronometrada,observed_simulated
 SIM-S02-I21,#21,Islayder,kata1_normalizador_etiquetas,IA,3,420,10,0,10,100.0,,CENARIO_SINTETICO: valores hipoteticos; nao houve execucao humana cronometrada,observed_simulated
@@ -37,3 +31,11 @@ SIM-S02-I26,#26,Islayder,kata4_manutencao_preditiva,Manual,1,450,2,5,7,28.57,,CE
 SIM-S02-I26,#26,Islayder,kata4_manutencao_preditiva,Manual,2,900,4,3,7,57.14,,CENARIO_SINTETICO: valores hipoteticos; nao houve execucao humana cronometrada,observed_simulated
 SIM-S02-I26,#26,Islayder,kata4_manutencao_preditiva,Manual,3,1500,6,1,7,85.71,,CENARIO_SINTETICO: valores hipoteticos; nao houve execucao humana cronometrada,observed_simulated
 SIM-S02-I26,#26,Islayder,kata4_manutencao_preditiva,Manual,4,2100,6,1,7,85.71,,CENARIO_SINTETICO: valores hipoteticos; nao houve execucao humana cronometrada,observed_simulated
+ba0cb83a55764b3389f7da94946c9230,#19,Fernanda,kata2_balanceamento_turnos,IA,1,13.23,0,9,9,0.0,1,,agent_delegated_codex_work
+ba0cb83a55764b3389f7da94946c9230,#19,Fernanda,kata2_balanceamento_turnos,IA,2,224.88,9,0,9,100.0,0,,agent_delegated_codex_work
+e9bb6d490e1246bd942cc164bb5cd55a,#27,Fernanda,kata1_normalizador_etiquetas,Manual,1,13.24,0,10,10,0.0,1,,observed
+e9bb6d490e1246bd942cc164bb5cd55a,#27,Fernanda,kata1_normalizador_etiquetas,Manual,2,63.19,10,0,10,100.0,0,,observed
+c33c36f2110a45478c1016a89476035a,#29,Fernanda,kata4_manutencao_preditiva,IA,1,13.89,0,7,7,0.0,1,,agent_delegated_codex_work
+c33c36f2110a45478c1016a89476035a,#29,Fernanda,kata4_manutencao_preditiva,IA,2,74.0,7,0,7,100.0,0,,agent_delegated_codex_work
+077979815f8f417b88718e458c618807,#28,Fernanda,kata3_compactador_sensor,Manual,1,13.48,0,9,9,0.0,1,,observed
+077979815f8f417b88718e458c618807,#28,Fernanda,kata3_compactador_sensor,Manual,2,58.8,9,0,9,100.0,0,,observed

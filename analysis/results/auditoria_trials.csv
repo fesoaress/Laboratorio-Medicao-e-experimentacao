@@ -5,11 +5,11 @@ c825af06fdf34b8383348801c0fc5782,#1,Vinicius,kata1_normalizador_etiquetas,IA,obs
 445ecd175db145fa8e036a732e2bd08d,#31,Vinicius,kata3_compactador_sensor,IA,observed,green,324.52,1,0,incluído,observado e sem incidente documentado
 c1a52ff9328f47e280fbf65650ac5c82,#30,Vinicius,kata2_balanceamento_turnos,Manual,observed,green,365.99,1,0,incluído,observado e sem incidente documentado
 bee52a404549418498f55c6e0e2b2690,#32,Vinicius,kata4_manutencao_preditiva,Manual,observed,green,451.74,2,0,incluído,observado e sem incidente documentado
-5e85c97fc84f4819a10aa87970316abf,#19,Fernanda,kata2_balanceamento_turnos,IA,observed,green,0.88,1,0,excluído,"ensaio do instrumento, sem tempo humano válido (Fernanda)"
-31c7f16ce79c478ab8f81cd8628e6e3c,#27,Fernanda,kata1_normalizador_etiquetas,Manual,observed,green,1.77,2,0,excluído,"ensaio do instrumento, sem tempo humano válido (Fernanda)"
-bd057b8dcaef41a6a9503c053b9d57f3,#29,Fernanda,kata4_manutencao_preditiva,IA,observed,green,0.94,1,0,excluído,"ensaio do instrumento, sem tempo humano válido (Fernanda)"
-4dfbe8c44c964a65ae003d35d6a60754,#28,Fernanda,kata3_compactador_sensor,Manual,observed,green,1.84,2,0,excluído,"ensaio do instrumento, sem tempo humano válido (Fernanda)"
 SIM-S02-I21,#21,Islayder,kata1_normalizador_etiquetas,IA,observed_simulated,simulated-green,420.0,3,0,excluído,cenário simulado; sem execução humana
 SIM-S02-I24,#24,Islayder,kata2_balanceamento_turnos,Manual,observed_simulated,simulated-green,900.0,3,0,excluído,cenário simulado; sem execução humana
 SIM-S02-I25,#25,Islayder,kata3_compactador_sensor,IA,observed_simulated,simulated-green,510.0,3,0,excluído,cenário simulado; sem execução humana
 SIM-S02-I26,#26,Islayder,kata4_manutencao_preditiva,Manual,observed_simulated,simulated-time-box,2100.0,4,0,excluído,cenário simulado; sem execução humana
+ba0cb83a55764b3389f7da94946c9230,#19,Fernanda,kata2_balanceamento_turnos,IA,agent_delegated_codex_work,green,224.89,2,0,incluído,execução delegada ao Codex Work
+e9bb6d490e1246bd942cc164bb5cd55a,#27,Fernanda,kata1_normalizador_etiquetas,Manual,observed,green,63.2,2,0,incluído,observado e sem incidente documentado
+c33c36f2110a45478c1016a89476035a,#29,Fernanda,kata4_manutencao_preditiva,IA,agent_delegated_codex_work,green,74.02,2,0,incluído,execução delegada ao Codex Work
+077979815f8f417b88718e458c618807,#28,Fernanda,kata3_compactador_sensor,Manual,observed,green,58.83,2,0,incluído,observado e sem incidente documentado

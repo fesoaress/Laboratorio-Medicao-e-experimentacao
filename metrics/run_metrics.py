@@ -152,7 +152,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--source-kind",
-        choices=("observed", "technical_preparatory"),
+        choices=(
+            "observed",
+            "technical_preparatory",
+            "agent_delegated_codex_work",
+        ),
         default="observed",
         help=(
             "Proveniência da medição. Use technical_preparatory somente para "

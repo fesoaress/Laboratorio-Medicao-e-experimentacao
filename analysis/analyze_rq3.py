@@ -83,7 +83,9 @@ def load_detail(require_fernanda: bool = False) -> pd.DataFrame:
         METRICS_CSV, dtype=str, keep_default_na=False, encoding="utf-8-sig"
     )
     require(METRIC_COLUMNS <= set(metrics), "metrics.csv: colunas obrigatórias ausentes")
-    metrics = metrics.loc[metrics.source_kind == "observed"].copy()
+    metrics = metrics.loc[
+        metrics.source_kind.isin({"observed", "agent_delegated_codex_work"})
+    ].copy()
     require(not metrics.trial_id.duplicated().any(), "trial_id duplicado em metrics.csv")
 
     selected = metrics.loc[metrics.trial_id.isin(trials.trial_id)].copy()
@@ -102,6 +104,8 @@ def load_detail(require_fernanda: bool = False) -> pd.DataFrame:
                 f"{metric.trial_id}: tratamento diverge em metrics.csv")
         require(metric.issue == trial.issue,
                 f"{metric.trial_id}: Issue diverge em metrics.csv")
+        require(metric.source_kind == trial.source_kind,
+                f"{metric.trial_id}: origem diverge em metrics.csv")
 
     selected = selected.rename(
         columns={"participant": "participante", "treatment": "tratamento"}
@@ -156,6 +160,10 @@ def make_figures(detail: pd.DataFrame, figures_dir: Path) -> None:
     plt.rcParams.update({"font.size": 9, "figure.dpi": 140})
     for column, ylabel, filename in METRICS:
         fig, ax = plt.subplots(figsize=(9, 5))
+        all_values = detail[column].dropna()
+        value_min = all_values.min() if not all_values.empty else 0
+        value_max = all_values.max() if not all_values.empty else 0
+        value_span = value_max - value_min
         for x, treatment in enumerate(("IA", "Manual")):
             group = detail.loc[detail.tratamento == treatment].sort_values(
                 ["participante", "kata"]
@@ -167,7 +175,13 @@ def make_figures(detail: pd.DataFrame, figures_dir: Path) -> None:
                 if pd.isna(row[column]):
                     continue
                 ax.scatter(x + offset, row[column], color=COLORS[treatment], s=58)
-                label_y = 8 if point_index % 2 == 0 else -10
+                value = row[column]
+                if value_span and value >= value_max - value_span * 0.05:
+                    label_y = -12
+                elif value_span and value <= value_min + value_span * 0.05:
+                    label_y = 10
+                else:
+                    label_y = 9 if point_index % 2 == 0 else -11
                 ax.annotate(
                     f"{row.participante} · K{row.kata[4]}",
                     (x + offset, row[column]),
@@ -195,6 +209,7 @@ def make_figures(detail: pd.DataFrame, figures_dir: Path) -> None:
             title=f"RQ3 — {ylabel} por trial",
         )
         ax.grid(axis="y", alpha=0.25)
+        ax.margins(y=0.16)
         ax.legend(loc="best")
         fig.tight_layout()
         fig.savefig(figures_dir / filename)

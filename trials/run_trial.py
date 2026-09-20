@@ -169,6 +169,7 @@ def execute_trial(
     kata = manifest["kata"]
     treatment = manifest["treatment"]
     issue = manifest["issue"]
+    source_kind = manifest.get("source_kind", "observed")
     started = clock()
     cycle = 0
     status = "error"
@@ -211,6 +212,7 @@ def execute_trial(
                 "taxa_sucesso": result["taxa_sucesso"],
                 "pytest_exit_code": result["pytest_exit_code"],
                 "erro_execucao": result["erro_execucao"],
+                "source_kind": source_kind,
             },
             cycles_csv,
         )
@@ -303,6 +305,7 @@ def execute_trial(
         "iniciado_em": started_at,
         "finalizado_em": finished_at,
         "erro_execucao": combined_error,
+        "source_kind": source_kind,
     }
     register_trial(trial_data, trials_csv)
 
