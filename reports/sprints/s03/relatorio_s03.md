@@ -91,6 +91,10 @@ ciclomática é a média por função/método, e duplicação é o percentual de
 duplicadas do jscpd. O cruzamento usa `trial_id`, valida participante, kata,
 tratamento, Issue, proveniência e caminho do snapshot.
 
+O recorte oficial da RQ3 contém **12 trials**, quatro de cada participante:
+Fernanda, Vinicius e Islayder. Cada participante contribui com dois trials IA
+e dois Manual.
+
 ### Resultados por trial de Fernanda
 
 | Kata | Tratamento | LOC | CC média | CC máxima | Duplicação |
@@ -112,24 +116,41 @@ tratamento, Issue, proveniência e caminho do snapshot.
 
 | Métrica | IA: mediana [Q1; Q3], IQR | Manual: mediana [Q1; Q3], IQR |
 |---|---:|---:|
-| LOC | 14,5 [11,75; 15,25], 3,5 | 12,0 [10,75; 13,0], 2,25 |
-| CC média | 4,0 [3,0; 5,25], 2,25 | 4,0 [3,75; 4,0], 0,25 |
+| LOC | 15,5 [14,25; 17,5], 3,25 | 12,0 [10,25; 13,0], 2,75 |
+| CC média | 4,25 [3,125; 5,0], 1,875 | 4,0 [3,25; 4,0], 0,75 |
 | Duplicação | 0% [0%; 0%], 0% | 0% [0%; 0%], 0% |
 
 Em Fernanda, os códigos IA tiveram menor mediana de LOC, enquanto a
-complexidade mediana e a duplicação foram iguais. No grupo, IA teve maior
-mediana de LOC, a mesma complexidade mediana e a mesma duplicação. A inversão
-do resultado de LOC entre o recorte individual e o grupo reforça que diferenças
-entre katas e implementações pesam mais do que qualquer conclusão simples por
-tratamento nesta amostra.
+complexidade mediana e a duplicação foram iguais. No grupo completo, IA teve
+maior mediana de LOC (15,5 contra 12,0) e complexidade ligeiramente maior
+(4,25 contra 4,0). Como IA também produziu mais LOC, a diferença de
+complexidade absoluta deve ser interpretada junto do tamanho do código, sem
+normalização adicional não prevista no protocolo.
 
-Detalhes e gráficos:
+O strip plot de LOC preserva os 12 valores individuais e marca discretamente
+as medianas. No slope chart, a linha de Fernanda fica horizontal em 4,0 porque
+os trials Manual têm complexidades 4,0 e 4,0, enquanto os trials IA têm 3,0 e
+5,0: conjuntos diferentes, mas com a mesma mediana. Portanto, 4 → 4 não
+significa que os códigos Manual e IA sejam iguais; significa apenas igualdade
+do resumo central. Vinicius passou de mediana 3,5 em Manual para 4,5 em IA, e
+Islayder passou de 3,5 para 4,25. Os círculos vazios mantêm visíveis os valores
+dos katas que formam cada mediana. As diferenças entre participantes são
+esperadas porque as linhas agregam implementações e katas distintos; elas não
+representam a transformação do mesmo código.
+
+Na duplicação, 11 dos 12 trials tiveram 0%. O trial K3 IA de Islayder teve 4%.
+Por isso, as medianas e IQRs dos dois tratamentos permanecem em zero, enquanto
+o lollipop plot mantém visível a única observação diferente de zero. A amostra
+é pequena e mistura katas distintos, portanto os gráficos sustentam apenas uma
+comparação descritiva.
+
+Detalhes e gráficos da contribuição de Fernanda:
 
 - [`rq3_detalhe.csv`](../../../lab02/analysis/results/rq3_detalhe.csv)
 - [`rq3_resumo.csv`](../../../lab02/analysis/results/rq3_resumo.csv)
-- [`rq3_loc_ia_vs_manual.png`](../../figures/rq3_loc_ia_vs_manual.png)
-- [`rq3_complexidade_ia_vs_manual.png`](../../figures/rq3_complexidade_ia_vs_manual.png)
-- [`rq3_duplicacao_ia_vs_manual.png`](../../figures/rq3_duplicacao_ia_vs_manual.png)
+- [`rq3_loc_ia_vs_manual.png`](../../figures/rq3_loc_ia_vs_manual.png) — strip plot
+- [`rq3_complexidade_ia_vs_manual.png`](../../figures/rq3_complexidade_ia_vs_manual.png) — slope chart
+- [`rq3_duplicacao_ia_vs_manual.png`](../../figures/rq3_duplicacao_ia_vs_manual.png) — lollipop plot
 
 ## 7. Dashboard
 
