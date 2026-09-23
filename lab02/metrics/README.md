@@ -1,4 +1,4 @@
-# Lab02 — Métricas estruturais (RQ3) — Fernanda
+# Lab02 — Métricas estruturais (RQ3)
 
 Instrumentação da Sprint 1 para a pergunta:
 
@@ -72,6 +72,39 @@ Colunas principais do CSV (Pandas):
 ```text
 participant,kata,treatment,loc,avg_cyclomatic_complexity,duplication_percentage
 ```
+
+## Artefatos finais vinculados à RQ3
+
+Os códigos finais usados na RQ3, seus testes de aceitação e o vínculo com
+participante, Issue, kata e tratamento estão em
+`lab02/trials/results/rq3_artifacts/islayder/`. O arquivo `manifest.csv` é a
+fonte de seleção desses quatro artefatos pelo `analyze_rq3.py`.
+
+Exemplo de reprodução da medição do trial IA #21:
+
+```powershell
+.\.venv\Scripts\python.exe lab02\metrics\run_metrics.py `
+  lab02\trials\results\rq3_artifacts\islayder\issue-21-kata1-ia\solucao.py `
+  --participant Islayder `
+  --kata kata1_normalizador_etiquetas `
+  --treatment IA `
+  --trial-id RQ3-ISLAYDER-I21 `
+  --issue 21 `
+  --source-kind observed
+```
+
+O mesmo comando é aplicável aos demais caminhos do manifesto. Para uma
+conferência sem alterar o consolidado oficial, acrescente `--output-dir` com
+uma pasta temporária. A configuração e as versões fixadas acima permanecem as
+mesmas, portanto LOC, complexidade e duplicação são reproduzíveis.
+
+Os quatro artefatos estruturais de Fernanda ficam em
+`lab02/trials/results/rq3_artifacts/fernanda/` e possuem manifesto próprio.
+Como os caminhos dos snapshots originais registrados pelo runner não foram
+versionados, esses arquivos foram reconstruídos a partir dos códigos
+preparatórios já existentes no repositório. Eles são executáveis, passam nos
+testes de aceitação e reproduzem as métricas consolidadas, mas essa diferença
+de proveniência deve permanecer explícita na interpretação da RQ3.
 
 ## Validação (exemplo didático)
 

@@ -1,72 +1,59 @@
 # Lab02 S03 — contribuição individual de Islayder
 
 **Issue:** #33 — RQ1, RQ2 e inovação.  
-**Responsabilidade:** auditar os dados da S02, analisar tempo, testes e
-evolução por ciclo; gerar artefatos reproduzíveis; redigir a parte
-correspondente do relatório-base do grupo.
+**Responsabilidade:** auditar os dados da S02, analisar tempo, testes e evolução por ciclo e documentar os resultados.
 
-## Trabalho realizado
+## Dados finais de Islayder
 
-- Criado `lab02/analysis/analyze_rq1_rq2.py`, executável da raiz do
-  repositório, com leitura dos dois CSVs oficiais, auditoria de esquema,
-  chaves, proveniência, matriz de participante/kata/tratamento, Issue,
-  contagens de testes, tempo, censura e ciclos.
-- Segregados os quatro cenários `observed_simulated` de Islayder; as duas
-  tentativas inválidas de Vinicius e os quatro ensaios do instrumento de
-  Fernanda foram excluídos com justificativa e ID auditáveis. Dados
-  brutos não foram alterados.
-- RQ1: calculados mediana, Q1, Q3 e IQR por tratamento; preservado o
-  detalhe por kata. Documentada a impossibilidade de Wilcoxon pareado:
-  apenas um participante completo e elegível.
-- RQ2: comparados passed/failed, taxa de sucesso e status final, sem
-  inferência indevida sobre contagens absolutas de katas diferentes.
-- Inovação: medidos ciclos, taxas no primeiro e último ciclo, tempo de
-  cada ciclo e ciclo até green; identificada a limitação de três trials
-  com apenas um ciclo.
-- Preparado o relatório-base do grupo com seções completas de RQ1/RQ2/
-  inovação e espaços explícitos para RQ3 de Fernanda e dashboard de Vinicius.
+Os resultados de #21 e #25 foram informados pelo participante após execuções com o Gemini no celular. Os totais de testes foram conferidos diretamente nos arquivos de aceitação: 10 testes no Kata 1 e 9 testes no Kata 3. Os resultados de #24 e #26 permanecem os registrados pelo runner.
 
-## Resultados principais
+| Issue | Kata | Tratamento | Tempo (s) | Testes | Falhando | Ciclos | Status |
+|---|---|---|---:|---:|---:|---:|---|
+| #21 | `kata1_normalizador_etiquetas` | IA | 75,00 | **10/10** | 0 | 1 | `green` |
+| #24 | `kata2_balanceamento_turnos` | Manual | 127,17 | **9/9** | 0 | 1 | `green` |
+| #25 | `kata3_compactador_sensor` | IA | 150,00 | **9/9** | 0 | 1 | `green` |
+| #26 | `kata4_manutencao_preditiva` | Manual | 208,02 | **7/7** | 0 | 2 | `green` |
 
-Os quatro trials válidos são de Vinicius (dois IA e dois Manual), todos
-green, sem censura válida. A mediana do tempo foi **3,121 min IA** e
-**6,814 min Manual**; IQR **2,288 min IA** e **0,715 min Manual**.
-Wilcoxon: **não aplicado**, W e valor-p não aplicáveis, **n efetivo = 1
-par de participante**. Em RQ2, ambos os tratamentos terminaram com
-100% de testes passando (IA 19/19, Manual 16/16) e zero falhas finais.
-Na inovação, IA chegou ao green no ciclo 1 em ambos os trials; Manual
-chegou nos ciclos 1 e 2, sendo K4 Manual o único com mudança registrada
-entre ciclos (0% → 100%). Essas diferenças são somente descritivas.
+## RQ1 — Tempo
 
-## Artefatos
+| Tratamento | n | Média (s) | Mediana (s) | Q1 (s) | Q3 (s) | IQR (s) |
+|---|---:|---:|---:|---:|---:|---:|
+| IA | 2 | 112,500 | 112,500 | 93,750 | 131,250 | 37,500 |
+| Manual | 2 | 167,595 | 167,595 | 147,383 | 187,808 | 40,425 |
 
-- [Script e regras](../../../lab02/analysis/analyze_rq1_rq2.py) e
-  [instruções de reprodução](../../../lab02/analysis/README.md).
-- [Tabelas e auditoria](../../../lab02/analysis/results/auditoria_trials.csv),
-  com os demais CSVs em `lab02/analysis/results/`.
-- [Tempo IA × Manual](../../figures/rq1_tempo_ia_vs_manual.png),
-  [testes IA × Manual](../../figures/rq2_testes_ia_vs_manual.png),
-  [evolução dos testes](../../figures/inovacao_evolucao_testes.png) e
-  [ciclos até green](../../figures/inovacao_ciclos_ate_green.png).
-- [Relatório-base S03](relatorio_s03.md).
+A média e a mediana de IA ficaram **55,095 s abaixo** de Manual, diferença descritiva de **32,87%**. Com somente um par de medianas por participante no recorte individual, não há base para interpretação inferencial do Wilcoxon.
 
-## Validação
+## RQ2 — Testes
 
-O script foi executado integralmente e os 12 artefatos gerados (8 CSVs e
-4 PNGs) mantiveram hashes idênticos em duas execuções consecutivas.
-Uma conferência independente verificou as 14 linhas auditadas, as quatro
-incluídas, medianas, IQRs, totais de testes e presença dos gráficos. Os
-links locais dos relatórios foram resolvidos. A suíte existente de trials,
-métricas e simulação passou com **24 testes** após instalar as dependências
-declaradas; `python -m compileall lab02` e `git diff --check` passaram.
+| Tratamento | Trials green | Passando | Falhando | Taxa final |
+|---|---:|---:|---:|---:|
+| IA | 2/2 | **19/19** | 0 | 100% |
+| Manual | 2/2 | **16/16** | 0 | 100% |
 
-## Limitações e pendências externas
+Os totais absolutos, e não apenas o percentual, mostram que os dois tratamentos terminaram sem falhas de aceitação.
 
-Islayder não possui execução humana S02 registrada; os quatro registros
-associados ao nome são simulações. Os quatro de Fernanda estão como
-`observed`, mas seu relatório S02 os classifica como ensaio inválido para
-tempo de resolução. Assim, só um participante pode ser analisado. O
-contrabalanceamento planejado não se realiza na amostra elegível; os
-katas IA e Manual são diferentes. Não se afirma significância nem efeito
-causal. A conclusão global aguarda dados válidos adicionais, RQ3 de
-Fernanda (#34) e dashboard de Vinicius (#35).
+## Inovação — Ciclos até green
+
+Os quatro trials somaram **5 ciclos**. IA chegou a `green` em um ciclo nos dois katas, com mediana de **1,0 ciclo**. Manual usou um e dois ciclos, com mediana de **1,5 ciclo**. O último ciclo de todos os trials terminou com 100% dos testes passando.
+
+## RQ3 — Qualidade estrutural
+
+Foram criados artefatos finais rastreáveis em `lab02/trials/results/rq3_artifacts/islayder/` e o coletor estrutural foi executado sobre os quatro códigos reais. Os registros finais usam IDs `RQ3-ISLAYDER-*`, `source_kind=observed` e caminhos de código verificáveis; nenhum ID `SIM-*` entra na análise.
+
+| Issue | Tratamento | LOC | CC média | CC máxima | Duplicação | Linhas duplicadas | Blocos duplicados | Funções |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| #21 | IA | 15 | 4,0 | 4 | 0% | 0 | 0 | 1 |
+| #24 | Manual | 6 | 4,0 | 4 | 0% | 0 | 0 | 1 |
+| #25 | IA | 27 | 2,6667 | 4 | 0% | 0 | 0 | 3 |
+| #26 | Manual | 11 | 3,0 | 3 | 0% | 0 | 0 | 1 |
+
+Para Islayder, a mediana de LOC foi 21,0 em IA e 8,5 em Manual; a mediana de CC média foi 3,3334 em IA e 3,5 em Manual. A duplicação foi zero nos quatro códigos.
+
+## Fontes e limites
+
+- Totais de aceitação: [`src/katas/kata1_normalizador_etiquetas/test_solucao.py`](../../../src/katas/kata1_normalizador_etiquetas/test_solucao.py) e [`src/katas/kata3_compactador_sensor/test_solucao.py`](../../../src/katas/kata3_compactador_sensor/test_solucao.py).
+- Relatório individual completo: [`reports/sprints/lab02_s02/islayder.md`](../lab02_s02/islayder.md).
+- #21 e #25: tempo, ciclo, status e aprovação integral informados pelo participante.
+- #24 e #26: dados preservados dos registros do runner.
+- RQ3: métricas reproduzíveis em [`metrics.csv`](../../../lab02/metrics/results/metrics.csv) e vínculo dos artefatos em [`manifest.csv`](../../../lab02/trials/results/rq3_artifacts/islayder/manifest.csv).
+- Os katas diferem entre tratamentos; os resultados sustentam comparação descritiva, não causal.

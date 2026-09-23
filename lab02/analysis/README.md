@@ -1,7 +1,9 @@
 # Lab02 S03 — RQ1, RQ2 e evolução dos testes
 
-Esta análise lê exclusivamente `lab02/trials/results/trials.csv` e
-`lab02/trials/results/trial_cycles.csv`. Não lê os arquivos de
+As análises de RQ1, RQ2 e inovação leem os resultados instrumentados em
+`lab02/trials/results/trials.csv` e `lab02/trials/results/trial_cycles.csv` e
+os dois resultados observados fora do runner em
+`lab02/trials/results/participant_reported_trials.csv`. Não leem os arquivos de
 `lab02/simulations/` nem modifica dados brutos. O script audita também as
 linhas simuladas que foram exportadas para os CSVs consolidados e as exclui
 dos cálculos. Cada decisão por `trial_id` fica em
@@ -28,12 +30,15 @@ ocorre somente se o teste for aplicável. Os gráficos são gerados com o backen
   `(trial_id, ciclo)`, Issue, participante, kata, tratamento conforme a matriz
   S02, campos obrigatórios, snapshot, contagens e taxa de testes, sequência
   dos ciclos, timestamps e limite de 35 minutos.
-- `observed_simulated` e IDs `SIM-*` ficam fora das estimativas. Trials
+- `observed_simulated` e IDs `SIM-*` ficam fora das análises finais. Trials
   interrompidos/com erro também ficam fora. Exceções documentadas nos
-  relatórios S02 de Vinicius e Fernanda são listadas por ID no código e na
-  auditoria. Os quatro trials de Fernanda estão rotulados `observed` no CSV,
-  mas o próprio relatório S02 demonstra que formam um ensaio do instrumento,
-  sem tempo humano de resolução válido.
+  relatórios S02 são listadas por ID no código e na auditoria. Os quatro trials
+  finais de Fernanda são distintos dos ensaios antigos; dois usam `observed` e
+  dois usam `agent_delegated_codex_work`, conforme o modo de execução registrado.
+- Os trials IA #21 e #25 de Islayder usam
+  `participant_reported_observed`: foram cronometrados pelo participante fora do
+  runner. A fonte lateral preserva somente os campos informados e não fabrica
+  timestamps, snapshots ou ciclos intermediários.
 - Um `time-box` válido permanece na análise como duração observada truncada
   em 2.100 s, com indicador de censura; não é chamado de tempo de green.
   Havendo censura, o script não aplica Wilcoxon a esses tempos.
@@ -63,7 +68,7 @@ do Wilcoxon, resumo de RQ2, resumo e detalhe da inovação. Em
 O texto interpretativo e a proveniência estão em
 [`reports/sprints/s03/relatorio_s03.md`](../../reports/sprints/s03/relatorio_s03.md).
 
-## RQ3 e reexecução de Fernanda
+## RQ3 e artefatos estruturais finais
 
 O validador abaixo só retorna sucesso quando existem quatro novos trials
 oficiais de Fernanda, com dois tratamentos IA, dois Manual, quatro katas, Issues
@@ -76,7 +81,15 @@ e RQ2.
 .\.venv\Scripts\python.exe -m lab02.analysis.analyze_rq3 --require-fernanda
 ```
 
-`analyze_rq3.py` cruza `metrics.csv` com os `trial_id` elegíveis da auditoria,
-confere participante, kata, tratamento e Issue, e gera `rq3_detalhe.csv`,
-`rq3_resumo.csv` e os três gráficos `rq3_*_ia_vs_manual.png`. O resumo contém
-valores do grupo e de Fernanda, com mediana, Q1, Q3 e IQR.
+`analyze_rq3.py` cruza `metrics.csv` com os trials finais elegíveis e com os
+manifestos de artefatos estruturais de Islayder e Fernanda em
+`lab02/trials/results/rq3_artifacts/`. Para cada linha,
+o script confere participante, kata, tratamento, Issue, identificador e caminho
+do arquivo efetivamente analisado. IDs `SIM-*` e métricas simuladas não são
+aceitos na seleção final.
+
+O comando gera `rq3_detalhe.csv`, `rq3_resumo.csv` e os três gráficos
+`rq3_*_ia_vs_manual.png`. O resumo contém valores do grupo e por participante,
+com mediana, Q1, Q3 e IQR. A execução também falha se algum participante não
+tiver os quatro katas finais (dois IA e dois Manual), se faltar arquivo no
+manifesto ou se houver divergência entre manifesto e `metrics.csv`.

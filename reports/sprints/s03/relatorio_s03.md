@@ -14,24 +14,27 @@ Fontes: [`trials.csv`](../../../lab02/trials/results/trials.csv),
 [`metrics.csv`](../../../lab02/metrics/results/metrics.csv) e
 [`auditoria_trials.csv`](../../../lab02/analysis/results/auditoria_trials.csv).
 
-| Etapa | Trials | Motivo |
+| Recorte | Trials | Composição |
 |---|---:|---|
-| CSV consolidado | 14 | 3 participantes, 4 katas e 2 tratamentos |
-| Simulados excluídos | 4 | Cenários `SIM-*` de Islayder |
+| RQ1, RQ2 e inovação | 12 | Fernanda, Vinicius e Islayder, quatro trials cada |
+| RQ3 | 12 | Fernanda, Vinicius e Islayder, com quatro artefatos estruturais finais cada |
+| Registros `SIM-*` excluídos | 4 | Linhas históricas separadas dos resultados finais de Islayder |
 | Incidentes excluídos | 2 | Uma interrupção e um processo residual de Vinicius |
-| Analisáveis | 8 | Fernanda e Vinicius, quatro trials cada |
 
 Os quatro ensaios antigos do instrumento de Fernanda foram removidos dos
 CSVs, snapshots e resultados de métricas. Os quatro registros atuais passaram
 pela validação automática: dois IA, dois Manual, quatro katas únicos, ordem
-2 → 1 → 4 → 3, Issues #19, #27, #29 e #28, status final `green` e snapshots
-presentes. O resultado detalhado está em
+2 → 1 → 4 → 3, Issues #19, #27, #29 e #28 e status final `green`. Os snapshots
+originais não foram versionados; a RQ3 usa artefatos reconstruídos dos códigos
+preparatórios existentes e registra essa limitação. O resultado detalhado está em
 [`validacao_fernanda.csv`](../../../lab02/analysis/results/validacao_fernanda.csv).
 
-A amostra analisável contém dois participantes completos e oito trials. Cada
-tratamento possui quatro observações. Todos os trials elegíveis atingiram
-`green`; não há censura válida em 35 minutos. A amostra continua pequena e os
-katas não têm equivalência de dificuldade demonstrada.
+O recorte final de tempo, testes e ciclos contém três participantes completos
+e 12 trials. Cada tratamento possui seis observações. Para Islayder, #21 e #25
+usam os resultados informados pelo participante; os totais de aceitação foram
+conferidos nos arquivos de teste. #24 e #26 preservam os registros do runner.
+Todos os 12 trials atingiram `green`. Os katas não têm equivalência de
+dificuldade demonstrada.
 
 ## 3. RQ1 — Tempo
 
@@ -40,16 +43,16 @@ O desfecho é o tempo do início até `green`, limitado a 2.100 segundos.
 
 | Tratamento | n | Mediana (min) | Q1 | Q3 | IQR | Green | Censurados |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| IA | 4 | 2,491 | 1,133 | 4,163 | 3,030 | 4 | 0 |
-| Manual | 4 | 3,577 | 1,035 | 6,457 | 5,422 | 4 | 0 |
+| IA | 6 | 1,875 | 1,238 | 3,436 | 2,198 | 6 | 0 |
+| Manual | 6 | 2,793 | 1,320 | 5,442 | 4,122 | 6 | 0 |
 
-As medianas correspondem a **149,455 s para IA** e **214,595 s para
-Manual**, diferença descritiva de **−65,140 s**. O detalhe por trial está em
-[`rq1_detalhe.csv`](../../../lab02/analysis/results/rq1_detalhe.csv) e o gráfico
-em [`rq1_tempo_ia_vs_manual.png`](../../figures/rq1_tempo_ia_vs_manual.png).
+As medianas correspondem a **112,500 s para IA** e **167,595 s para
+Manual**, diferença descritiva de **−55,095 s**. Os artefatos gerados antes da
+correção não contêm #21 e #25; os valores finais de Islayder estão documentados
+no [relatório individual](../lab02_s02/islayder.md).
 
 O Wilcoxon pareado, aplicado às medianas individuais dos dois trials por
-tratamento, teve **n = 2 pares, W = 1 e p = 1,0**. Com somente dois pares e
+tratamento, teve **n = 3 pares, W = 2 e p = 0,75**. Com somente três pares e
 katas distintos dentro de cada tratamento, o resultado não oferece evidência
 inferencial de diferença. A menor mediana agregada de IA é apenas descritiva.
 
@@ -59,21 +62,23 @@ inferencial de diferença. A menor mediana agregada de IA é apenas descritiva.
 
 | Tratamento | n | Green | Passed finais | Failed finais | Mediana da taxa final |
 |---|---:|---:|---:|---:|---:|
-| IA | 4 | 4 | 35/35 | 0 | 100% |
-| Manual | 4 | 4 | 35/35 | 0 | 100% |
+| IA | 6 | 6 | **54/54** | 0 | 100% |
+| Manual | 6 | 6 | **51/51** | 0 | 100% |
 
-Os dois tratamentos terminaram com todos os testes passando. A mediana da taxa
-no primeiro ciclo foi 50% para IA e 0% para Manual; no último ciclo, 100% para
-ambos. Essa diferença inicial mistura participantes e katas e não demonstra
-efeito causal. Fontes: [`rq2_resumo.csv`](../../../lab02/analysis/results/rq2_resumo.csv)
-e [`inovacao_detalhe.csv`](../../../lab02/analysis/results/inovacao_detalhe.csv).
+Os dois tratamentos terminaram com todos os testes passando. Para Islayder,
+#21 contribui com **10/10** e #25 com **9/9**, ambos em um ciclo. No recorte
+completo, a mediana da taxa no primeiro ciclo foi 100% para IA e 14,29% para
+Manual; no último ciclo, 100% para ambos. Essa diferença inicial mistura
+participantes e katas e não demonstra efeito causal.
 
 ## 5. Inovação — Evolução durante os trials
 
-Os oito trials elegíveis somam **13 ciclos**. A mediana foi **1,5 ciclos em
-IA** e **2 ciclos em Manual**; os intervalos observados foram 1–2 ciclos nos
-dois tratamentos. Todos terminaram em 100% dos testes. Os gráficos preservam
-cada execução intermediária:
+Os 12 trials finais somam **18 ciclos**. A mediana foi **1 ciclo em IA** e
+**2 ciclos em Manual**; os intervalos foram 1–2 ciclos nos dois tratamentos.
+Todos terminaram com 100% dos testes passando. #21 e #25 possuem somente o
+ciclo final informado, ambos `green`; nenhuma etapa intermediária foi criada.
+Os gráficos foram regenerados com os 12 trials finais e incluem os dois trials
+IA de Islayder:
 
 - [`inovacao_evolucao_testes.png`](../../figures/inovacao_evolucao_testes.png)
 - [`inovacao_ciclos_ate_green.png`](../../figures/inovacao_ciclos_ate_green.png)
@@ -91,9 +96,33 @@ ciclomática é a média por função/método, e duplicação é o percentual de
 duplicadas do jscpd. O cruzamento usa `trial_id`, valida participante, kata,
 tratamento, Issue, proveniência e caminho do snapshot.
 
-O recorte oficial da RQ3 contém **12 trials**, quatro de cada participante:
-Fernanda, Vinicius e Islayder. Cada participante contribui com dois trials IA
-e dois Manual.
+O recorte final da RQ3 contém **12 trials**, quatro de cada participante.
+Islayder usa os artefatos `RQ3-ISLAYDER-I21`, `RQ3-ISLAYDER-I24`,
+`RQ3-ISLAYDER-I25` e `RQ3-ISLAYDER-I26`, todos vinculados a arquivos reais,
+medidos pelo coletor e marcados como `source_kind=observed`. Registros
+`SIM-S02-*` não entram na seleção final.
+
+Para Fernanda, os quatro caminhos de snapshot originais não foram versionados.
+Os artefatos estruturais finais são reconstruções declaradas dos códigos
+preparatórios já presentes no repositório; eles passam os testes e reproduzem
+as métricas registradas, mas não são apresentados como snapshots do runner.
+
+### Resultados por trial de Islayder
+
+| Kata | Tratamento | LOC | CC média | CC máxima | Duplicação | Linhas duplicadas | Blocos duplicados | Funções |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| K1 — Normalizador de etiquetas | IA | 15 | 4,0 | 4 | 0% | 0 | 0 | 1 |
+| K2 — Balanceamento de turnos | Manual | 6 | 4,0 | 4 | 0% | 0 | 0 | 1 |
+| K3 — Compactador de sensor | IA | 27 | 2,6667 | 4 | 0% | 0 | 0 | 3 |
+| K4 — Manutenção preditiva | Manual | 11 | 3,0 | 3 | 0% | 0 | 0 | 1 |
+
+### Resumo de Islayder
+
+| Métrica | IA: mediana [Q1; Q3], IQR | Manual: mediana [Q1; Q3], IQR |
+|---|---:|---:|
+| LOC | 21,0 [18,0; 24,0], 6,0 | 8,5 [7,25; 9,75], 2,5 |
+| CC média | 3,3334 [3,0000; 3,6667], 0,6667 | 3,5 [3,25; 3,75], 0,5 |
+| Duplicação | 0% [0%; 0%], 0% | 0% [0%; 0%], 0% |
 
 ### Resultados por trial de Fernanda
 
@@ -116,35 +145,21 @@ e dois Manual.
 
 | Métrica | IA: mediana [Q1; Q3], IQR | Manual: mediana [Q1; Q3], IQR |
 |---|---:|---:|
-| LOC | 15,5 [14,25; 17,5], 3,25 | 12,0 [10,25; 13,0], 2,75 |
-| CC média | 4,25 [3,125; 5,0], 1,875 | 4,0 [3,25; 4,0], 0,75 |
+| LOC | 15,0 [14,25; 15,75], 1,5 | 11,0 [10,25; 12,5], 2,25 |
+| CC média | 3,5 [3,0; 4,75], 1,75 | 4,0 [3,25; 4,0], 0,75 |
 | Duplicação | 0% [0%; 0%], 0% | 0% [0%; 0%], 0% |
 
 Em Fernanda, os códigos IA tiveram menor mediana de LOC, enquanto a
 complexidade mediana e a duplicação foram iguais. No grupo completo, IA teve
-maior mediana de LOC (15,5 contra 12,0) e complexidade ligeiramente maior
-(4,25 contra 4,0). Como IA também produziu mais LOC, a diferença de
-complexidade absoluta deve ser interpretada junto do tamanho do código, sem
-normalização adicional não prevista no protocolo.
+maior mediana de LOC (15,0 contra 11,0) e menor mediana de complexidade média
+(3,5 contra 4,0). A duplicação foi zero nos 12 artefatos. A amostra é pequena
+e mistura katas distintos, portanto a comparação é somente descritiva.
 
-O strip plot de LOC preserva os 12 valores individuais e marca discretamente
-as medianas. No slope chart, a linha de Fernanda fica horizontal em 4,0 porque
-os trials Manual têm complexidades 4,0 e 4,0, enquanto os trials IA têm 3,0 e
-5,0: conjuntos diferentes, mas com a mesma mediana. Portanto, 4 → 4 não
-significa que os códigos Manual e IA sejam iguais; significa apenas igualdade
-do resumo central. Vinicius passou de mediana 3,5 em Manual para 4,5 em IA, e
-Islayder passou de 3,5 para 4,25. Os círculos vazios mantêm visíveis os valores
-dos katas que formam cada mediana. As diferenças entre participantes são
-esperadas porque as linhas agregam implementações e katas distintos; elas não
-representam a transformação do mesmo código.
+As tabelas e os três gráficos de RQ3 foram regenerados a partir da seleção
+final de 12 artefatos. A análise valida que nenhum `trial_id` iniciado por
+`SIM-` foi selecionado.
 
-Na duplicação, 11 dos 12 trials tiveram 0%. O trial K3 IA de Islayder teve 4%.
-Por isso, as medianas e IQRs dos dois tratamentos permanecem em zero, enquanto
-o lollipop plot mantém visível a única observação diferente de zero. A amostra
-é pequena e mistura katas distintos, portanto os gráficos sustentam apenas uma
-comparação descritiva.
-
-Detalhes e gráficos da contribuição de Fernanda:
+Detalhes e gráficos consolidados da RQ3:
 
 - [`rq3_detalhe.csv`](../../../lab02/analysis/results/rq3_detalhe.csv)
 - [`rq3_resumo.csv`](../../../lab02/analysis/results/rq3_resumo.csv)
@@ -156,38 +171,43 @@ Detalhes e gráficos da contribuição de Fernanda:
 
 **Responsável:** Vinicius  
 **Issue:** #35  
-**Status:** aguardando integração.
+**Status:** concluído e validado.
 
-O dashboard deve consumir as tabelas geradas pelos scripts de análise e exibir
-quantidade de trials, participantes, katas, `source_kind`, critérios de
-exclusão, tempos, testes e métricas estruturais.
+O dashboard é gerado por `python -m lab02.dashboard.build_dashboard`, consome
+as tabelas finais de RQ1, RQ2, RQ3 e inovação e grava
+[`dashboard_final.png`](../../figures/dashboard_final.png). A validação exige
+12 artefatos de RQ3, seis por tratamento, três participantes e ausência de IDs
+`SIM-*`.
 
 ## 8. Ameaças à validade
 
-- Há somente dois participantes completos e quatro observações por tratamento.
+- RQ1, RQ2, RQ3 e inovação têm três participantes completos e seis
+  observações por tratamento.
 - Cada pessoa executou katas diferentes em IA e Manual; a dificuldade dos katas
   pode explicar parte das diferenças.
 - Ordem, aprendizado, fadiga e familiaridade com as ferramentas podem afetar os
   tempos e a quantidade de ciclos.
 - Quartis calculados com dois trials por tratamento no recorte individual são
   instáveis e servem apenas como descrição.
-- A duplicação foi zero em todos os snapshots, portanto não discrimina os
-  tratamentos nesta amostra.
-- O Wilcoxon com dois pares tem poder insuficiente para sustentar inferência.
-- Os quatro registros de Islayder permanecem simulados e foram excluídos.
+- A duplicação foi zero nos 12 artefatos válidos da RQ3, portanto não
+  discrimina os tratamentos nesse recorte.
+- O Wilcoxon com três pares tem poder insuficiente para sustentar inferência.
+- Os artefatos IA de Islayder foram produzidos posteriormente para completar a
+  RQ3; essa diferença de momento e ambiente deve ser considerada na leitura.
 
 ## 9. Conclusões
 
-Nos oito trials analisáveis, IA apresentou menor mediana agregada de tempo,
-mas os dois tratamentos terminaram com 100% dos testes passando. A RQ3 não
-mostrou diferença de complexidade mediana nem duplicação; LOC variou de forma
-oposta no recorte de Fernanda e no agregado. Os resultados são descritivos e
-não sustentam afirmação causal sobre superioridade de um tratamento.
+Nos 12 trials de RQ1 e RQ2, IA apresentou menor mediana agregada de tempo
+(112,500 s contra 167,595 s), e os dois tratamentos terminaram com todos os
+testes passando: 54/54 em IA e 51/51 em Manual. Na RQ3, com 12 artefatos
+estruturais reais, IA teve maior mediana de LOC (15,0 contra 11,0), menor
+mediana de complexidade média (3,5 contra 4,0) e a mesma duplicação de 0%.
+Os resultados são descritivos e não sustentam afirmação causal sobre
+superioridade de um tratamento.
 
-## 10. Pendências para fechamento
+## 10. Situação de fechamento
 
-- **Fernanda — Issue #34:** RQ3 concluída; preparar commit com trials, métricas,
-  tabelas, gráficos e relatório.
-- **Vinicius — Issue #35:** integrar as saídas ao dashboard.
-- **Islayder:** substituir os cenários simulados por trials reais caso o grupo
-  decida ampliar a amostra antes da entrega final.
+As análises, tabelas, gráficos, dashboard e artefatos estruturais estão
+consolidados. A ausência dos snapshots originais de Fernanda e de evidência
+versionada do piloto temporal externo permanece como limitação metodológica,
+não como dado faltante a ser inventado.

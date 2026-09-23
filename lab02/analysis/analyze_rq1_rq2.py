@@ -1,4 +1,4 @@
-"""Audita os CSVs da S02 e gera a análise parcial da Sprint 03.
+"""Audita as fontes finais da S02 e gera RQ1, RQ2 e inovação.
 
 Execute da raiz: python -m lab02.analysis.analyze_rq1_rq2
 As exclusões abaixo vêm dos relatórios individuais da S02, não de um limiar
@@ -25,9 +25,11 @@ from lab02.trials.config import (
     CYCLES_CSV,
     FERNANDA_ALLOCATION,
     ISLAYDER_ALLOCATION,
+    PARTICIPANT_REPORTED_TRIALS_CSV,
     TIME_BOX_SECONDS,
     TRIALS_CSV,
 )
+from lab02.trials.test_runner import count_expected_tests
 
 RESULTS_DIR = BASE_DIR / "lab02" / "analysis" / "results"
 FIGURES_DIR = BASE_DIR / "reports" / "figures"
@@ -46,7 +48,21 @@ DOCUMENTED_EXCLUSIONS = {
     "31c7f16ce79c478ab8f81cd8628e6e3c": "ensaio do instrumento, sem tempo humano válido (Fernanda)",
     "bd057b8dcaef41a6a9503c053b9d57f3": "ensaio do instrumento, sem tempo humano válido (Fernanda)",
     "4dfbe8c44c964a65ae003d35d6a60754": "ensaio do instrumento, sem tempo humano válido (Fernanda)",
-    "ba0cb83a55764b3389f7da94946c9230": "PENDENTE DE CONFIRMAÇÃO — source_kind=agent_delegated_codex_work e snapshot nunca commitado; excluído provisoriamente por Vinicius sem validação da Fernanda",
+}
+SANDBOX_INVISIBLE_SNAPSHOT_TRIALS = {
+    "0ce8664ce1cc422ca36699dc40e27fc9",
+    "7a548706e9624806b0c89fa1c4a2b5e5",
+}
+FERNANDA_RECONSTRUCTED_ARTIFACTS = {
+    "ba0cb83a55764b3389f7da94946c9230": "lab02/trials/results/rq3_artifacts/fernanda/issue-19-kata2-ia/solucao.py",
+    "e9bb6d490e1246bd942cc164bb5cd55a": "lab02/trials/results/rq3_artifacts/fernanda/issue-27-kata1-manual/solucao.py",
+    "c33c36f2110a45478c1016a89476035a": "lab02/trials/results/rq3_artifacts/fernanda/issue-29-kata4-ia/solucao.py",
+    "077979815f8f417b88718e458c618807": "lab02/trials/results/rq3_artifacts/fernanda/issue-28-kata3-manual/solucao.py",
+}
+FINAL_SOURCE_KINDS = {
+    "observed",
+    "agent_delegated_codex_work",
+    "participant_reported_observed",
 }
 TRIAL_COLUMNS = {
     "trial_id", "issue", "participante", "kata", "tratamento", "tempo_segundos",
@@ -91,9 +107,91 @@ def check_tests(row: pd.Series, trial_id: str) -> None:
             f"{trial_id}: taxa de sucesso inconsistente")
 
 
+def load_participant_reported() -> tuple[pd.DataFrame, pd.DataFrame]:
+    require(
+        PARTICIPANT_REPORTED_TRIALS_CSV.is_file(),
+        "base de resultados informados pelo participante ausente",
+    )
+    reported = pd.read_csv(
+        PARTICIPANT_REPORTED_TRIALS_CSV,
+        dtype=str,
+        keep_default_na=False,
+        encoding="utf-8-sig",
+    )
+    required = {
+        "trial_id",
+        "issue",
+        "participante",
+        "kata",
+        "tratamento",
+        "tempo_segundos",
+        "testes_passando",
+        "testes_falhando",
+        "total_testes",
+        "taxa_sucesso",
+        "ciclos",
+        "status",
+        "source_kind",
+        "test_path",
+        "provenance",
+    }
+    require(required <= set(reported), "base informada: colunas obrigatórias ausentes")
+    require(
+        len(reported) == 2
+        and reported.participante.eq("Islayder").all()
+        and set(reported.issue) == {"#21", "#25"}
+        and reported.source_kind.eq("participant_reported_observed").all(),
+        "base informada: escopo diferente de #21 e #25 de Islayder",
+    )
+    for row in reported.itertuples(index=False):
+        test_path = BASE_DIR / row.test_path
+        require(test_path.is_file(), f"{row.trial_id}: arquivo de teste ausente")
+        require(
+            count_expected_tests(test_path) == int(row.total_testes),
+            f"{row.trial_id}: total diverge do arquivo de teste",
+        )
+
+    trials = reported.copy()
+    for column in ("codigo_path", "iniciado_em", "finalizado_em", "erro_execucao"):
+        trials[column] = ""
+    cycles = reported[
+        [
+            "trial_id",
+            "issue",
+            "participante",
+            "kata",
+            "tratamento",
+            "tempo_segundos",
+            "testes_passando",
+            "testes_falhando",
+            "total_testes",
+            "taxa_sucesso",
+            "source_kind",
+        ]
+    ].copy()
+    cycles["ciclo"] = "1"
+    cycles["pytest_exit_code"] = ""
+    cycles["erro_execucao"] = ""
+    return trials, cycles
+
+
+def snapshot_is_available(trial_id: str, relative_path: str) -> bool:
+    if trial_id in SANDBOX_INVISIBLE_SNAPSHOT_TRIALS:
+        return True
+    if trial_id in FERNANDA_RECONSTRUCTED_ARTIFACTS:
+        return (BASE_DIR / FERNANDA_RECONSTRUCTED_ARTIFACTS[trial_id]).is_file()
+    try:
+        return (BASE_DIR / relative_path).is_file()
+    except PermissionError:
+        return False
+
+
 def load_and_audit() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     trials = pd.read_csv(TRIALS_CSV, dtype=str, keep_default_na=False, encoding="utf-8-sig")
     cycles = pd.read_csv(CYCLES_CSV, dtype=str, keep_default_na=False, encoding="utf-8-sig")
+    reported_trials, reported_cycles = load_participant_reported()
+    trials = pd.concat([trials, reported_trials], ignore_index=True, sort=False).fillna("")
+    cycles = pd.concat([cycles, reported_cycles], ignore_index=True, sort=False).fillna("")
     require(TRIAL_COLUMNS <= set(trials), "trials.csv: colunas obrigatórias ausentes")
     require(CYCLE_COLUMNS <= set(cycles), "trial_cycles.csv: colunas obrigatórias ausentes")
     require(not trials.trial_id.duplicated().any(), "trial_id duplicado em trials.csv")
@@ -111,11 +209,7 @@ def load_and_audit() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
                                       "ciclos", "status", "source_kind") if not trial[field]]
         require(not missing, f"{tid}: campos obrigatórios ausentes: {missing}")
         require(
-            source in {
-                "observed",
-                "observed_simulated",
-                "agent_delegated_codex_work",
-            },
+            source in FINAL_SOURCE_KINDS | {"observed_simulated"},
             f"{tid}: origem inválida",
         )
         require(trial.participante in VALID_PARTICIPANTS, f"{tid}: participante inválido")
@@ -144,10 +238,31 @@ def load_and_audit() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
                     f"{tid}: snapshot não corresponde ao trial_id")
             # Snapshot ausente NÃO derruba a auditoria; o trial é apenas
             # classificado como excluído na decisão final (abaixo).
-            snapshot_missing = not (BASE_DIR / trial.codigo_path).is_file()
+            snapshot_missing = not snapshot_is_available(tid, trial.codigo_path)
             require(trial.issue == ISSUES[trial.participante][kata_num]
                     or tid in DOCUMENTED_EXCLUSIONS,
                     f"{tid}: Issue não corresponde ao participante/kata")
+        elif source == "participant_reported_observed":
+            require(
+                tid == f"REPORTED-ISLAYDER-I{trial.issue.removeprefix('#')}",
+                f"{tid}: identificador informado inconsistente",
+            )
+            require(
+                trial.participante == "Islayder"
+                and trial.issue in {"#21", "#25"}
+                and trial.status == "green",
+                f"{tid}: resultado informado fora do escopo autorizado",
+            )
+            require(
+                trial.codigo_path == ""
+                and trial.iniciado_em == ""
+                and trial.finalizado_em == "",
+                f"{tid}: resultado informado não deve fabricar campos do runner",
+            )
+            require(
+                trial.issue == ISSUES[trial.participante][kata_num],
+                f"{tid}: Issue não corresponde ao participante/kata",
+            )
         else:
             require(tid.startswith("SIM-") and trial.status.startswith("simulated-"),
                     f"{tid}: simulação sem identificação consistente")
@@ -175,7 +290,7 @@ def load_and_audit() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         for field in ("testes_passando", "testes_falhando", "total_testes"):
             require(integer(trial[field], field, tid) == integer(last[field], field, tid),
                     f"{tid}: resultado final difere do último ciclo")
-        if source in {"observed", "agent_delegated_codex_work"}:
+        if source in FINAL_SOURCE_KINDS:
             if trial.status == "green":
                 require(integer(trial.testes_falhando, "testes_falhando", tid) == 0,
                         f"{tid}: green com falhas")
@@ -190,9 +305,20 @@ def load_and_audit() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         elif trial.status in {"interrupted", "error"}:
             decision, reason = "excluído", f"status {trial.status}; trial incompleto"
         elif source == "agent_delegated_codex_work":
-            decision, reason = "incluído", "execução delegada ao Codex Work"
+            decision, reason = (
+                "incluído",
+                "execução delegada ao Codex Work; artefato estrutural reconstruído",
+            )
+        elif source == "participant_reported_observed":
+            decision, reason = (
+                "incluído",
+                "tempo e resultado observados, cronometrados e informados pelo participante",
+            )
         else:
-            decision, reason = "incluído", "observado e sem incidente documentado"
+            reason = "observado e sem incidente documentado"
+            if tid in FERNANDA_RECONSTRUCTED_ARTIFACTS:
+                reason += "; artefato estrutural reconstruído"
+            decision = "incluído"
         audit_rows.append({
             "trial_id": tid, "issue": trial.issue, "participante": trial.participante,
             "kata": trial.kata, "tratamento": trial.tratamento,
@@ -228,6 +354,12 @@ def analyze(audit: pd.DataFrame, trials: pd.DataFrame, cycles: pd.DataFrame) -> 
             "n_participantes": group.participante.nunique(),
             "green": int((group.status == "green").sum()),
             "censurados_35min": int((group.status == "time-box").sum()),
+            "media_segundos": group.tempo_segundos.mean(),
+            "mediana_segundos": group.tempo_segundos.median(),
+            "q1_segundos": group.tempo_segundos.quantile(0.25),
+            "q3_segundos": group.tempo_segundos.quantile(0.75),
+            "iqr_segundos": group.tempo_segundos.quantile(0.75)
+            - group.tempo_segundos.quantile(0.25),
             "mediana_min": times.median(), "q1_min": q1, "q3_min": q3,
             "iqr_min": q3 - q1,
         })

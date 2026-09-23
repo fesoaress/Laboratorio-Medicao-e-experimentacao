@@ -35,7 +35,7 @@ Fonte dos valores: `lab02/trials/results/trials.csv`. A evolução por ciclo fic
 - Número de ciclos: `1`
 - Caminho do código: `lab02/trials/results/solutions/3e505698c1834835b9610787e16f8e30/solucao.py`
 - LOC / CC média / duplicação: `15 LOC / CC média 6,0 (máx. 6) / 0,0% duplicação`
-- Observações e número de interações com a IA (opcional): `<preencher>`
+- Observações e número de interações com a IA: não registradas; esse campo não entra nas análises.
 
 ### Kata 2 — Manual
 
@@ -47,7 +47,7 @@ Fonte dos valores: `lab02/trials/results/trials.csv`. A evolução por ciclo fic
 - Número de ciclos: `1`
 - Caminho do código: `lab02/trials/results/solutions/c1a52ff9328f47e280fbf65650ac5c82/solucao.py`
 - LOC / CC média / duplicação: `10 LOC / CC média 4,0 (máx. 4) / 0,0% duplicação`
-- Observações: `<preencher>`
+- Observações: sem informação adicional registrada.
 
 ### Kata 3 — IA
 
@@ -59,7 +59,7 @@ Fonte dos valores: `lab02/trials/results/trials.csv`. A evolução por ciclo fic
 - Número de ciclos: `1`
 - Caminho do código: `lab02/trials/results/solutions/445ecd175db145fa8e036a732e2bd08d/solucao.py`
 - LOC / CC média / duplicação: `16 LOC / CC média 3,0 (máx. 4) / 0,0% duplicação`
-- Observações e número de interações com a IA (opcional): `<preencher>`
+- Observações e número de interações com a IA: não registradas; esse campo não entra nas análises.
 
 ### Kata 4 — Manual
 
@@ -71,7 +71,7 @@ Fonte dos valores: `lab02/trials/results/trials.csv`. A evolução por ciclo fic
 - Número de ciclos: `2`
 - Caminho do código: `lab02/trials/results/solutions/bee52a404549418498f55c6e0e2b2690/solucao.py`
 - LOC / CC média / duplicação: `11 LOC / CC média 3,0 (máx. 3) / 0,0% duplicação`
-- Observações: `<preencher>`
+- Observações: sem informação adicional registrada.
 
 ## Incidentes e desvios do protocolo
 
@@ -82,8 +82,8 @@ Fonte dos valores: `lab02/trials/results/trials.csv`. A evolução por ciclo fic
 
 ## Checklist antes do commit manual
 
-- [ ] O piloto temporal foi feito com pessoas fora da amostra e não entrou nos CSVs oficiais.
-- [ ] A matriz dos três integrantes contrabalança cada kata entre IA e Manual.
+- Não há evidência versionada do piloto temporal com pessoas fora da amostra; a lacuna é tratada como ameaça à validade.
+- [x] A matriz dos três integrantes contrabalança cada kata entre IA e Manual.
 - [x] As quatro Issues existem no GitHub Projects e estão atribuídas a Vinicius.
 - [x] Cada linha da tabela confere com `trials.csv`.
 - [x] Cada `codigo_path` existe e corresponde ao snapshot final.

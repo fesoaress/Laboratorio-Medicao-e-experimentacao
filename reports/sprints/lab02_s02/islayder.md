@@ -1,73 +1,92 @@
 # Lab02 S02 — Islayder
 
-**SPRINT 02 AINDA PENDENTE.** Na auditoria de 16/09/2026, não havia trial oficial de Islayder para nenhuma das quatro Issues. A preparação abaixo não representa execução experimental.
+**COLETA CONCLUÍDA PARA RQ1, RQ2, RQ3 E INOVAÇÃO.** Islayder executou os quatro trials previstos: Katas 1 e 3 com IA e Katas 2 e 4 manualmente. Nos trials IA, foi utilizado o Gemini no celular, e os tempos foram cronometrados durante a execução. Os quatro trials terminaram `green` e possuem artefatos finais rastreáveis para a análise estrutural.
 
 ## Ambiente e protocolo
 
-- Participante e alocação: Islayder; Katas 1 e 3 com IA, Katas 2 e 4 com tratamento Manual.
-- Time-box: 35 minutos por trial.
-- Ambiente usado apenas na preparação: Windows, Python 3.13.15 em `.venv`, pytest 9.1.1 e Radon 6.0.1. Node.js e npm não estavam disponíveis neste ambiente; serão necessários para coletar a duplicação com jscpd.
-- IDE/editor, assistente de IA e versão/plano, data e ambiente das execuções oficiais: **pendentes de registro por Islayder**.
-- Piloto temporal com pessoas fora da amostra e matriz contrabalanceada do grupo: **não comprovados nesta auditoria**; confirmar antes de iniciar os trials.
+- Participante: Islayder.
+- Alocação: Katas 1 e 3 com IA; Katas 2 e 4 com tratamento Manual.
+- Assistente nos trials IA: Gemini no celular.
+- Time-box previsto no protocolo: 35 minutos por trial.
+- Os trials Manual #24 e #26 permanecem vinculados aos registros existentes do runner.
+- Para os trials IA #21 e #25, o participante informou tempo, status `green`, um ciclo e aprovação de todos os testes. Os totais foram conferidos diretamente nos arquivos de aceitação: 10 testes no Kata 1 e 9 testes no Kata 3.
 
-## Rastreabilidade dos trials
+## Tabela final dos quatro trials
 
-`—` significa que ainda não existe valor experimental observado. Os CSVs consolidados agora também podem conter linhas `source_kind=observed_simulated`; elas representam a simulação metodológica autorizada e não uma medição humana cronometrada.
+| Issue | Kata | Tratamento | Tempo observado (s) | Testes | Falhando | Ciclos | Status | LOC | CC média | Duplicação |
+|---|---|---|---:|---:|---:|---:|---|---:|---:|---:|
+| #21 | `kata1_normalizador_etiquetas` | IA | **75,00** | **10/10** | 0 | **1** | **green** | 15 | 4,0 | 0% |
+| #24 | `kata2_balanceamento_turnos` | Manual | **127,17** | **9/9** | 0 | **1** | **green** | 6 | 4,0 | 0% |
+| #25 | `kata3_compactador_sensor` | IA | **150,00** | **9/9** | 0 | **1** | **green** | 27 | 2,6667 | 0% |
+| #26 | `kata4_manutencao_preditiva` | Manual | **208,02** | **7/7** | 0 | **2** | **green** | 11 | 3,0 | 0% |
 
-| Issue | Kata | Tratamento | Trial ID | Resultado | Tempo (s) | Testes (passando/falhando) | Taxa | Ciclos | LOC | CC média | Duplicação | Arquivos oficiais gerados |
-|---|---|---|---|---|---:|---|---:|---:|---:|---:|---:|---|
-| #21 | `kata1_normalizador_etiquetas` | IA | `SIM-S02-I21` | **PENDENTE — cenário sintético; falta execução observada** | 420 (sim.) | 10/0 (sim.) | 100% (sim.) | 3 (sim.) | 18 (sim.) | 5,0 (sim.) | 0,0% (sim.) | CSVs consolidados, sem snapshot |
-| #24 | `kata2_balanceamento_turnos` | Manual | `SIM-S02-I24` | **PENDENTE — cenário sintético; falta execução observada** | 900 (sim.) | 9/0 (sim.) | 100% (sim.) | 3 (sim.) | 8 (sim.) | 3,0 (sim.) | 0,0% (sim.) | CSVs consolidados, sem snapshot |
-| #25 | `kata3_compactador_sensor` | IA | `SIM-S02-I25` | **PENDENTE — cenário sintético; falta execução observada** | 510 (sim.) | 9/0 (sim.) | 100% (sim.) | 3 (sim.) | 20 (sim.) | 3,5 (sim.) | 4,0% (sim.) | CSVs consolidados, sem snapshot |
-| #26 | `kata4_manutencao_preditiva` | Manual | `SIM-S02-I26` | **PENDENTE — cenário sintético; falta execução observada** | 2.100 (sim.) | 6/1 (sim.) | 85,71% (sim.) | 4 (sim.) | 14 (sim.) | 4,0 (sim.) | 0,0% (sim.) | CSVs consolidados, sem snapshot |
+## RQ1 — Tempo de execução
 
-## Preparação local concluída
+**Pergunta:** o uso de assistente de IA reduz o tempo para resolver as tarefas?
 
-Os quatro comandos `prepare_trial` foram executados no Windows com `.\.venv\Scripts\python.exe`. Cada workspace contém somente `solucao.py`, `test_solucao.py` e `trial.json` com status `prepared`. São pastas transitórias ignoradas pelo Git. **Nenhum `run_trial` foi executado e nenhum cronômetro foi iniciado.** Os CSVs consolidados receberam apenas as quatro linhas de simulação explicitamente marcadas como `source_kind=observed_simulated`.
+O resumo abaixo usa exclusivamente os quatro tempos observados de Islayder. Q1 e Q3 foram calculados por interpolação linear sobre os dois valores de cada tratamento, seguindo a mesma convenção usada pelas análises do projeto.
 
-| Issue | Workspace preparado |
-|---|---|
-| #21 | `lab02/trials/workspaces/islayder/kata1_normalizador_etiquetas_ia_issue-21` |
-| #24 | `lab02/trials/workspaces/islayder/kata2_balanceamento_turnos_manual_issue-24` |
-| #25 | `lab02/trials/workspaces/islayder/kata3_compactador_sensor_ia_issue-25` |
-| #26 | `lab02/trials/workspaces/islayder/kata4_manutencao_preditiva_manual_issue-26` |
+| Tratamento | n | Tempos (s) | Média (s) | Mediana (s) | Mínimo (s) | Q1 (s) | Q3 (s) | IQR (s) | Máximo (s) | Amplitude (s) |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| IA | 2 | 75,00; 150,00 | 112,500 | 112,500 | 75,00 | 93,750 | 131,250 | 37,500 | 150,00 | 75,00 |
+| Manual | 2 | 127,17; 208,02 | 167,595 | 167,595 | 127,17 | 147,383 | 187,808 | 40,425 | 208,02 | 80,85 |
 
-## Simulação solicitada (separada dos dados oficiais)
+A média e a mediana de IA foram **55,095 s menores** que as de Manual, diferença descritiva de **32,87%** em relação ao tempo Manual. Em minutos, as medianas foram **1,875 min para IA** e **2,793 min para Manual**.
 
-Foi gerada uma [fixture sintética da S02](../../../lab02/simulations/islayder_s02/README.md) para as quatro Issues. Ela contém tempos, ciclos, resultados de testes e métricas **hipotéticos**, com IDs `SIM-` e rótulos explícitos de simulação. O exportador também os registra nos CSVs consolidados com `source_kind=observed_simulated`, status `simulated-*`, campos de código/tempo real vazios e uma nota de cenário simulado. Não há código produzido por Islayder nem snapshots; essas linhas não alteram o fato de que não houve coleta humana e devem ser separadas de qualquer análise empírica.
+Esse resultado descreve somente os quatro trials de Islayder. Cada tratamento contém dois katas diferentes, sem equivalência de dificuldade demonstrada. Portanto, a diferença não estabelece efeito causal do assistente.
 
-| Issue | ID da simulação | Tratamento planejado | Desfecho hipotético | Tempo simulado (s) | Testes simulados | Taxa simulada | Ciclos simulados | LOC simulada | CC média simulada | Duplicação simulada |
-|---|---|---|---|---:|---|---:|---:|---:|---:|---:|
-| #21 | `SIM-S02-I21` | IA | green | 420 | 10/10 | 100% | 3 | 18 | 5,0 | 0,0% |
-| #24 | `SIM-S02-I24` | Manual | green | 900 | 9/9 | 100% | 3 | 8 | 3,0 | 0,0% |
-| #25 | `SIM-S02-I25` | IA | green | 510 | 9/9 | 100% | 3 | 20 | 3,5 | 4,0% |
-| #26 | `SIM-S02-I26` | Manual | time-box | 2.100 | 6/7 | 85,71% | 4 | 14 | 4,0 | 0,0% |
+### Teste inferencial
 
-## Como Islayder fecha as pendências
+O pareamento adotado pelo projeto para o Wilcoxon é por participante, comparando a mediana individual de IA com a mediana individual de Manual. No recorte individual de Islayder existe apenas **um par**, quantidade insuficiente para inferência. Por isso, o relatório apresenta as estatísticas descritivas e não interpreta um valor-p para este recorte.
 
-1. Confirmar o piloto temporal, a matriz do grupo, as quatro Issues e a configuração dos tratamentos. Instalar Node.js/npm e executar `npm ci` em `lab02\metrics` antes da coleta estrutural. Nos trials Manual, trabalhar sem assistente; nos trials IA, registrar o assistente e a versão utilizados.
-2. Executar pessoalmente cada trial, **um por vez**, a partir da raiz do repositório. Abrir no editor somente o workspace correspondente e editar somente `solucao.py`. Usar os comandos abaixo na ordem prevista; pressionar ENTER no runner para registrar cada ciclo. Se o workspace local não existir em outro checkout, recriá-lo antes com `python -m lab02.trials.prepare_trial` e os mesmos parâmetros da tabela.
+## RQ2 — Testes de aceitação
 
-   ```powershell
-   .\.venv\Scripts\python.exe -m lab02.trials.run_trial --workspace lab02\trials\workspaces\islayder\kata1_normalizador_etiquetas_ia_issue-21
-   .\.venv\Scripts\python.exe -m lab02.trials.run_trial --workspace lab02\trials\workspaces\islayder\kata2_balanceamento_turnos_manual_issue-24
-   .\.venv\Scripts\python.exe -m lab02.trials.run_trial --workspace lab02\trials\workspaces\islayder\kata3_compactador_sensor_ia_issue-25
-   .\.venv\Scripts\python.exe -m lab02.trials.run_trial --workspace lab02\trials\workspaces\islayder\kata4_manutencao_preditiva_manual_issue-26
-   ```
+Os totais de aceitação foram conferidos nos arquivos versionados: [`kata1_normalizador_etiquetas/test_solucao.py`](../../../src/katas/kata1_normalizador_etiquetas/test_solucao.py) contém **10** funções `test_*`, e [`kata3_compactador_sensor/test_solucao.py`](../../../src/katas/kata3_compactador_sensor/test_solucao.py) contém **9**. Com o resultado final informado pelo participante, #21 terminou em **10/10** e #25 em **9/9**.
 
-3. Após **cada** execução real, conferir `trial_id`, Issue, participante, kata, tratamento, status, tempo, testes, taxa e ciclos em `lab02/trials/results/trials.csv` e `trial_cycles.csv`. Confirmar que `codigo_path` aponta para `solucao.py` e `test_solucao.py` do snapshot final. Um trial interrompido ou com erro precisa ser identificado como tal; a repetição exige nova Issue, conforme o protocolo.
-4. Para cada trial oficial concluído, calcular LOC, CC média e duplicação **somente do `codigo_path` real**, com o `trial_id` e a Issue correspondentes. Exemplo de comando para #21; trocar kata, tratamento, `trial_id`, `codigo_path` e Issue para os demais:
+| Tratamento | Trials | Green | Testes finais passando | Testes finais falhando | Taxa final |
+|---|---:|---:|---:|---:|---:|
+| IA | 2 | 2 | **19/19** | 0 | 100% |
+| Manual | 2 | 2 | **16/16** | 0 | 100% |
 
-   ```powershell
-   .\.venv\Scripts\python.exe lab02\metrics\run_metrics.py <codigo_path_de_trials.csv> --participant Islayder --kata kata1_normalizador_etiquetas --treatment IA --trial-id <trial_id_de_trials.csv> --issue 21
-   ```
+Os dois tratamentos terminaram com todos os testes de aceitação passando. O percentual de 100% é secundário aos totais absolutos acima.
 
-5. Atualizar esta tabela e registrar os arquivos gerados para cada Issue: `trials.csv`, `trial_cycles.csv`, `results/solutions/<trial_id>/solucao.py`, `results/solutions/<trial_id>/test_solucao.py`, `metrics/results/metrics.csv` e o JSON detalhado de métricas local. Validar os dados e fazer commits rastreáveis por Issue antes de declarar a sprint fechada.
+## Inovação — Evolução por ciclo
 
-## Validação desta preparação
+Os quatro trials somaram **5 ciclos**. Nos trials IA, #21 e #25 chegaram a `green` no primeiro ciclo. No tratamento Manual, #24 chegou a `green` no primeiro ciclo e #26 no segundo.
 
-- `pytest -q lab02\trials\tests lab02\metrics\tests lab02\simulations\islayder_s02\tests`: **24 passaram** após a exportação.
-- `python -m compileall lab02`: **passou**.
-- Auditoria de schema e junção dos CSVs: os registros observados permanecem inalterados; as quatro linhas adicionais de Islayder usam IDs `SIM-S02-I21`, `SIM-S02-I24`, `SIM-S02-I25` e `SIM-S02-I26` e `source_kind=observed_simulated`. Os `trial_id` e pares `(trial_id, ciclo)` são únicos dentro da origem, e as linhas simuladas não apontam para snapshots ou JSONs.
-- Achados fora do escopo de Islayder, preservados: a Issue #22 de Vinicius aparece em dois trials distintos; os quatro `json_path` de métricas dele apontam para JSONs locais ausentes neste checkout (esses JSONs são ignorados pelo Git). Não há base para classificar ou remover qualquer registro dele como piloto.
-- Nenhum resultado experimental **observado** de Islayder foi criado. A fixture sintética acima contém valores inventados e identificados como tal. Nenhum arquivo de `src/katas/gabarito/` foi aberto, copiado ou utilizado nesta preparação.
+| Tratamento | Trials | Ciclos por trial | Mediana de ciclos até green | Mínimo–máximo | Taxa no último ciclo |
+|---|---:|---|---:|---:|---:|
+| IA | 2 | 1; 1 | **1,0** | 1–1 | 100% |
+| Manual | 2 | 1; 2 | **1,5** | 1–2 | 100% |
+
+Como os trials IA possuem somente o ciclo final informado, não foi criada uma evolução intermediária inexistente. Para #26 Manual, o runner registrou 2/7 testes no primeiro ciclo e 7/7 no segundo.
+
+## RQ3 — Qualidade estrutural
+
+Os códigos finais estão listados em [`manifest.csv`](../../../lab02/trials/results/rq3_artifacts/islayder/manifest.csv). As métricas abaixo foram produzidas por `lab02/metrics/run_metrics.py`, usando Radon 6.0.1 e jscpd 5.2.0 sobre cada `solucao.py` real. Nenhuma linha `SIM-S02-*` entra no recorte final.
+
+| Issue | Tratamento | ID estrutural | LOC | CC média | CC máxima | Duplicação | Linhas duplicadas | Blocos duplicados | Funções analisadas |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|
+| #21 | IA | `RQ3-ISLAYDER-I21` | **15** | **4,0** | **4** | **0%** | 0 | 0 | 1 |
+| #24 | Manual | `RQ3-ISLAYDER-I24` | **6** | **4,0** | **4** | **0%** | 0 | 0 | 1 |
+| #25 | IA | `RQ3-ISLAYDER-I25` | **27** | **2,6667** | **4** | **0%** | 0 | 0 | 3 |
+| #26 | Manual | `RQ3-ISLAYDER-I26` | **11** | **3,0** | **3** | **0%** | 0 | 0 | 1 |
+
+### Resumo estrutural de Islayder
+
+| Métrica | IA: mediana [Q1; Q3], IQR | Manual: mediana [Q1; Q3], IQR |
+|---|---:|---:|
+| LOC | 21,0 [18,0; 24,0], 6,0 | 8,5 [7,25; 9,75], 2,5 |
+| CC média | 3,3334 [3,0000; 3,6667], 0,6667 | 3,5 [3,25; 3,75], 0,5 |
+| Duplicação | 0% [0%; 0%], 0% | 0% [0%; 0%], 0% |
+
+Nos dois katas IA, a mediana de LOC foi maior que nos dois katas Manual, enquanto a mediana de complexidade média foi ligeiramente menor. A duplicação foi zero nos quatro artefatos. Como cada tratamento usa katas diferentes e há somente duas observações por grupo, os resultados são descritivos.
+
+## Rastreabilidade
+
+- #21 — Kata 1 — IA — Gemini no celular — 75 s — 10/10 testes — 0 falhando — 1 ciclo — `green` — artefato `RQ3-ISLAYDER-I21`.
+- #24 — Kata 2 — Manual — `trial_id=0ce8664ce1cc422ca36699dc40e27fc9` — 127,17 s registrados pelo runner.
+- #25 — Kata 3 — IA — Gemini no celular — 150 s — 9/9 testes — 0 falhando — 1 ciclo — `green` — artefato `RQ3-ISLAYDER-I25`.
+- #26 — Kata 4 — Manual — `trial_id=7a548706e9624806b0c89fa1c4a2b5e5` — 208,02 s registrados pelo runner.
+
+Os registros dos trials Manual foram preservados. Os IDs `RQ3-ISLAYDER-*` identificam somente os artefatos estruturais e não substituem identificadores do runner. Os registros históricos `SIM-S02-*` permanecem fora dos resultados finais.

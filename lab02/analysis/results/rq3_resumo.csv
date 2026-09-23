@@ -1,13 +1,25 @@
 escopo,tratamento,metrica,unidade,n,mediana,q1,q3,iqr
-grupo,IA,loc,LOC lógico (lloc),4,17.0,15.75,18.5,2.75
-grupo,IA,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,4,4.25,3.375,5.25,1.875
-grupo,IA,duplication_percentage,Linhas duplicadas (%),4,0.0,0.0,1.0,1.0
-grupo,Manual,loc,LOC lógico (lloc),4,10.5,9.5,11.75,2.25
-grupo,Manual,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,4,3.5,3.0,4.0,1.0
-grupo,Manual,duplication_percentage,Linhas duplicadas (%),4,0.0,0.0,0.0,0.0
-Fernanda,IA,loc,LOC lógico (lloc),0,,,,
-Fernanda,IA,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,0,,,,
-Fernanda,IA,duplication_percentage,Linhas duplicadas (%),0,,,,
-Fernanda,Manual,loc,LOC lógico (lloc),0,,,,
-Fernanda,Manual,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,0,,,,
-Fernanda,Manual,duplication_percentage,Linhas duplicadas (%),0,,,,
+grupo,IA,loc,LOC lógico (lloc),6,15.0,14.25,15.75,1.5
+grupo,IA,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,6,3.5,3.0,4.75,1.75
+grupo,IA,duplication_percentage,Linhas duplicadas (%),6,0.0,0.0,0.0,0.0
+grupo,Manual,loc,LOC lógico (lloc),6,11.0,10.25,12.5,2.25
+grupo,Manual,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,6,4.0,3.25,4.0,0.75
+grupo,Manual,duplication_percentage,Linhas duplicadas (%),6,0.0,0.0,0.0,0.0
+Fernanda,IA,loc,LOC lógico (lloc),2,9.5,7.25,11.75,4.5
+Fernanda,IA,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,2,4.0,3.5,4.5,1.0
+Fernanda,IA,duplication_percentage,Linhas duplicadas (%),2,0.0,0.0,0.0,0.0
+Fernanda,Manual,loc,LOC lógico (lloc),2,13.0,13.0,13.0,0.0
+Fernanda,Manual,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,2,4.0,4.0,4.0,0.0
+Fernanda,Manual,duplication_percentage,Linhas duplicadas (%),2,0.0,0.0,0.0,0.0
+Islayder,IA,loc,LOC lógico (lloc),2,21.0,18.0,24.0,6.0
+Islayder,IA,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,2,3.3333500000000003,3.000025,3.666675,0.6666500000000002
+Islayder,IA,duplication_percentage,Linhas duplicadas (%),2,0.0,0.0,0.0,0.0
+Islayder,Manual,loc,LOC lógico (lloc),2,8.5,7.25,9.75,2.5
+Islayder,Manual,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,2,3.5,3.25,3.75,0.5
+Islayder,Manual,duplication_percentage,Linhas duplicadas (%),2,0.0,0.0,0.0,0.0
+Vinicius,IA,loc,LOC lógico (lloc),2,15.5,15.25,15.75,0.5
+Vinicius,IA,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,2,4.5,3.75,5.25,1.5
+Vinicius,IA,duplication_percentage,Linhas duplicadas (%),2,0.0,0.0,0.0,0.0
+Vinicius,Manual,loc,LOC lógico (lloc),2,10.5,10.25,10.75,0.5
+Vinicius,Manual,avg_cyclomatic_complexity,Complexidade ciclomática média por função/método,2,3.5,3.25,3.75,0.5
+Vinicius,Manual,duplication_percentage,Linhas duplicadas (%),2,0.0,0.0,0.0,0.0
