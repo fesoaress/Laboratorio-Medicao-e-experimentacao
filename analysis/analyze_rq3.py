@@ -389,6 +389,8 @@ def make_metric_boxplot(
                 color="#34373a",
             )
     ax.set(ylabel=ylabel, title=title)
+    ymin, ymax = ax.get_ylim()
+    ax.set_ylim(ymin, ymax + (ymax - ymin) * 0.06)
     ax.grid(axis="y", alpha=0.22)
     ax.text(
         0.01,
@@ -548,6 +550,7 @@ def make_figures(detail: pd.DataFrame, figures_dir: Path) -> None:
             "figure.dpi": 150,
             "font.family": "DejaVu Sans",
             "axes.titleweight": "bold",
+            "axes.titlecolor": "#3333B2",
             "axes.edgecolor": "#5f6368",
         }
     )

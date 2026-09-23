@@ -75,7 +75,7 @@ CYCLE_COLUMNS = {
     "tempo_segundos", "testes_passando", "testes_falhando", "total_testes",
     "taxa_sucesso", "source_kind",
 }
-COLORS = {"IA": "#176b9a", "Manual": "#cb6c28"}
+COLORS = {"IA": "#3333B2", "Manual": "#D97706"}
 
 
 def require(condition: bool, message: str) -> None:
@@ -473,6 +473,7 @@ def make_figures(
             "figure.dpi": 150,
             "font.family": "DejaVu Sans",
             "axes.titleweight": "bold",
+            "axes.titlecolor": "#3333B2",
             "axes.edgecolor": "#5f6368",
         }
     )
@@ -626,12 +627,7 @@ def make_figures(
     plt.close(fig)
 
     # Inovação principal: eixo ordenado por ciclo, sem criar medições intermediárias.
-    participant_colors = {
-        "Fernanda": "#4e79a7",
-        "Islayder": "#59a14f",
-        "Vinicius": "#b07aa1",
-    }
-    kata_markers = {"1": "o", "2": "s", "3": "^", "4": "D"}
+    participant_markers = {"Fernanda": "o", "Islayder": "s", "Vinicius": "^"}
     fig, axes = plt.subplots(1, 2, figsize=(10.2, 5.2), sharey=True)
     for ax, treatment in zip(axes, treatments):
         group = trials.loc[trials.tratamento == treatment].sort_values(
@@ -646,10 +642,10 @@ def make_figures(
             ax.plot(
                 current.ciclo,
                 current.taxa_sucesso,
-                marker=kata_markers[trial.kata[4]],
+                marker=participant_markers[trial.participante],
                 markersize=6,
                 linewidth=1.6 if len(current) > 1 else 0,
-                color=participant_colors[trial.participante],
+                color=COLORS[treatment],
                 alpha=0.86,
                 label=label,
             )
@@ -660,10 +656,15 @@ def make_figures(
             xlim=(0.82, 2.18),
             ylim=(-4, 106),
         )
+        ax.title.set_color(COLORS[treatment])
         ax.grid(alpha=0.22)
         ax.legend(fontsize=7.2, frameon=False, loc="lower right")
     axes[0].set_ylabel("Testes passando (%)")
-    fig.suptitle("Inovação — evolução observada ao longo dos ciclos", fontweight="bold")
+    fig.suptitle(
+        "Inovação — evolução observada ao longo dos ciclos",
+        color=COLORS["IA"],
+        fontweight="bold",
+    )
     fig.text(
         0.5,
         0.01,

@@ -87,10 +87,10 @@ def data_composition_note(rq3_detail: pd.DataFrame) -> str:
     )
 
 
-def _kpi(ax, value: str, label: str, color: str = "#1f4e79") -> None:
-    ax.set_facecolor("#f7f9fb")
+def _kpi(ax, value: str, label: str, color: str = "#3333B2") -> None:
+    ax.set_facecolor("#F4F4FB")
     for spine in ax.spines.values():
-        spine.set_color("#d8dee4")
+        spine.set_color("#D3D3EE")
         spine.set_linewidth(0.9)
     ax.set_xticks([])
     ax.set_yticks([])
@@ -160,6 +160,7 @@ def build_dashboard(tables: dict[str, pd.DataFrame]) -> None:
             "figure.dpi": 150,
             "font.family": "DejaVu Sans",
             "axes.titleweight": "bold",
+            "axes.titlecolor": "#3333B2",
             "axes.edgecolor": "#6b7280",
         }
     )
@@ -181,13 +182,13 @@ def build_dashboard(tables: dict[str, pd.DataFrame]) -> None:
     )
     kpi_grid = grid[0, :].subgridspec(2, 4, hspace=0.18, wspace=0.15)
     kpis = [
-        ("12", "trials finais", "#1f4e79"),
-        ("3", "participantes", "#1f4e79"),
+        ("12", "trials finais", "#3333B2"),
+        ("3", "participantes", "#3333B2"),
         ("6", "trials IA", COLORS["IA"]),
         ("6", "trials Manual", COLORS["Manual"]),
         ("112,50 s", "mediana IA", COLORS["IA"]),
         ("167,595 s", "mediana Manual", COLORS["Manual"]),
-        ("105/105", "testes finais passando", "#3a6b35"),
+        ("105/105", "testes finais passando", "#3333B2"),
         ("0%", "duplicação detectada", "#5f6368"),
     ]
     for index, (value, label, color) in enumerate(kpis):
@@ -312,6 +313,7 @@ def build_dashboard(tables: dict[str, pd.DataFrame]) -> None:
         "Lab02 — Assistentes de IA versus codificação Manual",
         fontsize=16,
         fontweight="bold",
+        color="#3333B2",
         y=0.99,
     )
     fig.text(

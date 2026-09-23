@@ -11,25 +11,24 @@ import re
 from pathlib import Path
 
 from docx import Document
-from docx.enum.section import WD_SECTION
 from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT, WD_TABLE_ALIGNMENT
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK, WD_LINE_SPACING
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
-from docx.shared import Cm, Inches, Pt, RGBColor
+from docx.shared import Cm, Pt, RGBColor
 
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 DEFAULT_MARKDOWN = BASE_DIR / "reports" / "final" / "lab02_relatorio_final.md"
 DEFAULT_OUTPUT = BASE_DIR / "reports" / "final" / "lab02_relatorio_final.docx"
 
-BLUE = "17365D"
-MID_BLUE = "2F75B5"
-LIGHT_BLUE = "D9EAF7"
-VERY_LIGHT_BLUE = "F3F7FA"
+BLUE = "3333B2"
+MID_BLUE = "4D4DC4"
+LIGHT_BLUE = "D3D3EE"
+VERY_LIGHT_BLUE = "F4F4FB"
 GRAY = "5B6573"
-LIGHT_GRAY = "E7EBEF"
+LIGHT_GRAY = "D9DCE3"
 WHITE = "FFFFFF"
 BLACK = "202124"
 
@@ -70,6 +69,60 @@ def set_repeat_table_header(row) -> None:
     tbl_header = OxmlElement("w:tblHeader")
     tbl_header.set(qn("w:val"), "true")
     tr_pr.append(tbl_header)
+
+
+def set_table_borders(table, *, cover: bool = False) -> None:
+    tbl_pr = table._tbl.tblPr
+    current = tbl_pr.find(qn("w:tblBorders"))
+    if current is not None:
+        tbl_pr.remove(current)
+    borders = OxmlElement("w:tblBorders")
+    for edge in ("top", "left", "bottom", "right", "insideH", "insideV"):
+        node = OxmlElement(f"w:{edge}")
+        if cover or edge in {"left", "right", "insideV"}:
+            node.set(qn("w:val"), "nil")
+        else:
+            node.set(qn("w:val"), "single")
+            node.set(qn("w:sz"), "8" if edge in {"top", "bottom"} else "4")
+            node.set(qn("w:color"), BLUE if edge in {"top", "bottom"} else LIGHT_GRAY)
+        borders.append(node)
+    tbl_pr.append(borders)
+
+
+def style_section_heading(paragraph) -> None:
+    p_pr = paragraph._p.get_or_add_pPr()
+    shading = OxmlElement("w:shd")
+    shading.set(qn("w:fill"), BLUE)
+    p_pr.append(shading)
+    paragraph.paragraph_format.left_indent = Cm(0.18)
+    paragraph.paragraph_format.right_indent = Cm(0)
+    paragraph.paragraph_format.space_before = Pt(13)
+    paragraph.paragraph_format.space_after = Pt(8)
+    paragraph.paragraph_format.line_spacing = 1.08
+    for run in paragraph.runs:
+        run.font.color.rgb = RGBColor.from_string(WHITE)
+
+
+def style_result_box(paragraph) -> None:
+    p_pr = paragraph._p.get_or_add_pPr()
+    shading = OxmlElement("w:shd")
+    shading.set(qn("w:fill"), VERY_LIGHT_BLUE)
+    p_pr.append(shading)
+    borders = OxmlElement("w:pBdr")
+    left = OxmlElement("w:left")
+    left.set(qn("w:val"), "single")
+    left.set(qn("w:sz"), "22")
+    left.set(qn("w:space"), "10")
+    left.set(qn("w:color"), BLUE)
+    borders.append(left)
+    p_pr.append(borders)
+    paragraph.paragraph_format.left_indent = Cm(0.35)
+    paragraph.paragraph_format.right_indent = Cm(0.25)
+    paragraph.alignment = WD_ALIGN_PARAGRAPH.LEFT
+    paragraph.paragraph_format.space_before = Pt(6)
+    paragraph.paragraph_format.space_after = Pt(9)
+    paragraph.paragraph_format.line_spacing = 1.15
+    paragraph.paragraph_format.keep_together = True
 
 
 def add_page_number(paragraph) -> None:
@@ -120,18 +173,18 @@ def set_document_defaults(document: Document) -> None:
 
     styles = document.styles
     normal = styles["Normal"]
-    normal.font.name = "Times New Roman"
+    normal.font.name = "Arial"
     normal.font.size = Pt(10.5)
     normal.font.color.rgb = RGBColor.from_string(BLACK)
-    normal._element.rPr.rFonts.set(qn("w:eastAsia"), "Times New Roman")
+    normal._element.rPr.rFonts.set(qn("w:eastAsia"), "Arial")
     normal.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
     normal.paragraph_format.line_spacing_rule = WD_LINE_SPACING.ONE_POINT_FIVE
     normal.paragraph_format.space_after = Pt(5)
 
     for style_name, size, color in (
         ("Title", 22, BLUE),
-        ("Heading 1", 15, BLUE),
-        ("Heading 2", 12, MID_BLUE),
+        ("Heading 1", 14, WHITE),
+        ("Heading 2", 12, BLUE),
     ):
         style = styles[style_name]
         style.font.name = "Arial"
@@ -155,7 +208,7 @@ def set_document_defaults(document: Document) -> None:
         caption = styles.add_style("Figure Caption", WD_STYLE_TYPE.PARAGRAPH)
     else:
         caption = styles["Figure Caption"]
-    caption.font.name = "Times New Roman"
+    caption.font.name = "Arial"
     caption.font.size = Pt(9)
     caption.font.italic = True
     caption.font.color.rgb = RGBColor.from_string(GRAY)
@@ -167,7 +220,7 @@ def set_document_defaults(document: Document) -> None:
         table_caption = styles.add_style("Table Caption", WD_STYLE_TYPE.PARAGRAPH)
     else:
         table_caption = styles["Table Caption"]
-    table_caption.font.name = "Times New Roman"
+    table_caption.font.name = "Arial"
     table_caption.font.size = Pt(9)
     table_caption.font.bold = True
     table_caption.font.color.rgb = RGBColor.from_string(BLUE)
@@ -250,12 +303,56 @@ def add_inline_markdown(paragraph, text: str) -> None:
 
 def add_cover(document: Document) -> None:
     spacer = document.add_paragraph()
+    spacer.paragraph_format.space_after = Pt(12)
+
+    band = document.add_table(rows=1, cols=1)
+    band.alignment = WD_TABLE_ALIGNMENT.CENTER
+    band.autofit = False
+    set_table_borders(band, cover=True)
+    cell = band.cell(0, 0)
+    cell.width = Cm(16.5)
+    cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+    set_cell_margins(cell, top=420, start=220, bottom=420, end=220)
+    set_cell_shading(cell, BLUE)
+
+    paragraph = cell.paragraphs[0]
+    paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    paragraph.paragraph_format.space_after = Pt(8)
+    run = paragraph.add_run("LABORATÓRIO 02")
+    run.font.name = "Arial"
+    run.font.size = Pt(23)
+    run.font.bold = True
+    run.font.color.rgb = RGBColor.from_string(WHITE)
+
+    paragraph = cell.add_paragraph()
+    paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = paragraph.add_run("Assistentes de IA vs. Codificação Manual")
+    run.font.name = "Arial"
+    run.font.size = Pt(17)
+    run.font.color.rgb = RGBColor.from_string(WHITE)
+
+    spacer = document.add_paragraph()
     spacer.paragraph_format.space_after = Pt(28)
 
+    paragraph = document.add_paragraph()
+    paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    lead = paragraph.add_run("Participantes:")
+    lead.font.bold = True
+    lead.font.color.rgb = RGBColor.from_string(BLUE)
+    paragraph.paragraph_format.space_after = Pt(5)
+    for participant in ("Fernanda Soares", "Islayder Jackson", "Vinicius Gomes"):
+        paragraph = document.add_paragraph()
+        paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        paragraph.add_run(participant)
+        paragraph.paragraph_format.space_after = Pt(2)
+
+    spacer = document.add_paragraph()
+    spacer.paragraph_format.space_after = Pt(20)
+
     for text, size, bold, color in (
-        ("Pontifícia Universidade Católica de Minas Gerais", 14, True, BLUE),
-        ("Engenharia de Software", 12, True, BLACK),
-        ("Medição e Experimentação de Software", 12, False, GRAY),
+        ("Pontifícia Universidade Católica de Minas Gerais", 11, True, BLUE),
+        ("Engenharia de Software", 10.5, True, BLACK),
+        ("Medição e Experimentação de Software", 10.5, False, GRAY),
     ):
         paragraph = document.add_paragraph()
         paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -264,52 +361,21 @@ def add_cover(document: Document) -> None:
         run.font.size = Pt(size)
         run.font.bold = bold
         run.font.color.rgb = RGBColor.from_string(color)
-        paragraph.paragraph_format.space_after = Pt(4)
-
-    spacer = document.add_paragraph()
-    spacer.paragraph_format.space_after = Pt(38)
-
-    paragraph = document.add_paragraph()
-    paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = paragraph.add_run("Laboratório 02")
-    run.font.name = "Arial"
-    run.font.size = Pt(24)
-    run.font.bold = True
-    run.font.color.rgb = RGBColor.from_string(BLUE)
-    paragraph.paragraph_format.space_after = Pt(10)
-
-    paragraph = document.add_paragraph()
-    paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = paragraph.add_run("Assistentes de IA vs. Codificação Manual")
-    run.font.name = "Arial"
-    run.font.size = Pt(17)
-    run.font.bold = True
-    run.font.color.rgb = RGBColor.from_string(MID_BLUE)
-    paragraph.paragraph_format.space_after = Pt(70)
-
-    paragraph = document.add_paragraph()
-    paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    lead = paragraph.add_run("Participantes:")
-    lead.font.bold = True
-    paragraph.paragraph_format.space_after = Pt(3)
-    for participant in ("Fernanda Soares", "Islayder Jackson", "Vinicius Gomes"):
-        paragraph = document.add_paragraph()
-        paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        paragraph.add_run(participant)
-        paragraph.paragraph_format.space_after = Pt(1)
+        paragraph.paragraph_format.space_after = Pt(3)
 
     paragraph = document.add_paragraph()
     paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
     lead = paragraph.add_run("Professor: ")
     lead.font.bold = True
     paragraph.add_run("Danilo Maia")
-    paragraph.paragraph_format.space_before = Pt(8)
+    lead.font.color.rgb = RGBColor.from_string(BLUE)
+    paragraph.paragraph_format.space_before = Pt(16)
     paragraph.paragraph_format.space_after = Pt(4)
 
     paragraph = document.add_paragraph()
     paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    paragraph.paragraph_format.space_before = Pt(55)
-    run = paragraph.add_run("2026")
+    paragraph.paragraph_format.space_before = Pt(38)
+    run = paragraph.add_run("Setembro de 2026")
     run.font.name = "Arial"
     run.font.size = Pt(11)
     run.font.bold = True
@@ -339,7 +405,7 @@ def add_table(document: Document, rows: list[list[str]]) -> None:
     table = document.add_table(rows=len(rows), cols=columns)
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     table.autofit = True
-    table.style = "Table Grid"
+    set_table_borders(table)
     font_size = 7.0 if columns >= 8 else 8.0 if columns >= 6 else 8.7
 
     for row_index, source_row in enumerate(rows):
@@ -369,6 +435,19 @@ def add_table(document: Document, rows: list[list[str]]) -> None:
             if row_index == len(rows) - 1 and text.lower() == "total":
                 run.font.bold = True
     document.add_paragraph().paragraph_format.space_after = Pt(1)
+
+
+def add_result_box(document: Document, lines: list[str]) -> None:
+    paragraph = document.add_paragraph()
+    style_result_box(paragraph)
+    for index, line in enumerate(lines):
+        if index:
+            paragraph.add_run().add_break()
+        add_inline_markdown(paragraph, line)
+    for run in paragraph.runs:
+        run.font.name = "Arial"
+        if run.bold:
+            run.font.color.rgb = RGBColor.from_string(BLUE)
 
 
 def add_picture(document: Document, path: Path, alt_text: str) -> None:
@@ -445,13 +524,21 @@ def render_markdown(document: Document, markdown_path: Path) -> None:
         if stripped.startswith("## "):
             flush_paragraph()
             heading = stripped[3:]
+            heading_paragraph = document.add_heading(heading, level=1)
             if heading.startswith(("13.", "15.", "18.")):
-                paragraph = document.add_paragraph()
-                paragraph.add_run().add_break(WD_BREAK.PAGE)
-            document.add_heading(heading, level=1)
-            if heading.startswith("3. "):
-                pass
+                heading_paragraph.paragraph_format.page_break_before = True
+            style_section_heading(heading_paragraph)
             index += 1
+            continue
+        if stripped.startswith(">"):
+            flush_paragraph()
+            box_lines: list[str] = []
+            while index < len(lines) and lines[index].strip().startswith(">"):
+                content = lines[index].strip()[1:].strip()
+                if content:
+                    box_lines.append(content)
+                index += 1
+            add_result_box(document, box_lines)
             continue
         if stripped.startswith("!["):
             flush_paragraph()
@@ -509,7 +596,7 @@ def build(markdown_path: Path, output_path: Path) -> tuple[int, int, int]:
     headings = sum(
         1 for paragraph in validation.paragraphs if paragraph.style.name.startswith("Heading")
     )
-    tables = len(validation.tables)
+    tables = len(validation.tables) - 1  # exclui o bloco visual da capa
     figures = len(validation.inline_shapes)
     if headings != 20:
         raise RuntimeError(f"Esperados 20 títulos após a capa; encontrados {headings}")

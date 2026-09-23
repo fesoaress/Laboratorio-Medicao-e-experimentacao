@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 from pathlib import Path
 
 import pymupdf as fitz
@@ -25,7 +26,12 @@ def render_and_validate(pdf_path: Path, render_dir: Path) -> tuple[int, int]:
     for index, page in enumerate(document):
         text = page.get_text().strip()
         full_text.append(text)
-        if len(text) < 10 and not page.get_images(full=True):
+        body_text = text.replace(
+            "PUC Minas  •  Medição e Experimentação de Software  •  Laboratório 02",
+            "",
+        )
+        body_text = re.sub(r"PUC Minas\s*\|\s*Página\s*\d+", "", body_text).strip()
+        if len(body_text) < 10 and not page.get_images(full=True):
             blank_pages.append(index + 1)
         pixmap = page.get_pixmap(matrix=fitz.Matrix(1.25, 1.25), alpha=False)
         page_path = render_dir / f"pagina-{index + 1:02d}.png"
@@ -35,14 +41,19 @@ def render_and_validate(pdf_path: Path, render_dir: Path) -> tuple[int, int]:
     if blank_pages:
         raise RuntimeError(f"Páginas vazias detectadas: {blank_pages}")
 
-    joined = "\n".join(full_text)
+    joined = re.sub(r"\s+", " ", "\n".join(full_text))
     required = (
         "PUC Minas",
         "Assistentes de IA vs. Codificação Manual",
+        "Setembro de 2026",
         "RQ1 — Tempo até green",
         "RQ2 — Resultado dos testes de aceitação",
         "RQ3 — Estrutura do código",
         "Inovação — Evolução por ciclos",
+        "Resultado-chave — RQ1",
+        "Resultado-chave — RQ2",
+        "Resultado-chave — RQ3",
+        "Resultado-chave — Inovação",
         "Referências",
     )
     missing = [item for item in required if item not in joined]
