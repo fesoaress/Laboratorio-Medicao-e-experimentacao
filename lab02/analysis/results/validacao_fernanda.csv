@@ -1,0 +1,8 @@
+criterio,status,evidencia
+exatamente_4_trials,ok,encontrados=4
+dois_ia_dois_manual,ok,IA=2; Manual=2
+quatro_katas_unicos,ok,kata1_normalizador_etiquetas;kata2_balanceamento_turnos;kata3_compactador_sensor;kata4_manutencao_preditiva
+ordem_contrabalanceada,ok,kata2_balanceamento_turnos;kata1_normalizador_etiquetas;kata4_manutencao_preditiva;kata3_compactador_sensor
+issues_unicas,ok,#19;#27;#29;#28
+ensaios_antigos_excluidos,ok,
+status_final_valido,ok,green;green;green;green

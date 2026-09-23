@@ -1,0 +1,4 @@
+# Lab02 S01 — métricas estruturais (RQ3) — Fernanda
+# Instalar no venv do projeto:
+#   .\.venv\Scripts\pip.exe install -r lab02\metrics\requirements.txt
+radon==6.0.1

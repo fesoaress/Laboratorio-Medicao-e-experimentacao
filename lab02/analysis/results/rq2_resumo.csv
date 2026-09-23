@@ -1,0 +1,3 @@
+tratamento,n_trials,green,time_box,passed_soma,failed_soma,total_testes_soma,taxa_final_mediana_pct,taxa_final_media_pct,falhas_finais_mediana
+IA,6,6,0,54,0,54,100.0,100.0,0.0
+Manual,6,6,0,51,0,51,100.0,100.0,0.0

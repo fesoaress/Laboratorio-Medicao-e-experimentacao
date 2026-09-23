@@ -1,0 +1,3 @@
+tratamento,n_trials,ciclos_mediana,ciclos_min,ciclos_max,taxa_primeiro_ciclo_mediana_pct,taxa_ultimo_ciclo_mediana_pct
+Manual,6,2.0,1,2,14.285,100.0
+IA,6,1.0,1,2,100.0,100.0

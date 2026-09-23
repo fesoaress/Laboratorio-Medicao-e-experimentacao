@@ -1,0 +1,26 @@
+{
+  "description": "Valores esperados/observados para lab02/metrics/examples/exemplo_validacao/solucao.py",
+  "cyclomatic": {
+    "functions": {
+      "sinal": 3,
+      "soma_positiva": 3,
+      "formatar_bloco_a": 1,
+      "formatar_bloco_b": 1
+    },
+    "analyzed_functions": 4,
+    "avg_cyclomatic_complexity": 2.0,
+    "cyclomatic_complexity_max": 3,
+    "matches_radon": true
+  },
+  "duplication": {
+    "note": "Clone entre formatar_bloco_a e formatar_bloco_b (minLines=5, minTokens=50).",
+    "duplicated_blocks": 1,
+    "duplicated_lines": 6,
+    "duplication_percentage": 11.11111111111111
+  },
+  "loc": {
+    "definition": "radon raw -> lloc",
+    "lloc": 28
+  },
+  "how_to_reproduce": "python lab02/metrics/run_metrics.py lab02/metrics/examples/exemplo_validacao --participant Validacao --kata exemplo_cc --treatment Manual"
+}

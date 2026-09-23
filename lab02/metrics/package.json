@@ -1,0 +1,12 @@
+{
+  "name": "lab02-metrics-rq3",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Configuração do jscpd para métricas estruturais da RQ3 (Lab02 S01)",
+  "scripts": {
+    "jscpd": "jscpd --config .jscpd.json"
+  },
+  "dependencies": {
+    "jscpd": "5.2.0"
+  }
+}

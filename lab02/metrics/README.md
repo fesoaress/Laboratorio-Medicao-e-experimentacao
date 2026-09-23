@@ -1,0 +1,133 @@
+# Lab02 — Métricas estruturais (RQ3)
+
+Instrumentação da Sprint 1 para a pergunta:
+
+> **RQ3 — O uso de assistente de IA altera a complexidade ciclomática ou a duplicação do código produzido?**
+
+## Métricas (definição operacional)
+
+| Campo | Definição | Ferramenta |
+|---|---|---|
+| `loc` | linhas lógicas de código (`lloc`) apenas em `solucao.py` | Radon `raw` |
+| `avg_cyclomatic_complexity` | média da CC por função/método | Radon `cc` |
+| `duplication_percentage` | % de linhas duplicadas | jscpd |
+
+**Escopo:** somente `solucao.py` do trial.  
+**Excluídos:** `test_solucao.py`, `gabarito/`, dependências, caches, código do Lab01.
+
+Testes ficam de fora de propósito: são iguais para todos e não representam código produzido pelo participante.
+
+Para uma solução menor que a janela congelada do jscpd (`minLines=5`, `minTokens=50`), a ferramenta informa zero fontes comparáveis. O coletor registra corretamente `0%` de duplicação; o tamanho continua disponível em `loc`.
+
+Se o código final tiver erro de sintaxe, a linha do trial ainda é preservada: métricas que o Radon não consegue calcular ficam vazias e `analysis_error` registra o motivo. Isso evita excluir silenciosamente os trials não verdes.
+
+## Pré-requisitos
+
+- Python 3.11+ (venv do projeto)
+- Node.js + npm (para o jscpd)
+
+```powershell
+# Na raiz do repositório
+.\.venv\Scripts\pip.exe install -r lab02\metrics\requirements.txt
+cd lab02\metrics
+npm ci
+cd ..\..
+```
+
+Versões fixadas:
+
+- Radon `6.0.1` → `lab02/metrics/requirements.txt`
+- jscpd `5.2.0` → `lab02/metrics/package.json` + `package-lock.json`
+- Config jscpd → `lab02/metrics/.jscpd.json` (`minLines=5`, `minTokens=50`, `mode=mild`)
+
+## Como coletar métricas de um trial
+
+```powershell
+.\.venv\Scripts\python.exe lab02\metrics\run_metrics.py <caminho_do_trial> `
+  --participant Fernanda `
+  --kata kata1 `
+  --treatment IA `
+  --trial-id <trial_id_de_trials.csv> `
+  --issue <numero_da_issue>
+```
+
+`<caminho_do_trial>` pode ser a pasta do trial (com `solucao.py`) ou o próprio arquivo `solucao.py`.  
+`--treatment` grava os valores canônicos `IA` ou `Manual` (`AI` é aceito apenas como alias de entrada).
+Para trials reais, informe também `--trial-id` e `--issue`; o ID passa a ser a chave de *upsert* e mantém repetições rastreáveis. Eles podem ser omitidos somente em exemplos de validação.
+
+Validações autônomas do instrumento devem usar uma pasta de saída separada e
+`--source-kind technical_preparatory`. O valor padrão continua sendo
+`observed` para as medições oficiais. Nunca misture o CSV preparatório com
+`lab02/metrics/results/metrics.csv`.
+
+### Saídas
+
+1. **JSON detalhado** em `lab02/metrics/results/<participante>_<kata>_<treatment>_<timestamp>.json`
+2. **CSV consolidado** em `lab02/metrics/results/metrics.csv` (uma linha por trial; reexecução do mesmo trial faz *upsert*)
+
+O coletor marca medições reais com `source_kind=observed`. Linhas de cenários simulados autorizados para ensaio metodológico usam `source_kind=observed_simulated` e `analysis_error` explícito; seus números não foram medidos por Radon/jscpd sobre um código final do participante e devem ser analisados separadamente.
+
+Colunas principais do CSV (Pandas):
+
+```text
+participant,kata,treatment,loc,avg_cyclomatic_complexity,duplication_percentage
+```
+
+## Artefatos finais vinculados à RQ3
+
+Os códigos finais usados na RQ3, seus testes de aceitação e o vínculo com
+participante, Issue, kata e tratamento estão em
+`lab02/trials/results/rq3_artifacts/islayder/`. O arquivo `manifest.csv` é a
+fonte de seleção desses quatro artefatos pelo `analyze_rq3.py`.
+
+Exemplo de reprodução da medição do trial IA #21:
+
+```powershell
+.\.venv\Scripts\python.exe lab02\metrics\run_metrics.py `
+  lab02\trials\results\rq3_artifacts\islayder\issue-21-kata1-ia\solucao.py `
+  --participant Islayder `
+  --kata kata1_normalizador_etiquetas `
+  --treatment IA `
+  --trial-id RQ3-ISLAYDER-I21 `
+  --issue 21 `
+  --source-kind observed
+```
+
+O mesmo comando é aplicável aos demais caminhos do manifesto. Para uma
+conferência sem alterar o consolidado oficial, acrescente `--output-dir` com
+uma pasta temporária. A configuração e as versões fixadas acima permanecem as
+mesmas, portanto LOC, complexidade e duplicação são reproduzíveis.
+
+Os quatro artefatos estruturais de Fernanda ficam em
+`lab02/trials/results/rq3_artifacts/fernanda/` e possuem manifesto próprio.
+Como os caminhos dos snapshots originais registrados pelo runner não foram
+versionados, esses arquivos foram reconstruídos a partir dos códigos
+preparatórios já existentes no repositório. Eles são executáveis, passam nos
+testes de aceitação e reproduzem as métricas consolidadas, mas essa diferença
+de proveniência deve permanecer explícita na interpretação da RQ3.
+
+## Validação (exemplo didático)
+
+```powershell
+.\.venv\Scripts\python.exe lab02\metrics\run_metrics.py lab02\metrics\examples\exemplo_validacao `
+  --participant Validacao `
+  --kata exemplo_cc `
+  --treatment Manual `
+  --output-dir lab02\metrics\validation_results
+```
+
+Conferência manual da CC no exemplo: média esperada **2.0** (ver comentários em `examples/exemplo_validacao/solucao.py` e `expected.json`).
+Essa saída fica separada e ignorada pelo Git, portanto não contamina `results/metrics.csv`.
+
+## Estrutura
+
+```text
+lab02/metrics/
+  run_metrics.py          # script reproduzível
+  requirements.txt        # Radon
+  package.json            # jscpd
+  package-lock.json
+  .jscpd.json             # config fixa de duplicação
+  examples/exemplo_validacao/
+  results/metrics.csv     # consolidado
+```
