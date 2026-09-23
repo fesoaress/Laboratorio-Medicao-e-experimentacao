@@ -46,6 +46,7 @@ DOCUMENTED_EXCLUSIONS = {
     "31c7f16ce79c478ab8f81cd8628e6e3c": "ensaio do instrumento, sem tempo humano válido (Fernanda)",
     "bd057b8dcaef41a6a9503c053b9d57f3": "ensaio do instrumento, sem tempo humano válido (Fernanda)",
     "4dfbe8c44c964a65ae003d35d6a60754": "ensaio do instrumento, sem tempo humano válido (Fernanda)",
+    "ba0cb83a55764b3389f7da94946c9230": "PENDENTE DE CONFIRMAÇÃO — source_kind=agent_delegated_codex_work e snapshot nunca commitado; excluído provisoriamente por Vinicius sem validação da Fernanda",
 }
 TRIAL_COLUMNS = {
     "trial_id", "issue", "participante", "kata", "tratamento", "tempo_segundos",
@@ -126,6 +127,7 @@ def load_and_audit() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         expected_treatment = (FERNANDA_ALLOCATION if trial.participante == "Fernanda"
                               else ISLAYDER_ALLOCATION)[trial.kata]
         require(trial.tratamento == expected_treatment, f"{tid}: tratamento fora da matriz")
+        snapshot_missing = False
         if source in {"observed", "agent_delegated_codex_work"}:
             require(trial.iniciado_em != "" and trial.finalizado_em != "",
                     f"{tid}: timestamps de execução ausentes")
@@ -136,11 +138,13 @@ def load_and_audit() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
                     f"{tid}: trial_id observado inválido")
             require(trial.status in {"green", "time-box", "interrupted", "error"},
                     f"{tid}: status inválido")
+            require(trial.codigo_path != "", f"{tid}: codigo_path vazio")
             require(Path(trial.codigo_path).as_posix()
                     == f"lab02/trials/results/solutions/{tid}/solucao.py",
                     f"{tid}: snapshot não corresponde ao trial_id")
-            require(trial.codigo_path != "" and (BASE_DIR / trial.codigo_path).is_file(),
-                    f"{tid}: snapshot ausente")
+            # Snapshot ausente NÃO derruba a auditoria; o trial é apenas
+            # classificado como excluído na decisão final (abaixo).
+            snapshot_missing = not (BASE_DIR / trial.codigo_path).is_file()
             require(trial.issue == ISSUES[trial.participante][kata_num]
                     or tid in DOCUMENTED_EXCLUSIONS,
                     f"{tid}: Issue não corresponde ao participante/kata")
@@ -181,6 +185,8 @@ def load_and_audit() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
             decision, reason = "excluído", "cenário simulado; sem execução humana"
         elif tid in DOCUMENTED_EXCLUSIONS:
             decision, reason = "excluído", DOCUMENTED_EXCLUSIONS[tid]
+        elif snapshot_missing:
+            decision, reason = "excluído", "snapshot ausente em lab02/trials/results/solutions/"
         elif trial.status in {"interrupted", "error"}:
             decision, reason = "excluído", f"status {trial.status}; trial incompleto"
         elif source == "agent_delegated_codex_work":
