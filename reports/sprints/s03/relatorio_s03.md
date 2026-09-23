@@ -44,15 +44,15 @@ O desfecho é o tempo do início até `green`, limitado a 2.100 segundos.
 | Tratamento | n | Mediana (min) | Q1 | Q3 | IQR | Green | Censurados |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | IA | 6 | 1,875 | 1,238 | 3,436 | 2,198 | 6 | 0 |
-| Manual | 6 | 2,793 | 1,320 | 5,442 | 4,122 | 6 | 0 |
+| Manual | 6 | 3,484 | 3,367 | 5,450 | 2,083 | 6 | 0 |
 
-As medianas correspondem a **112,500 s para IA** e **167,595 s para
-Manual**, diferença descritiva de **−55,095 s**. Os artefatos gerados antes da
+As medianas correspondem a **112,500 s para IA** e **209,010 s para
+Manual**, diferença descritiva de **−96,510 s**. Os artefatos gerados antes da
 correção não contêm #21 e #25; os valores finais de Islayder estão documentados
 no [relatório individual](../lab02_s02/islayder.md).
 
 O Wilcoxon pareado, aplicado às medianas individuais dos dois trials por
-tratamento, teve **n = 3 pares, W = 2 e p = 0,75**. Com somente três pares e
+tratamento, teve **n = 3 pares, W = 0 e p = 0,25**. Com somente três pares e
 katas distintos dentro de cada tratamento, o resultado não oferece evidência
 inferencial de diferença. A menor mediana agregada de IA é apenas descritiva.
 
@@ -198,7 +198,7 @@ as tabelas finais de RQ1, RQ2, RQ3 e inovação e grava
 ## 9. Conclusões
 
 Nos 12 trials de RQ1 e RQ2, IA apresentou menor mediana agregada de tempo
-(112,500 s contra 167,595 s), e os dois tratamentos terminaram com todos os
+(112,500 s contra 209,010 s), e os dois tratamentos terminaram com todos os
 testes passando: 54/54 em IA e 51/51 em Manual. Na RQ3, com 12 artefatos
 estruturais reais, IA teve maior mediana de LOC (15,0 contra 11,0), menor
 mediana de complexidade média (3,5 contra 4,0) e a mesma duplicação de 0%.

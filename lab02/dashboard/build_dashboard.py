@@ -186,8 +186,16 @@ def build_dashboard(tables: dict[str, pd.DataFrame]) -> None:
         ("3", "participantes", "#3333B2"),
         ("6", "trials IA", COLORS["IA"]),
         ("6", "trials Manual", COLORS["Manual"]),
-        ("112,50 s", "mediana IA", COLORS["IA"]),
-        ("167,595 s", "mediana Manual", COLORS["Manual"]),
+        (
+            f"{rq1.loc['IA', 'mediana_segundos']:.2f} s".replace(".", ","),
+            "mediana IA",
+            COLORS["IA"],
+        ),
+        (
+            f"{rq1.loc['Manual', 'mediana_segundos']:.2f} s".replace(".", ","),
+            "mediana Manual",
+            COLORS["Manual"],
+        ),
         ("105/105", "testes finais passando", "#3333B2"),
         ("0%", "duplicação detectada", "#5f6368"),
     ]
