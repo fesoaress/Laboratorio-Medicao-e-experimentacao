@@ -8,7 +8,7 @@
 
 **Medição e Experimentação de Software**
 
-**Laboratório 02**
+**LABORATÓRIO 02**
 
 **Assistentes de IA vs. Codificação Manual**
 
@@ -22,7 +22,7 @@ Vinicius Gomes
 
 **Professor:** Danilo Maia
 
-**Ano:** 2026
+**Data:** Setembro de 2026
 
 ## 2. Sumário
 
@@ -174,6 +174,11 @@ Medianas, quartis e IQR usam a interpolação linear do Pandas. O teste de Wilco
 | IA | 6 | 149,73 | 112,50 | 74,265 | 206,1675 | 131,9025 | 6 | 0 |
 | Manual | 6 | 212,4917 | 167,595 | 79,1925 | 326,4975 | 247,305 | 6 | 0 |
 
+> **Resultado-chave — RQ1**
+> IA: mediana de 112,50 s
+> Manual: mediana de 167,595 s
+> Wilcoxon: p = 0,75
+
 Como mostra a Figura 1, a distribuição completa apresenta mediana e média menores em IA, mas também dispersão relevante nos dois tratamentos. Todos os 12 pontos são exibidos para que a pequena amostra permaneça visível.
 
 ![Boxplot do tempo até green com os 12 trials identificados](../figures/rq1_tempo_ia_vs_manual.png)
@@ -207,6 +212,11 @@ No recorte de Islayder, IA teve 75 s e 150 s, com média e mediana de 112,5 s e 
 | IA | 6 | 6 | 0 | 54 | 0 | 54 | 100% |
 | Manual | 6 | 6 | 0 | 51 | 0 | 51 | 100% |
 
+> **Resultado-chave — RQ2**
+> IA: 54/54 testes passando
+> Manual: 51/51 testes passando
+> Falhas finais: 0 nos dois tratamentos
+
 Todos os 105 testes finais passaram. Em Islayder, os resultados foram #21 10/10, #24 9/9, #25 9/9 e #26 7/7, todos `green`. Assim, **RQ2 não mostrou diferença no desfecho final de aceitação**: IA alcançou 54/54, Manual alcançou 51/51 e ambos tiveram zero falhas finais. A Figura 3 sintetiza essas contagens em pouco espaço.
 
 ![Barras compactas do percentual de testes finais passando](../figures/rq2_testes_ia_vs_manual.png)
@@ -227,6 +237,11 @@ A igualdade no estado final não implica trajetórias iguais. A evolução inter
 | Manual | CC média | 6 | 4,0 | 3,25 | 4,00 | 0,75 |
 | IA | Duplicação | 6 | 0% | 0% | 0% | 0% |
 | Manual | Duplicação | 6 | 0% | 0% | 0% | 0% |
+
+> **Resultado-chave — RQ3**
+> LOC mediana: IA 15 vs. Manual 11
+> CC média mediana: IA 3,5 vs. Manual 4,0
+> Duplicação: 0% nos 12 artefatos
 
 Os 12 artefatos tiveram métricas completas e reproduzíveis. IA apresentou maior mediana de LOC, menor mediana de complexidade média e a mesma duplicação mediana do tratamento Manual. Com seis arquivos por grupo e katas heterogêneos, os resultados são descritivos e não demonstram efeito causal.
 
@@ -262,6 +277,10 @@ Os snapshots originais apontados pelos trials finais de Fernanda não foram vers
 |---|---:|---:|---:|---:|---:|
 | IA | 6 | 1 | 1–2 | 100% | 100% |
 | Manual | 6 | 2 | 1–2 | 14,285% | 100% |
+
+> **Resultado-chave — Inovação**
+> IA: mediana de 1 ciclo até green
+> Manual: mediana de 2 ciclos até green
 
 A inovação do protocolo foi preservar o desempenho a cada execução de testes, permitindo observar progresso e retrabalho, e não apenas o estado final. A Figura 7 usa somente ciclos efetivamente registrados; trials de um ciclo aparecem como um único ponto.
 
