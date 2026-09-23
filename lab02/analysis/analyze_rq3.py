@@ -327,181 +327,165 @@ def summarize(detail: pd.DataFrame, participant: str | None = None) -> pd.DataFr
     return pd.DataFrame(rows)
 
 
-def make_loc_strip_plot(detail: pd.DataFrame, output: Path) -> None:
-    fig, ax = plt.subplots(figsize=(9, 5.4))
-    for x, treatment in enumerate(("Manual", "IA")):
+def make_metric_boxplot(
+    detail: pd.DataFrame,
+    column: str,
+    ylabel: str,
+    title: str,
+    output: Path,
+    decimals: int,
+) -> None:
+    treatments = ("IA", "Manual")
+    values = [
+        detail.loc[detail.tratamento == treatment, column]
+        for treatment in treatments
+    ]
+    fig, ax = plt.subplots(figsize=(8.5, 5.3))
+    boxes = ax.boxplot(
+        values,
+        tick_labels=treatments,
+        patch_artist=True,
+        widths=0.48,
+        showfliers=False,
+        medianprops={"color": "#202124", "linewidth": 2.2},
+        whiskerprops={"color": "#5f6368", "linewidth": 1.2},
+        capprops={"color": "#5f6368", "linewidth": 1.2},
+    )
+    for patch, treatment in zip(boxes["boxes"], treatments):
+        patch.set_facecolor(COLORS[treatment])
+        patch.set_alpha(0.22)
+        patch.set_edgecolor(COLORS[treatment])
+        patch.set_linewidth(1.5)
+
+    initials = {"Fernanda": "F", "Islayder": "I", "Vinicius": "V"}
+    for position, treatment in enumerate(treatments, start=1):
         group = detail.loc[detail.tratamento == treatment].sort_values(
             ["participante", "kata"]
         )
         offsets = [
-            (index - (len(group) - 1) / 2) * 0.095 for index in range(len(group))
+            (index - (len(group) - 1) / 2) * 0.055
+            for index in range(len(group))
         ]
-        for offset, (_, row) in zip(offsets, group.iterrows()):
+        for label_index, (offset, (_, row)) in enumerate(
+            zip(offsets, group.iterrows())
+        ):
+            value = row[column]
             ax.scatter(
-                x + offset,
-                row["loc"],
+                position + offset,
+                value,
                 color=COLORS[treatment],
                 edgecolor="white",
                 linewidth=0.8,
-                s=72,
+                s=58,
                 zorder=3,
             )
             ax.annotate(
-                f"{int(row['loc'])}",
-                (x + offset, row["loc"]),
-                xytext=(0, 7),
+                f"{initials[row.participante]}·K{row.kata[4]}",
+                (position + offset, value),
+                xytext=(0, 7 + 7 * (label_index % 2)),
                 textcoords="offset points",
                 ha="center",
-                fontsize=8,
+                fontsize=7.5,
+                color="#34373a",
             )
-        median = group["loc"].median()
-        ax.hlines(
-            median,
-            x - 0.31,
-            x + 0.31,
-            color=COLORS[treatment],
-            linewidth=2.2,
-            label=f"Mediana {treatment}: {median:.1f}",
-            zorder=2,
-        )
-    ax.set(
-        xlim=(-0.55, 1.55),
-        xticks=[0, 1],
-        xticklabels=["Manual", "IA"],
-        ylabel="Linhas de código (LOC)",
-        title="LOC por tratamento",
-    )
+    ax.set(ylabel=ylabel, title=title)
     ax.grid(axis="y", alpha=0.22)
-    ax.margins(y=0.14)
-    ax.legend(loc="best", frameon=True)
+    ax.text(
+        0.01,
+        -0.16,
+        "Caixa = Q1–Q3; linha = mediana; pontos = artefatos; rótulos: participante e kata.",
+        transform=ax.transAxes,
+        fontsize=8,
+        color="#5f6368",
+    )
+    median_text = " · ".join(
+        f"{treatment}: {detail.loc[detail.tratamento == treatment, column].median():.{decimals}f}"
+        for treatment in treatments
+    )
+    ax.text(
+        0.99,
+        0.98,
+        f"Medianas — {median_text}",
+        transform=ax.transAxes,
+        ha="right",
+        va="top",
+        fontsize=8.5,
+        color="#34373a",
+    )
     fig.tight_layout()
-    fig.savefig(output)
+    fig.savefig(output, dpi=220, bbox_inches="tight")
     plt.close(fig)
 
 
-def make_complexity_slope_chart(detail: pd.DataFrame, output: Path) -> None:
-    paired = (
-        detail.groupby(["participante", "tratamento"])[
-            "avg_cyclomatic_complexity"
-        ]
-        .median()
-        .unstack()
-    )
-    require(
-        {"Manual", "IA"} <= set(paired.columns),
-        "slope chart exige os dois tratamentos por participante",
-    )
-    require(
-        paired[["Manual", "IA"]].notna().all(axis=None),
-        "slope chart encontrou participante sem um dos tratamentos",
-    )
-
-    participant_colors = {
-        participant: color
-        for participant, color in zip(
-            sorted(paired.index), ("#4c78a8", "#59a14f", "#b279a2")
-        )
+def make_loc_complexity_scatter(detail: pd.DataFrame, output: Path) -> None:
+    markers = {"Fernanda": "o", "Islayder": "s", "Vinicius": "^"}
+    initials = {"Fernanda": "F", "Islayder": "I", "Vinicius": "V"}
+    fig, ax = plt.subplots(figsize=(8.5, 5.4))
+    label_offsets = {
+        ("Fernanda", "kata4_manutencao_preditiva"): (5, 7),
+        ("Islayder", "kata4_manutencao_preditiva"): (5, -12),
+        ("Vinicius", "kata4_manutencao_preditiva"): (5, 7),
     }
-    ordered_participants = list(paired.sort_index().index)
-    participant_offsets = {
-        participant: (index - (len(ordered_participants) - 1) / 2) * 0.09
-        for index, participant in enumerate(ordered_participants)
-    }
-
-    fig, ax = plt.subplots(figsize=(9.4, 6.0))
-    for participant, row in paired.sort_index().iterrows():
-        values = [row["Manual"], row["IA"]]
-        color = participant_colors[participant]
-        offset = participant_offsets[participant]
-        endpoint_x = [offset, 1 + offset]
-        ax.plot(
-            endpoint_x,
-            values,
-            color=color,
-            linewidth=2,
-            marker="o",
-            markersize=7,
+    for _, row in detail.sort_values(["tratamento", "participante", "kata"]).iterrows():
+        ax.scatter(
+            row["loc"],
+            row.avg_cyclomatic_complexity,
+            color=COLORS[row.tratamento],
+            marker=markers[row.participante],
+            edgecolor="white",
+            linewidth=0.8,
+            s=76,
             zorder=3,
         )
-
-        for treatment, x in zip(("Manual", "IA"), endpoint_x):
-            trials = detail.loc[
-                (detail.participante == participant)
-                & (detail.tratamento == treatment)
-            ].sort_values("kata")
-            trial_offsets = (-0.016, 0.016)
-            for trial_offset, (_, trial) in zip(trial_offsets, trials.iterrows()):
-                trial_x = x + trial_offset
-                trial_value = trial.avg_cyclomatic_complexity
-                ax.scatter(
-                    trial_x,
-                    trial_value,
-                    facecolor="white",
-                    edgecolor=color,
-                    linewidth=1.4,
-                    s=42,
-                    zorder=4,
-                )
-                ax.annotate(
-                    f"K{trial.kata[4]}",
-                    (trial_x, trial_value),
-                    xytext=(0, 6),
-                    textcoords="offset points",
-                    ha="center",
-                    fontsize=7,
-                    color=color,
-                )
-
         ax.annotate(
-            f"{participant} · {values[1]:.2f}",
-            (endpoint_x[1], values[1]),
-            xytext=(9, 0),
+            f"{initials[row.participante]}·K{row.kata[4]}",
+            (row["loc"], row.avg_cyclomatic_complexity),
+            xytext=label_offsets.get((row.participante, row.kata), (5, 5)),
             textcoords="offset points",
-            ha="left",
-            va="center",
-            fontsize=8,
+            fontsize=7.5,
         )
+    legend_items = [
+        Line2D(
+            [0],
+            [0],
+            marker="o",
+            color="none",
+            markerfacecolor=COLORS[treatment],
+            markeredgecolor="white",
+            markersize=8,
+            label=treatment,
+        )
+        for treatment in ("IA", "Manual")
+    ] + [
+        Line2D(
+            [0],
+            [0],
+            marker=markers[participant],
+            color="#5f6368",
+            linewidth=0,
+            markerfacecolor="white",
+            markersize=7,
+            label=participant,
+        )
+        for participant in ("Fernanda", "Islayder", "Vinicius")
+    ]
     ax.set(
-        xlim=(-0.25, 1.42),
-        xticks=[0, 1],
-        xticklabels=["Manual", "IA"],
-        ylabel="Complexidade ciclomática média por função/método",
-        title="Variação da complexidade ciclomática entre os tratamentos",
+        xlabel="LOC lógico (lloc)",
+        ylabel="Complexidade ciclomática média",
+        title="RQ3 — relação exploratória entre LOC e complexidade",
     )
-    ax.grid(axis="y", alpha=0.22)
-    ax.margins(y=0.12)
-    ax.legend(
-        handles=[
-            Line2D(
-                [0],
-                [0],
-                color="#666666",
-                marker="o",
-                linewidth=2,
-                label="Mediana dos dois katas",
-            ),
-            Line2D(
-                [0],
-                [0],
-                color="#666666",
-                marker="o",
-                markerfacecolor="white",
-                linewidth=0,
-                label="Kata individual",
-            ),
-        ],
-        loc="upper left",
-    )
-    fig.text(
-        0.5,
-        0.015,
-        "Linhas comparam medianas por participante; círculos vazios mostram os dois katas que formam cada mediana.",
-        ha="center",
+    ax.grid(alpha=0.22)
+    ax.legend(handles=legend_items, frameon=False, ncol=2, loc="upper right")
+    ax.text(
+        0.01,
+        -0.16,
+        "Cada ponto é um artefato; o gráfico é exploratório e não implica correlação estatística.",
+        transform=ax.transAxes,
         fontsize=8,
-        color="#555555",
+        color="#5f6368",
     )
-    fig.tight_layout(rect=(0, 0.05, 1, 1))
-    fig.savefig(output)
+    fig.tight_layout()
+    fig.savefig(output, dpi=220, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -558,10 +542,33 @@ def make_duplication_lollipop(detail: pd.DataFrame, output: Path) -> None:
 
 def make_figures(detail: pd.DataFrame, figures_dir: Path) -> None:
     figures_dir.mkdir(parents=True, exist_ok=True)
-    plt.rcParams.update({"font.size": 9, "figure.dpi": 140})
-    make_loc_strip_plot(detail, figures_dir / "rq3_loc_ia_vs_manual.png")
-    make_complexity_slope_chart(
-        detail, figures_dir / "rq3_complexidade_ia_vs_manual.png"
+    plt.rcParams.update(
+        {
+            "font.size": 10,
+            "figure.dpi": 150,
+            "font.family": "DejaVu Sans",
+            "axes.titleweight": "bold",
+            "axes.edgecolor": "#5f6368",
+        }
+    )
+    make_metric_boxplot(
+        detail,
+        "loc",
+        "LOC lógico (lloc)",
+        "RQ3 — distribuição de LOC por tratamento",
+        figures_dir / "rq3_loc_ia_vs_manual.png",
+        decimals=1,
+    )
+    make_metric_boxplot(
+        detail,
+        "avg_cyclomatic_complexity",
+        "Complexidade ciclomática média por função/método",
+        "RQ3 — distribuição da complexidade por tratamento",
+        figures_dir / "rq3_complexidade_ia_vs_manual.png",
+        decimals=2,
+    )
+    make_loc_complexity_scatter(
+        detail, figures_dir / "rq3_loc_complexidade_scatter.png"
     )
     make_duplication_lollipop(
         detail, figures_dir / "rq3_duplicacao_ia_vs_manual.png"

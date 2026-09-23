@@ -18,6 +18,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import pandas as pd
 
 from lab02.trials.config import (
@@ -439,91 +440,317 @@ def analyze(audit: pd.DataFrame, trials: pd.DataFrame, cycles: pd.DataFrame) -> 
             "inovacao_detalhe": evolution, "inovacao_resumo": innovation}
 
 
-def make_figures(trials: pd.DataFrame, cycles: pd.DataFrame, tables: dict[str, pd.DataFrame]) -> None:
-    plt.rcParams.update({"font.size": 10, "figure.dpi": 140})
-    # Cada ponto representa um trial; a linha mostra a mediana, sem sugerir
-    # precisão estatística que dois pontos por tratamento não têm.
-    fig, ax = plt.subplots(figsize=(8, 5))
-    for x, treatment in enumerate(("IA", "Manual")):
-        group = trials.loc[trials.tratamento == treatment].sort_values("kata")
-        offsets = pd.Series(range(len(group)), index=group.index) * 0.13 - 0.065 * (len(group) - 1)
-        for idx, row in group.iterrows():
-            marker = "x" if row.status == "time-box" else "o"
-            ax.scatter(x + offsets[idx], row.tempo_segundos / 60, color=COLORS[treatment],
-                       marker=marker, s=70)
-            ax.annotate(f"K{row.kata[4]} · {row.participante}",
-                        (x + offsets[idx], row.tempo_segundos / 60),
-                        xytext=(5, 5), textcoords="offset points", fontsize=8)
-        median = group.tempo_segundos.median() / 60
-        ax.hlines(median, x - 0.25, x + 0.25, colors=COLORS[treatment], linewidth=2,
-                  label=f"Mediana {treatment}: {median:.2f} min")
-    ax.set(xlim=(-0.55, 1.55), xticks=[0, 1], xticklabels=["IA", "Manual"],
-           ylabel="Tempo observado ou limite (min)",
-           title="RQ1 — tempo por trial e mediana por tratamento")
-    ax.grid(axis="y", alpha=0.25)
-    ax.legend(loc="upper left")
+def _style_boxplot(ax, data: list[pd.Series], labels: tuple[str, str]) -> None:
+    boxes = ax.boxplot(
+        data,
+        tick_labels=labels,
+        patch_artist=True,
+        widths=0.48,
+        showfliers=False,
+        medianprops={"color": "#202124", "linewidth": 2.2},
+        whiskerprops={"color": "#5f6368", "linewidth": 1.2},
+        capprops={"color": "#5f6368", "linewidth": 1.2},
+    )
+    for patch, treatment in zip(boxes["boxes"], labels):
+        patch.set_facecolor(COLORS[treatment])
+        patch.set_alpha(0.22)
+        patch.set_edgecolor(COLORS[treatment])
+        patch.set_linewidth(1.5)
+
+
+def _participant_initial(name: str) -> str:
+    return {"Fernanda": "F", "Islayder": "I", "Vinicius": "V"}[name]
+
+
+def make_figures(
+    trials: pd.DataFrame,
+    cycles: pd.DataFrame,
+    tables: dict[str, pd.DataFrame],
+) -> None:
+    plt.rcParams.update(
+        {
+            "font.size": 10,
+            "figure.dpi": 150,
+            "font.family": "DejaVu Sans",
+            "axes.titleweight": "bold",
+            "axes.edgecolor": "#5f6368",
+        }
+    )
+    FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+
+    # RQ1 principal: distribuição completa com quartis, mediana e os 12 trials.
+    fig, ax = plt.subplots(figsize=(8.4, 5.3))
+    treatments = ("IA", "Manual")
+    series = [
+        trials.loc[trials.tratamento == treatment, "tempo_segundos"]
+        for treatment in treatments
+    ]
+    _style_boxplot(ax, series, treatments)
+    for position, treatment in enumerate(treatments, start=1):
+        group = trials.loc[trials.tratamento == treatment].sort_values(
+            ["participante", "kata"]
+        )
+        offsets = [
+            (index - (len(group) - 1) / 2) * 0.055
+            for index in range(len(group))
+        ]
+        label_offsets = {
+            ("IA", "Fernanda", "kata4_manutencao_preditiva"): 16,
+            ("IA", "Islayder", "kata1_normalizador_etiquetas"): 5,
+            ("Manual", "Fernanda", "kata1_normalizador_etiquetas"): 16,
+            ("Manual", "Fernanda", "kata3_compactador_sensor"): 4,
+        }
+        for offset, (_, row) in zip(offsets, group.iterrows()):
+            ax.scatter(
+                position + offset,
+                row.tempo_segundos,
+                s=54,
+                color=COLORS[treatment],
+                edgecolor="white",
+                linewidth=0.8,
+                zorder=3,
+            )
+            ax.annotate(
+                f"{_participant_initial(row.participante)}·K{row.kata[4]}",
+                (position + offset, row.tempo_segundos),
+                xytext=(
+                    0,
+                    label_offsets.get(
+                        (treatment, row.participante, row.kata), 7
+                    ),
+                ),
+                textcoords="offset points",
+                ha="center",
+                fontsize=7.5,
+                color="#34373a",
+            )
+    ax.set(
+        ylabel="Tempo até green (s)",
+        title="RQ1 — distribuição do tempo até green por tratamento",
+    )
+    ax.grid(axis="y", alpha=0.22)
+    ax.text(
+        0.01,
+        -0.16,
+        "Caixa = Q1–Q3; linha = mediana; pontos = trials; rótulos: participante e kata.",
+        transform=ax.transAxes,
+        fontsize=8,
+        color="#5f6368",
+    )
     fig.tight_layout()
-    fig.savefig(FIGURES_DIR / "rq1_tempo_ia_vs_manual.png")
+    fig.savefig(
+        FIGURES_DIR / "rq1_tempo_ia_vs_manual.png", dpi=220, bbox_inches="tight"
+    )
     plt.close(fig)
 
-    evolution = tables["inovacao_detalhe"]
-    fig, ax = plt.subplots(figsize=(8, 5))
-    for x, treatment in enumerate(("IA", "Manual")):
-        group = evolution.loc[evolution.tratamento == treatment].sort_values("kata")
-        for i, (_, row) in enumerate(group.iterrows()):
-            xpos = x + (i - (len(group) - 1) / 2) * 0.18
-            if row.n_ciclos == 1:
-                ax.scatter(xpos, row.ultima_taxa_pct, color=COLORS[treatment], s=55)
-            else:
-                ax.plot([xpos - 0.035, xpos + 0.035],
-                        [row.primeira_taxa_pct, row.ultima_taxa_pct],
-                        color=COLORS[treatment], marker="o", linewidth=1.4)
-            ax.annotate(f"K{row.kata[4]}", (xpos, row.ultima_taxa_pct),
-                        xytext=(3, 5), textcoords="offset points", fontsize=8)
-    ax.set(xlim=(-0.5, 1.5), ylim=(-5, 112), xticks=[0, 1],
-           xticklabels=["IA", "Manual"], ylabel="Testes passando (%)",
-           title="RQ2 — taxa no primeiro e último ciclo por trial")
-    ax.grid(axis="y", alpha=0.25)
-    fig.text(0.5, 0.01, "Ponto = um ciclo; linha = primeiro ao último ciclo; K = kata.",
-             ha="center", fontsize=8)
-    fig.tight_layout(rect=(0, 0.04, 1, 1))
-    fig.savefig(FIGURES_DIR / "rq2_testes_ia_vs_manual.png")
+    # RQ1 secundária: cada participante permanece uma categoria, não um eixo temporal.
+    pairs = tables["rq1_pares"].copy()
+    participants = ["Fernanda", "Islayder", "Vinicius"]
+    pairs = pairs.set_index("participante").loc[participants] * 60
+    x = list(range(len(participants)))
+    width = 0.34
+    fig, ax = plt.subplots(figsize=(8.4, 4.7))
+    ia_bars = ax.bar(
+        [value - width / 2 for value in x],
+        pairs.mediana_ia_min,
+        width,
+        label="IA",
+        color=COLORS["IA"],
+    )
+    manual_bars = ax.bar(
+        [value + width / 2 for value in x],
+        pairs.mediana_manual_min,
+        width,
+        label="Manual",
+        color=COLORS["Manual"],
+    )
+    for bars in (ia_bars, manual_bars):
+        ax.bar_label(bars, fmt="%.1f s", padding=3, fontsize=8)
+    ax.set(
+        xticks=x,
+        xticklabels=participants,
+        ylabel="Mediana individual (s)",
+        title="RQ1 — medianas individuais por participante",
+    )
+    ax.set_ylim(0, float(pairs.max().max()) * 1.17)
+    ax.grid(axis="y", alpha=0.22)
+    ax.legend(frameon=False, ncol=2, loc="upper left")
+    fig.tight_layout()
+    fig.savefig(
+        FIGURES_DIR / "rq1_mediana_participante.png",
+        dpi=220,
+        bbox_inches="tight",
+    )
     plt.close(fig)
 
-    fig, ax = plt.subplots(figsize=(9, 5))
-    for _, trial in trials.sort_values(["tratamento", "kata"]).iterrows():
-        current = cycles.loc[cycles.trial_id == trial.trial_id].sort_values("ciclo")
-        label = f"{trial.tratamento} · K{trial.kata[4]} · {trial.participante}"
-        ax.plot(current.tempo_segundos / 60, current.taxa_sucesso,
-                marker="o", linestyle="-" if len(current) > 1 else "None",
-                color=COLORS[trial.tratamento],
-                alpha=0.55 if trial.tratamento == "Manual" else 1,
-                label=label)
-    ax.set(xlabel="Tempo decorrido no trial (min)", ylabel="Testes passando (%)",
-           ylim=(-5, 110), title="Inovação — evolução observada por ciclo")
-    ax.grid(alpha=0.25)
-    ax.legend(fontsize=8, loc="lower left")
+    # RQ2: contagens finais; a aprovação é total nos dois tratamentos.
+    rq2 = tables["rq2_resumo"].set_index("tratamento").loc[list(treatments)]
+    fig, ax = plt.subplots(figsize=(7.4, 3.5))
+    y = [1, 0]
+    passed = rq2.passed_soma.astype(int).tolist()
+    failed = rq2.failed_soma.astype(int).tolist()
+    for y_pos, treatment, pass_count, fail_count in zip(
+        y, treatments, passed, failed
+    ):
+        ax.barh(y_pos, pass_count, color=COLORS[treatment], height=0.5)
+        if fail_count:
+            ax.barh(
+                y_pos,
+                fail_count,
+                left=pass_count,
+                color="#9aa0a6",
+                height=0.5,
+            )
+        ax.text(
+            pass_count + 0.8,
+            y_pos,
+            f"{pass_count}/{pass_count + fail_count} · 100% · 0 falhando",
+            va="center",
+            fontsize=9,
+        )
+    ax.set(
+        yticks=y,
+        yticklabels=treatments,
+        xlabel="Testes de aceitação no resultado final",
+        title="RQ2 — todos os testes finais passaram",
+        xlim=(0, max(passed) + 17),
+    )
+    ax.grid(axis="x", alpha=0.2)
+    ax.spines[["top", "right"]].set_visible(False)
     fig.tight_layout()
-    fig.savefig(FIGURES_DIR / "inovacao_evolucao_testes.png")
+    fig.savefig(
+        FIGURES_DIR / "rq2_testes_ia_vs_manual.png",
+        dpi=220,
+        bbox_inches="tight",
+    )
     plt.close(fig)
 
-    fig, ax = plt.subplots(figsize=(8, 5))
-    for x, treatment in enumerate(("IA", "Manual")):
-        group = evolution.loc[evolution.tratamento == treatment].sort_values("kata")
-        for i, (_, row) in enumerate(group.iterrows()):
-            xpos = x + (i - (len(group) - 1) / 2) * 0.18
-            reached = row.ciclo_ate_green != ""
-            ax.scatter(xpos, row.ciclo_ate_green if reached else row.n_ciclos,
-                       marker="o" if reached else "x", color=COLORS[treatment], s=75)
-            ax.annotate(f"K{row.kata[4]}",
-                        (xpos, row.ciclo_ate_green if reached else row.n_ciclos),
-                        xytext=(5, 4), textcoords="offset points", fontsize=8)
-    ax.set(xlim=(-0.5, 1.5), xticks=[0, 1], xticklabels=["IA", "Manual"],
-           ylabel="Ciclo em que atingiu green", title="Inovação — ciclos até green")
-    ax.set_yticks(range(1, int(evolution.n_ciclos.max()) + 2))
-    ax.grid(axis="y", alpha=0.25)
+    # Inovação principal: eixo ordenado por ciclo, sem criar medições intermediárias.
+    participant_colors = {
+        "Fernanda": "#4e79a7",
+        "Islayder": "#59a14f",
+        "Vinicius": "#b07aa1",
+    }
+    kata_markers = {"1": "o", "2": "s", "3": "^", "4": "D"}
+    fig, axes = plt.subplots(1, 2, figsize=(10.2, 5.2), sharey=True)
+    for ax, treatment in zip(axes, treatments):
+        group = trials.loc[trials.tratamento == treatment].sort_values(
+            ["participante", "kata"]
+        )
+        for _, trial in group.iterrows():
+            current = cycles.loc[cycles.trial_id == trial.trial_id].copy()
+            current["ciclo"] = pd.to_numeric(current.ciclo)
+            current["taxa_sucesso"] = pd.to_numeric(current.taxa_sucesso)
+            current = current.sort_values("ciclo")
+            label = f"{trial.participante} · K{trial.kata[4]}"
+            ax.plot(
+                current.ciclo,
+                current.taxa_sucesso,
+                marker=kata_markers[trial.kata[4]],
+                markersize=6,
+                linewidth=1.6 if len(current) > 1 else 0,
+                color=participant_colors[trial.participante],
+                alpha=0.86,
+                label=label,
+            )
+        ax.set(
+            title=treatment,
+            xlabel="Ciclo de testes",
+            xticks=[1, 2],
+            xlim=(0.82, 2.18),
+            ylim=(-4, 106),
+        )
+        ax.grid(alpha=0.22)
+        ax.legend(fontsize=7.2, frameon=False, loc="lower right")
+    axes[0].set_ylabel("Testes passando (%)")
+    fig.suptitle("Inovação — evolução observada ao longo dos ciclos", fontweight="bold")
+    fig.text(
+        0.5,
+        0.01,
+        "Cada linha representa um trial; trials com um ciclo aparecem como um único ponto.",
+        ha="center",
+        fontsize=8,
+        color="#5f6368",
+    )
+    fig.tight_layout(rect=(0, 0.045, 1, 0.95))
+    fig.savefig(
+        FIGURES_DIR / "inovacao_evolucao_testes.png",
+        dpi=220,
+        bbox_inches="tight",
+    )
+    plt.close(fig)
+
+    # Inovação complementar: dot plot de retrabalho por trial.
+    evolution = tables["inovacao_detalhe"].copy()
+    evolution["kata_num"] = evolution.kata.str.extract(r"kata([1-4])").astype(int)
+    evolution["tratamento_ordem"] = pd.Categorical(
+        evolution.tratamento, categories=list(treatments), ordered=True
+    )
+    evolution = evolution.sort_values(
+        ["tratamento_ordem", "participante", "kata_num"]
+    ).reset_index(drop=True)
+    labels = [
+        f"{row.participante} · K{row.kata_num} · {row.tratamento}"
+        for row in evolution.itertuples()
+    ]
+    positions = list(range(len(evolution)))
+    fig, ax = plt.subplots(figsize=(8.8, 6.2))
+    for position, row in zip(positions, evolution.itertuples()):
+        cycles_to_green = int(row.ciclo_ate_green)
+        ax.hlines(
+            position,
+            0.85,
+            cycles_to_green,
+            color=COLORS[row.tratamento],
+            alpha=0.45,
+            linewidth=2,
+        )
+        ax.scatter(
+            cycles_to_green,
+            position,
+            color=COLORS[row.tratamento],
+            s=70,
+            zorder=3,
+        )
+        ax.annotate(
+            str(cycles_to_green),
+            (cycles_to_green, position),
+            xytext=(7, 0),
+            textcoords="offset points",
+            va="center",
+            fontsize=8,
+        )
+    ax.set(
+        yticks=positions,
+        yticklabels=labels,
+        xticks=[1, 2],
+        xlim=(0.75, 2.25),
+        xlabel="Ciclo em que atingiu green",
+        title="Inovação — ciclos até green por trial",
+    )
+    ax.invert_yaxis()
+    ax.grid(axis="x", alpha=0.22)
+    ax.legend(
+        handles=[
+            Line2D(
+                [0],
+                [0],
+                marker="o",
+                color=COLORS[treatment],
+                linewidth=2,
+                label=treatment,
+            )
+            for treatment in treatments
+        ],
+        frameon=False,
+        loc="lower right",
+    )
     fig.tight_layout()
-    fig.savefig(FIGURES_DIR / "inovacao_ciclos_ate_green.png")
+    fig.savefig(
+        FIGURES_DIR / "inovacao_ciclos_ate_green.png",
+        dpi=220,
+        bbox_inches="tight",
+    )
     plt.close(fig)
 
 
