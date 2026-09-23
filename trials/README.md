@@ -88,6 +88,14 @@ Os CSVs são escritos de forma atômica e usam `trial_id` para evitar duplicatas
 
 Os coletores de execuções reais gravam `source_kind=observed`. Cenários simulados autorizados para ensaio metodológico usam `source_kind=observed_simulated`, ID `SIM-*` e status `simulated-*`. Esses registros não têm snapshot nem tempo observado e devem ser identificados separadamente de qualquer resultado experimental humano.
 
+Os trials IA #21 e #25 de Islayder foram executados com Gemini no celular,
+cronometrados fora do runner e informados pelo participante. Para preservar a
+distinção metodológica sem fabricar timestamps, snapshots ou IDs instrumentados,
+eles ficam em `results/participant_reported_trials.csv` com
+`source_kind=participant_reported_observed`. A análise gera um único ciclo final
+a partir do campo `ciclos=1`, exatamente como informado, e valida o total de
+testes diretamente nos respectivos `test_solucao.py`.
+
 ## Interrupções
 
 `Ctrl+C` gera o status `interrupted`, salva o snapshot possível e persiste uma linha final coerente. Esse registro não deve ser tratado como trial válido na análise; registre a ocorrência e repita apenas com uma nova Issue, conforme decisão do grupo.

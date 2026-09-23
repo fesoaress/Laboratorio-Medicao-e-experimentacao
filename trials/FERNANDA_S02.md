@@ -1,34 +1,32 @@
-# S02 — Roteiro de execução de Fernanda
+# S02 — Registro final de Fernanda
 
-> **Ressalva posterior:** os quatro registros abaixo são ensaios do instrumento
-> e não dados experimentais oficiais. O protocolo vigente para a reexecução está
-> em `lab02/trials/FERNANDA_REEXECUCAO.md`. Não reutilize os códigos, tempos ou
-> Issues desta página como resultados de Fernanda.
+Os quatro trials finais foram executados em 20/09/2026, na ordem
+contrabalanceada Kata 2 → Kata 1 → Kata 4 → Kata 3.
 
-Execução concluída em 16/09/2026. Evidências em `reports/sprints/lab02_s02/fernanda.md`.
+| Ordem | Issue | Kata | Tratamento | Trial ID | Origem | Status |
+|---:|---|---|---|---|---|---|
+| 1 | #19 | `kata2_balanceamento_turnos` | IA | `ba0cb83a55764b3389f7da94946c9230` | `agent_delegated_codex_work` | `green` |
+| 2 | #27 | `kata1_normalizador_etiquetas` | Manual | `e9bb6d490e1246bd942cc164bb5cd55a` | `observed` | `green` |
+| 3 | #29 | `kata4_manutencao_preditiva` | IA | `c33c36f2110a45478c1016a89476035a` | `agent_delegated_codex_work` | `green` |
+| 4 | #28 | `kata3_compactador_sensor` | Manual | `077979815f8f417b88718e458c618807` | `observed` | `green` |
 
-## Alocação executada
+## Fontes finais
 
-| Ordem | Issue | Kata | Tratamento executado | Trial ID | Status |
-|---:|---|---|---|---:|---|
-| 1 | `#19` | `kata2_balanceamento_turnos` | IA | `5e85c97fc84f4819a10aa87970316abf` | green |
-| 2 | `#27` | `kata1_normalizador_etiquetas` | Manual | `31c7f16ce79c478ab8f81cd8628e6e3c` | green |
-| 3 | `#29` | `kata4_manutencao_preditiva` | IA | `bd057b8dcaef41a6a9503c053b9d57f3` | green |
-| 4 | `#28` | `kata3_compactador_sensor` | Manual | `4dfbe8c44c964a65ae003d35d6a60754` | green |
+- Tempos e estados finais: `lab02/trials/results/trials.csv`.
+- Evolução por ciclo: `lab02/trials/results/trial_cycles.csv`.
+- Validação: `lab02/analysis/results/validacao_fernanda.csv`.
+- Artefatos estruturais reconstruídos:
+  `lab02/trials/results/rq3_artifacts/fernanda/manifest.csv`.
+- Métricas reproduzidas: `lab02/metrics/results/metrics.csv`.
 
-Cada Issue é vinculada pelo kata que ela endereça: Kata 1 → `#27`, Kata 2 → `#19`, Kata 3 → `#28`, Kata 4 → `#29`. As Issues `#33`–`#36`, usadas em uma versão anterior destes CSVs, nunca existiram no repositório (a numeração vai até `#32`).
+Os quatro trials IA/Manual são resultados finais; os ensaios antigos do
+instrumento permanecem documentados apenas como histórico e são excluídos das
+análises. Os dois registros `agent_delegated_codex_work` representam execução
+delegada documentada, não simulação.
 
-Divergência aberta: os títulos das Issues no GitHub descrevem o tratamento oposto ao executado (ex.: `#27` está intitulada "Kata 1 - IA", mas o kata 1 foi executado como Manual). Os CSVs registram o tratamento efetivamente aplicado, que é o que sustenta o contrabalanceamento frente a Islayder e Vinicius. Os títulos das quatro Issues precisam ser renomeados no GitHub para refletir o tratamento executado.
+## Limitação de rastreabilidade
 
-## Arquivos gerados
-
-- `lab02/trials/results/trials.csv`
-- `lab02/trials/results/trial_cycles.csv`
-- `lab02/trials/results/solutions/<trial_id>/`
-- `lab02/metrics/results/metrics.csv`
-
-## Coleta RQ3 (já executada)
-
-Métricas registradas para os quatro snapshots finais via `run_metrics.py`.
-
-O `run_metrics.py` também grava um JSON detalhado por trial em `lab02/metrics/results/`, mas esses arquivos são ignorados pelo `.gitignore` por serem auditoria local: o CSV consolidado é o artefato versionado. A coluna `json_path` do `metrics.csv` aponta para caminhos que só existem na máquina onde a coleta rodou. Para reproduzi-los em um clone novo, instale `radon` (`pip install -r lab02/metrics/requirements.txt`) e `jscpd` (`npm ci` em `lab02/metrics`) e reexecute `run_metrics.py` para cada snapshot com `--trial-id` e `--issue`.
+Os quatro caminhos `codigo_path` originais não foram versionados. A RQ3 usa
+cópias dos códigos preparatórios existentes que passam os testes e reproduzem
+as métricas registradas. O manifesto deixa essa reconstrução explícita; esses
+arquivos não são chamados de snapshots originais do runner.

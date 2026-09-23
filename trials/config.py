@@ -20,6 +20,11 @@ FINAL_SOLUTIONS_DIR = RESULTS_DIR / "solutions"
 TRIALS_CSV = RESULTS_DIR / "trials.csv"
 CYCLES_CSV = RESULTS_DIR / "trial_cycles.csv"
 
+# Resultados observados fora do runner, informados pelo participante com os
+# campos efetivamente disponíveis. Permanecem separados dos CSVs instrumentados
+# para não fabricar timestamps, snapshots ou IDs do runner.
+PARTICIPANT_REPORTED_TRIALS_CSV = RESULTS_DIR / "participant_reported_trials.csv"
+
 # Time-box máximo definido pelo laboratório: 35 minutos
 TIME_BOX_MINUTES = 35
 TIME_BOX_SECONDS = TIME_BOX_MINUTES * 60

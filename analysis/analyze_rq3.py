@@ -1,4 +1,4 @@
-"""Gera a RQ3 usando a mesma elegibilidade auditada de RQ1/RQ2."""
+"""Gera a RQ3 a partir dos trials finais e dos artefatos rastreáveis."""
 
 from __future__ import annotations
 
@@ -21,11 +21,10 @@ from lab02.analysis.analyze_rq1_rq2 import (
     COLORS,
     FIGURES_DIR,
     RESULTS_DIR,
-    load_and_audit,
     require,
 )
 from lab02.metrics.run_metrics import DEFAULT_RESULTS_DIR
-from lab02.trials.config import TRIALS_CSV
+from lab02.trials.config import BASE_DIR, TRIALS_CSV
 
 
 METRICS_CSV = DEFAULT_RESULTS_DIR / "metrics.csv"
@@ -38,6 +37,10 @@ METRIC_COLUMNS = {
     "loc",
     "avg_cyclomatic_complexity",
     "duplication_percentage",
+    "cyclomatic_complexity_max",
+    "duplicated_lines",
+    "duplicated_blocks",
+    "analyzed_functions",
     "analysis_error",
     "solution_path",
     "source_kind",
@@ -56,12 +59,24 @@ METRICS = (
     ),
 )
 
-# Decisão explícita do grupo para a consolidação da RQ3: os quatro registros
-# existentes de Islayder entram no recorte oficial desta pergunta de pesquisa.
-# A proveniência original permanece nos CSVs e na tabela detalhada.
-ISLAYDER_OFFICIAL_RQ3_TRIAL_IDS = frozenset(
-    {"SIM-S02-I21", "SIM-S02-I24", "SIM-S02-I25", "SIM-S02-I26"}
+ISLAYDER_RQ3_MANIFEST = (
+    Path(__file__).resolve().parents[1]
+    / "trials"
+    / "results"
+    / "rq3_artifacts"
+    / "islayder"
+    / "manifest.csv"
 )
+FERNANDA_RQ3_MANIFEST = (
+    Path(__file__).resolve().parents[1]
+    / "trials"
+    / "results"
+    / "rq3_artifacts"
+    / "fernanda"
+    / "manifest.csv"
+)
+FINAL_SOURCE_KINDS = frozenset({"observed", "agent_delegated_codex_work"})
+FINAL_PARTICIPANTS = frozenset({"Fernanda", "Islayder", "Vinicius"})
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -76,45 +91,125 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def load_detail(require_fernanda: bool = False) -> pd.DataFrame:
-    _, eligible_trials, _ = load_and_audit()
-    fernanda = eligible_trials.loc[eligible_trials.participante == "Fernanda"]
-    if require_fernanda:
+def load_manifest(
+    path: Path, participant: str, default_source_kind: str | None = None
+) -> pd.DataFrame:
+    require(path.is_file(), f"manifesto RQ3 de {participant} ausente")
+    manifest = pd.read_csv(
+        path, dtype=str, keep_default_na=False, encoding="utf-8-sig"
+    )
+    required = {
+        "trial_id",
+        "participant",
+        "issue",
+        "kata",
+        "treatment",
+        "solution_path",
+        "test_path",
+    }
+    require(required <= set(manifest), f"manifesto de {participant}: colunas ausentes")
+    if "source_kind" not in manifest:
+        require(default_source_kind is not None, f"manifesto de {participant}: origem ausente")
+        manifest["source_kind"] = default_source_kind
+    require(
+        len(manifest) == 4
+        and manifest.participant.eq(participant).all()
+        and manifest.kata.nunique() == 4
+        and manifest.treatment.value_counts().to_dict() == {"IA": 2, "Manual": 2},
+        f"manifesto de {participant} não respeita o desenho 2 IA + 2 Manual",
+    )
+    require(
+        not manifest.trial_id.str.startswith("SIM-").any()
+        and manifest.source_kind.isin(FINAL_SOURCE_KINDS).all(),
+        f"manifesto final de {participant} contém origem ou ID inválido",
+    )
+    for row in manifest.itertuples(index=False):
         require(
-            len(fernanda) == 4
-            and fernanda.kata.nunique() == 4
-            and fernanda.tratamento.value_counts().to_dict()
-            == {"IA": 2, "Manual": 2},
-            "os quatro trials oficiais de Fernanda ainda não estão completos",
+            (BASE_DIR / row.solution_path).is_file(),
+            f"código RQ3 ausente: {row.solution_path}",
         )
+        require(
+            (BASE_DIR / row.test_path).is_file(),
+            f"teste RQ3 ausente: {row.test_path}",
+        )
+    return manifest
 
+
+def load_detail(require_fernanda: bool = False) -> pd.DataFrame:
     raw_trials = pd.read_csv(
         TRIALS_CSV, dtype=str, keep_default_na=False, encoding="utf-8-sig"
     )
-    islayder = raw_trials.loc[
-        raw_trials.trial_id.isin(ISLAYDER_OFFICIAL_RQ3_TRIAL_IDS)
+    required_trial_columns = {
+        "trial_id",
+        "issue",
+        "participante",
+        "kata",
+        "tratamento",
+        "status",
+        "codigo_path",
+        "source_kind",
+    }
+    require(
+        required_trial_columns <= set(raw_trials),
+        "trials.csv: colunas obrigatórias ausentes para validar RQ3",
+    )
+
+    islayder_manifest = load_manifest(
+        ISLAYDER_RQ3_MANIFEST, "Islayder", default_source_kind="observed"
+    )
+    fernanda_manifest = load_manifest(FERNANDA_RQ3_MANIFEST, "Fernanda")
+    for row in fernanda_manifest.itertuples(index=False):
+        raw = raw_trials.loc[raw_trials.trial_id == row.trial_id]
+        require(len(raw) == 1, f"{row.trial_id}: trial final de Fernanda ausente")
+        trial = raw.iloc[0]
+        require(
+            trial.participante == row.participant
+            and trial.issue == row.issue
+            and trial.kata == row.kata
+            and trial.tratamento == row.treatment
+            and trial.source_kind == row.source_kind
+            and trial.status == "green",
+            f"{row.trial_id}: manifesto de Fernanda diverge de trials.csv",
+        )
+
+    base_trials = raw_trials.loc[
+        raw_trials.participante.eq("Vinicius")
+        & raw_trials.source_kind.isin(FINAL_SOURCE_KINDS)
+        & raw_trials.status.eq("green")
     ].copy()
-    require(
-        set(islayder.trial_id) == set(ISLAYDER_OFFICIAL_RQ3_TRIAL_IDS),
-        "os quatro registros oficiais de Islayder para RQ3 não estão completos",
+    base_trials = base_trials.rename(
+        columns={
+            "participante": "participant",
+            "tratamento": "treatment",
+            "codigo_path": "solution_path",
+        }
     )
-    require(
-        len(islayder) == 4
-        and islayder.participante.eq("Islayder").all()
-        and islayder.kata.nunique() == 4
-        and islayder.tratamento.value_counts().to_dict()
-        == {"IA": 2, "Manual": 2},
-        "os registros de Islayder não respeitam o desenho 2 IA + 2 Manual",
-    )
-    trials = pd.concat(
+    expected = base_trials[
         [
-            eligible_trials.loc[
-                ~eligible_trials.trial_id.isin(ISLAYDER_OFFICIAL_RQ3_TRIAL_IDS)
-            ],
-            islayder,
-        ],
-        ignore_index=True,
-    )
+            "trial_id",
+            "participant",
+            "issue",
+            "kata",
+            "treatment",
+            "solution_path",
+            "source_kind",
+        ]
+    ].copy()
+    manifest_expected = pd.concat(
+        [islayder_manifest, fernanda_manifest], ignore_index=True
+    )[
+        [
+            "trial_id",
+            "participant",
+            "issue",
+            "kata",
+            "treatment",
+            "solution_path",
+            "source_kind",
+        ]
+    ].copy()
+    expected = pd.concat([expected, manifest_expected], ignore_index=True)
+    require(not expected.trial_id.duplicated().any(), "trial_id duplicado na seleção RQ3")
 
     metrics = pd.read_csv(
         METRICS_CSV, dtype=str, keep_default_na=False, encoding="utf-8-sig"
@@ -122,31 +217,66 @@ def load_detail(require_fernanda: bool = False) -> pd.DataFrame:
     require(METRIC_COLUMNS <= set(metrics), "metrics.csv: colunas obrigatórias ausentes")
     require(not metrics.trial_id.duplicated().any(), "trial_id duplicado em metrics.csv")
 
-    selected = metrics.loc[metrics.trial_id.isin(trials.trial_id)].copy()
-    missing = sorted(set(trials.trial_id) - set(selected.trial_id))
+    selected = metrics.loc[metrics.trial_id.isin(expected.trial_id)].copy()
+    missing = sorted(set(expected.trial_id) - set(selected.trial_id))
     require(not missing, f"trials elegíveis sem métricas RQ3: {', '.join(missing)}")
-    require(len(selected) == len(trials), "quantidade de métricas não corresponde aos trials")
+    require(
+        len(selected) == len(expected),
+        "quantidade de métricas não corresponde aos artefatos finais",
+    )
+    require(
+        not selected.trial_id.str.startswith("SIM-").any()
+        and selected.source_kind.isin(FINAL_SOURCE_KINDS).all(),
+        "RQ3 final selecionou métrica simulada ou origem não autorizada",
+    )
 
-    trial_lookup = trials.set_index("trial_id")
+    trial_lookup = expected.set_index("trial_id")
     for _, metric in selected.iterrows():
         trial = trial_lookup.loc[metric.trial_id]
-        require(metric.participant == trial.participante,
+        require(metric.participant == trial.participant,
                 f"{metric.trial_id}: participante diverge em metrics.csv")
         require(metric.kata == trial.kata,
                 f"{metric.trial_id}: kata diverge em metrics.csv")
-        require(metric.treatment == trial.tratamento,
+        require(metric.treatment == trial.treatment,
                 f"{metric.trial_id}: tratamento diverge em metrics.csv")
         require(metric.issue == trial.issue,
                 f"{metric.trial_id}: Issue diverge em metrics.csv")
         require(metric.source_kind == trial.source_kind,
                 f"{metric.trial_id}: origem diverge em metrics.csv")
+        require(metric.solution_path == trial.solution_path,
+                f"{metric.trial_id}: caminho do código diverge em metrics.csv")
+
+    for participant in FINAL_PARTICIPANTS:
+        group = selected.loc[selected.participant == participant]
+        require(
+            len(group) == 4
+            and group.kata.nunique() == 4
+            and group.treatment.value_counts().to_dict() == {"IA": 2, "Manual": 2},
+            f"{participant}: RQ3 final não respeita o desenho 2 IA + 2 Manual",
+        )
+    if require_fernanda:
+        require(
+            len(selected.loc[selected.participant == "Fernanda"]) == 4,
+            "os quatro trials oficiais de Fernanda ainda não estão completos",
+        )
 
     selected = selected.rename(
         columns={"participant": "participante", "treatment": "tratamento"}
     )
-    for column, _, _ in METRICS:
+    numeric_columns = [item[0] for item in METRICS] + [
+        "cyclomatic_complexity_max",
+        "duplicated_lines",
+        "duplicated_blocks",
+        "analyzed_functions",
+    ]
+    for column in numeric_columns:
         selected[column] = pd.to_numeric(selected[column], errors="coerce")
-    selected["metricas_completas"] = selected[[item[0] for item in METRICS]].notna().all(axis=1)
+    selected["metricas_completas"] = selected[numeric_columns].notna().all(axis=1)
+    require(
+        selected["metricas_completas"].all()
+        and selected.analysis_error.eq("").all(),
+        "RQ3 final contém métrica ausente ou erro de análise",
+    )
     return selected[
         [
             "trial_id",
@@ -156,7 +286,11 @@ def load_detail(require_fernanda: bool = False) -> pd.DataFrame:
             "tratamento",
             "loc",
             "avg_cyclomatic_complexity",
+            "cyclomatic_complexity_max",
             "duplication_percentage",
+            "duplicated_lines",
+            "duplicated_blocks",
+            "analyzed_functions",
             "analysis_error",
             "metricas_completas",
             "solution_path",
@@ -165,8 +299,11 @@ def load_detail(require_fernanda: bool = False) -> pd.DataFrame:
     ].sort_values(["participante", "kata"])
 
 
-def summarize(detail: pd.DataFrame, scope: str) -> pd.DataFrame:
-    data = detail if scope == "grupo" else detail.loc[detail.participante == "Fernanda"]
+def summarize(detail: pd.DataFrame, participant: str | None = None) -> pd.DataFrame:
+    scope = "grupo" if participant is None else participant
+    data = detail if participant is None else detail.loc[
+        detail.participante == participant
+    ]
     rows = []
     for treatment in ("IA", "Manual"):
         group = data.loc[data.tratamento == treatment]
@@ -439,7 +576,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"RQ3 não executada: {exc}")
         return 2
     summary = pd.concat(
-        [summarize(detail, "grupo"), summarize(detail, "Fernanda")],
+        [summarize(detail)]
+        + [summarize(detail, participant) for participant in sorted(FINAL_PARTICIPANTS)],
         ignore_index=True,
     )
     args.output_dir.mkdir(parents=True, exist_ok=True)

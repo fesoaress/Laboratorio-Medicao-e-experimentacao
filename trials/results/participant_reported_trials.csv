@@ -1,0 +1,3 @@
+trial_id,issue,participante,kata,tratamento,tempo_segundos,testes_passando,testes_falhando,total_testes,taxa_sucesso,ciclos,status,source_kind,test_path,provenance
+REPORTED-ISLAYDER-I21,#21,Islayder,kata1_normalizador_etiquetas,IA,75,10,0,10,100.0,1,green,participant_reported_observed,src/katas/kata1_normalizador_etiquetas/test_solucao.py,"execução com Gemini no celular, cronometrada e informada pelo participante"
+REPORTED-ISLAYDER-I25,#25,Islayder,kata3_compactador_sensor,IA,150,9,0,9,100.0,1,green,participant_reported_observed,src/katas/kata3_compactador_sensor/test_solucao.py,"execução com Gemini no celular, cronometrada e informada pelo participante"
