@@ -137,7 +137,7 @@ token real. Um teste com 100 candidatos simulados verifica o volume solicitado,
 sem produzir resultados empíricos. O smoke real e os bloqueadores desta
 execução constam em [reports/s01_islayder.md](reports/s01_islayder.md).
 
-Os testes globais com `python -m pytest` encontram colisões anteriores entre
+Antes da consolidação, os testes globais com `python -m pytest` encontravam colisões entre
 arquivos `test_solucao.py` dos snapshots/katas. Para verificar os módulos de
 engenharia sem executar stubs e snapshots de trials:
 
@@ -146,7 +146,8 @@ engenharia sem executar stubs e snapshots de trials:
 ```
 
 Esse último comando requer também as dependências existentes em
-`requirements.txt` e `lab02/metrics/requirements.txt`.
+`lab02/requirements.txt` e `lab02/metrics/requirements.txt`. A configuração
+global `pytest.ini` agora seleciona apenas as suítes reais dos três laboratórios.
 
 Referências: [contribuidores REST](https://docs.github.com/en/rest/repos/repos#list-repository-contributors)
 e [workflows REST](https://docs.github.com/en/rest/actions/workflows#list-repository-workflows).
