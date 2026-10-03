@@ -1,0 +1,28 @@
+{
+  "collected_at": "2026-10-03T20:17:16.570009+00:00",
+  "config": {
+    "sample_size": 5,
+    "search_queries": [
+      "stars:>1000"
+    ],
+    "per_page": 100,
+    "start_date": null,
+    "end_date": null
+  },
+  "queries": [
+    {
+      "query": "stars:>1000",
+      "total_count": 65262,
+      "incomplete_results": false,
+      "items_seen": 5,
+      "search_cap": 1000
+    }
+  ],
+  "duplicates_skipped": 0,
+  "errors": [],
+  "candidates_found": 5,
+  "validation_csv": null,
+  "processed": 5,
+  "actions_enabled": 5,
+  "metadata_errors": 0
+}

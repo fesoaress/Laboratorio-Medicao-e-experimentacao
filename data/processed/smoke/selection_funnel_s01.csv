@@ -1,0 +1,9 @@
+stage,count,discarded,pending,reason
+candidates,5,0,0,unique_candidates_selected
+processed,5,0,0,
+metadata_complete,5,0,0,errors_are_not_insufficient_counts
+actions_enabled,5,0,0,no_github_actions
+pending_validation,5,0,0,pending_release_validation;pending_workflow_validation
+release_filter,,,5,minimum_5_releases_in_official_window
+workflow_filter,,,5,minimum_50_valid_runs_in_official_window
+final_sample,,0,5,provisional_until_all_validations_complete
