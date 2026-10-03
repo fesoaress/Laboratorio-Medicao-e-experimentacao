@@ -20,12 +20,12 @@ testes e status no runner e são distintos dos cenários `SIM-*`.
 | Ordem | Issue | Trial ID | Kata | Tratamento | Tempo (s) | Testes | Ciclos | Status | Origem |
 |---:|---|---|---|---|---:|---:|---:|---|---|
 | 1 | #19 | `ba0cb83a55764b3389f7da94946c9230` | Kata 2 | IA | 224,89 | 9/9 | 2 | `green` | `agent_delegated_codex_work` |
-| 2 | #27 | `e9bb6d490e1246bd942cc164bb5cd55a` | Kata 1 | Manual | 63,20 | 10/10 | 2 | `green` | `observed` |
+| 2 | #27 | `e9bb6d490e1246bd942cc164bb5cd55a` | Kata 1 | Manual | 200,00 | 10/10 | 2 | `green` | `observed` |
 | 3 | #29 | `c33c36f2110a45478c1016a89476035a` | Kata 4 | IA | 74,02 | 7/7 | 2 | `green` | `agent_delegated_codex_work` |
-| 4 | #28 | `077979815f8f417b88718e458c618807` | Kata 3 | Manual | 58,83 | 9/9 | 2 | `green` | `observed` |
+| 4 | #28 | `077979815f8f417b88718e458c618807` | Kata 3 | Manual | 210,00 | 9/9 | 2 | `green` | `observed` |
 
 Os dois tratamentos terminaram com todos os testes passando. Os tempos
-medianos individuais foram 149,455 s em IA e 61,015 s em Manual. Esses valores
+medianos individuais foram 149,455 s em IA e 205,000 s em Manual. Esses valores
 descrevem katas diferentes e não isolam um efeito causal do tratamento.
 
 ## Evolução por ciclo

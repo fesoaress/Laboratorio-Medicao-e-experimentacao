@@ -1,66 +1,106 @@
-# Relatório final — Laboratório 02
+# Laboratório 02 — Assistentes de IA vs. Codificação Manual
 
-## 1. Identificação
+## 1. Introdução
 
-- Disciplina: Medição e Experimentação de Software.
-- Repositório: `fesoaress/Laboratorio-Medicao-e-experimentacao`.
-- Branch de entrega: `Laboratorio-2`.
-- Participantes: Fernanda, Islayder e Vinicius.
-- Data da consolidação: 23 de setembro de 2026.
+Assistentes de inteligência artificial passaram a integrar o fluxo cotidiano de desenvolvimento de software, mas seus efeitos sobre produtividade, correção e estrutura do código dependem do contexto e da tarefa. Este laboratório compara a resolução de quatro katas em Python com assistência de IA e por codificação manual, usando um protocolo comum, testes de aceitação e métricas reproduzíveis.
 
-## 2. Introdução
+O estudo foi orientado pelas seguintes questões:
 
-Este laboratório avaliou, em tarefas curtas de programação, diferenças entre o uso de assistente de inteligência artificial e a codificação manual. O protocolo combinou testes de aceitação, limite temporal, registro de ciclos e métricas estruturais. Os resultados são descritivos de uma amostra pequena e não sustentam, isoladamente, inferências causais ou generalizações para outros contextos.
-
-## 3. Objetivo
-
-O objetivo foi comparar os tratamentos **IA** e **Manual** quanto ao tempo até uma solução verde, aos defeitos evidenciados pelos testes de aceitação, à estrutura do código final e ao retrabalho observado ao longo dos ciclos.
-
-## 4. Questões de Pesquisa
-
-- **RQ1 — Tempo:** o uso de assistente de IA altera o tempo até a solução ficar verde?
-- **RQ2 — Defeitos/testes:** o tratamento altera o resultado final dos testes de aceitação?
+- **RQ1 — Tempo:** o uso de assistente de IA altera o tempo necessário para atingir uma solução com todos os testes aprovados?
+- **RQ2 — Testes:** o tratamento altera o resultado final dos testes de aceitação?
 - **RQ3 — Estrutura:** o tratamento altera LOC, complexidade ciclomática ou duplicação do código produzido?
-- **Inovação:** como os testes evoluem entre ciclos e quanto retrabalho ocorre até o estado verde?
+- **Inovação:** como os testes evoluem entre os ciclos e quanto retrabalho ocorre até o estado verde?
 
-## 5. Metodologia
+Antes da análise, o grupo considerou como hipótese que a IA reduziria o tempo e o número de ciclos, sem necessariamente produzir diferença no resultado final dos testes. Para RQ3, a hipótese foi exploratória, pois códigos mais extensos podem apresentar tanto maior clareza quanto complexidade desnecessária. A contribuição adicional do grupo foi registrar a evolução dos testes por ciclo, permitindo analisar o processo até a solução final, e não somente o último resultado.
 
-Cada participante resolveu quatro katas, dois com IA e dois manualmente. O runner criou workspaces isolados, protegeu os testes fornecidos, executou `pytest`, persistiu um registro por ciclo e encerrou cada trial em `green` ou no limite de 35 minutos. Para RQ1, RQ2 e inovação foram selecionados 12 trials finais, seis por tratamento. Duas tentativas inválidas de Vinicius e os quatro cenários históricos `SIM-*` foram auditados e excluídos.
+## 2. Contexto
 
-Os trials IA #21 e #25 de Islayder foram realizados com Gemini no celular, cronometrados durante a execução e informados pelo participante. Como não passaram pelo runner, seus campos efetivamente observados ficam no arquivo separado `participant_reported_trials.csv`; a análise não fabrica timestamp, snapshot ou identificador de runner. O total de testes foi validado diretamente nos testes de aceitação: 10 no Kata 1 e 9 no Kata 3.
+O Laboratório 02 foi realizado por Fernanda Soares, Islayder Jackson e Vinicius Gomes na disciplina Laboratório de Experimentação de Software, do curso de Engenharia de Software da PUC Minas. O trabalho foi organizado em três sprints, com protocolo, instrumentação, execução dos trials, análise estatística, avaliação estrutural e consolidação dos resultados.
 
-Para RQ3 foram usados 12 arquivos `solucao.py` existentes, executáveis e mensuráveis. O coletor foi reexecutado sobre todos eles, e os resultados foram comparados aos registros consolidados. Registros com `source_kind=observed_simulated` não entram em nenhuma análise final. Os registros `agent_delegated_codex_work` de Fernanda foram mantidos por corresponderem aos trials finais documentados, não a fixtures simuladas.
+Cada participante resolveu quatro katas: dois com IA e dois manualmente. O desenho de medidas repetidas permitiu que todos vivenciassem os dois tratamentos. Os katas envolveram normalização de etiquetas, balanceamento de turnos, compactação de leituras de sensor e priorização de manutenção preditiva. As tarefas foram implementadas como funções puras em Python e avaliadas por testes de aceitação previamente definidos.
 
-## 6. Participantes
+O conjunto final reúne 12 trials válidos, quatro por participante e seis por tratamento. Todos terminaram com estado `green`. As comparações são apresentadas como evidência descritiva de uma amostra pequena; por isso, não devem ser generalizadas para outros desenvolvedores, tarefas ou ferramentas sem novos estudos.
 
-| Participante | Trials finais | IA | Manual |
-|---|---:|---:|---:|
-| Fernanda | 4 | 2 | 2 |
-| Islayder | 4 | 2 | 2 |
-| Vinicius | 4 | 2 | 2 |
-| **Total** | **12** | **6** | **6** |
+## 3. Metodologia
 
-## 7. Katas
+Foi adotado um experimento intrassujeitos com dois tratamentos: **IA** e **Manual**. Cada trial começou no código-base do kata e terminou quando todos os testes passaram ou quando o limite de 35 minutos foi atingido. O protocolo registrou tempo até `green`, resultado dos testes, número de ciclos e código final.
 
-Os quatro katas são funções puras em Python, sem dependências de produção externas:
+Islayder e Vinicius executaram Kata 1 e Kata 3 com IA, e Kata 2 e Kata 4 manualmente. Fernanda realizou a alocação complementar: Kata 1 e Kata 3 manualmente, e Kata 2 e Kata 4 com IA. Assim, cada participante executou dois trials por tratamento e todos os katas apareceram nos dois tratamentos no conjunto do grupo.
 
-1. `kata1_normalizador_etiquetas`: normalização e validação de etiquetas — 10 testes;
-2. `kata2_balanceamento_turnos`: balanceamento de turnos — 9 testes;
-3. `kata3_compactador_sensor`: compactação de leituras de sensor — 9 testes;
-4. `kata4_manutencao_preditiva`: priorização para manutenção preditiva — 7 testes.
+Para RQ1, as medianas individuais de tempo em IA e Manual foram pareadas por participante e comparadas pelo teste de Wilcoxon. Para RQ2, foram analisadas as contagens finais de testes aprovados e reprovados. Para RQ3, o código final foi medido quanto a linhas lógicas, complexidade ciclomática e duplicação. Na inovação, cada execução da suíte foi tratada como um ciclo até `green`.
 
-Os gabaritos de referência foram verificados isoladamente: 10/10, 9/9, 9/9 e 7/7 testes passaram. Eles não foram disponibilizados nos workspaces dos participantes.
+### 3.1 Principais Desafios
 
-## 8. Desenho Experimental
+Os principais desafios técnicos e metodológicos foram:
 
-O estudo adotou medidas repetidas: cada participante foi exposto aos dois tratamentos, sempre em katas diferentes. Cada trial iniciou a partir do stub do kata e terminou quando todos os testes passaram ou quando o time-box foi atingido. O tempo principal foi o tempo até `green`; os testes finais, ciclos e snapshots foram vinculados por participante, Issue, kata e tratamento.
+- manter o mesmo limite temporal e os mesmos critérios de encerramento em todos os trials;
+- contrabalancear os tratamentos com três participantes e quatro katas;
+- consolidar os resultados preservando a identidade de participante, kata, tratamento e Issue;
+- separar dados finais de ensaios preparatórios, evitando ampliar artificialmente a amostra;
+- relacionar cada medida estrutural ao respectivo artefato de código;
+- interpretar estatísticas com apenas três participantes, sem transformar diferenças descritivas em conclusões causais.
+
+Esses desafios foram tratados com validações automáticas dos arquivos consolidados, conferência dos testes de aceitação, seleção explícita dos 12 trials finais e apresentação dos pontos individuais nos gráficos.
+
+### 3.2 Tomadas de Decisão
+
+O time-box foi fixado em 2.100 segundos para manter comparabilidade e impedir que um único trial consumisse tempo indefinido. O estado `green` foi definido como aprovação integral da suíte do kata. As análises usam contagens absolutas juntamente com percentuais, pois 100% pode representar totais diferentes entre tarefas.
+
+O grupo optou por medianas e intervalos interquartis como medidas principais devido à amostra pequena e à dispersão dos tempos. O Wilcoxon foi aplicado às medianas individuais, resultando em apenas três pares; seu valor-p é apresentado com essa limitação explícita. Para código, LOC, complexidade e duplicação foram mantidas como dimensões separadas, sem criar um índice único de qualidade.
+
+O limite de trabalho em andamento foi definido em **três itens na coluna Doing**, no máximo um por integrante. Essa regra favoreceu responsabilidade clara, revisão pelos colegas e fluxo contínuo sem concentrar várias atividades simultâneas em uma pessoa.
+
+### 3.3 Etapas
+
+| Etapa | Entregas principais | Responsáveis | Issues |
+|---|---|---|---|
+| Lab02S01 | Protocolo, katas, testes, instrumentação e métricas estruturais | Grupo | #14, #15 e #17 |
+| Lab02S02 | Execução dos 12 trials e consolidação dos artefatos | Fernanda, Islayder e Vinicius | #19 a #32 |
+| Lab02S03 | RQ1, RQ2, inovação, RQ3 e dashboard | Islayder, Fernanda e Vinicius | #33, #34 e #35 |
+| Relatório final | Síntese metodológica, resultados, discussão e revisão | Grupo | #33 |
+
+As responsabilidades foram distribuídas por frente: Islayder consolidou RQ1, RQ2 e a análise de ciclos; Fernanda trabalhou na avaliação estrutural de RQ3; Vinicius produziu o dashboard; e o relatório integrou os resultados do grupo.
+
+### 3.4 Ferramentas
+
+- **Python e pytest:** implementação dos katas e execução dos testes de aceitação.
+- **Pandas:** consolidação dos trials e estatísticas descritivas.
+- **SciPy:** teste pareado de Wilcoxon.
+- **Matplotlib e Seaborn:** gráficos das questões de pesquisa e da inovação.
+- **Radon 6.0.1:** LOC lógico e complexidade ciclomática.
+- **jscpd 5.2.0:** detecção de linhas e blocos duplicados.
+- **Git e GitHub Projects:** versionamento, Issues, rastreabilidade e acompanhamento do trabalho.
+- **python-docx:** geração do relatório no modelo institucional.
+
+### 3.5 Tabela de Métricas
+
+| RQ | Métrica | Definição operacional | Unidade | Ferramenta / Fonte |
+|---|---|---|---|---|
+| RQ1 | Tempo até green | Segundos do início do trial até todos os testes passarem; limite de 2.100 s | segundos | Registros dos trials |
+| RQ2 | Testes finais | Quantidade aprovada, reprovada e total no encerramento | testes e percentual | pytest e testes de aceitação |
+| RQ3 | LOC lógico | Linhas lógicas de `solucao.py` | linhas | Radon 6.0.1 |
+| RQ3 | Complexidade | Média e máximo da complexidade ciclomática por arquivo | pontos de CC | Radon 6.0.1 |
+| RQ3 | Duplicação | Proporção, linhas e blocos duplicados | percentual e contagem | jscpd 5.2.0 |
+| Inovação | Ciclos até green | Número de execuções da suíte até aprovação integral | ciclos | Histórico dos trials |
+
+### 3.6 Inovações Propostas pelo Grupo (30% da nota)
+
+A inovação consistiu em acompanhar a evolução dos testes ao longo dos ciclos. Em vez de registrar somente o resultado final, o protocolo preservou quantos testes passavam em cada execução e em qual ciclo ocorreu o primeiro `green`. Isso permitiu observar retrabalho, velocidade de convergência e diferenças de trajetória entre os tratamentos.
+
+Também foi implementado um dashboard consolidado com KPIs e distribuições de tempo, testes, ciclos, LOC e complexidade. O painel reúne as principais evidências sem substituir os dados individuais e pode ser regenerado a partir dos arquivos versionados.
+
+## 4. Resultados
+
+### 4.1 Coleta de Dados
+
+O conjunto analisado contém 12 trials finais: quatro de cada participante, sendo seis com IA e seis manuais. Não houve trial censurado pelo time-box, e todos alcançaram `green`. Para RQ3, foram analisados 12 artefatos de código, um para cada combinação final de participante e kata.
 
 | Participante | Issue | Kata | Tratamento | Tempo (s) | Testes | Ciclos | Status |
-|---|---:|---|---|---:|---:|---:|---|
+|---|---|---|---|---:|---:|---:|---|
 | Fernanda | #19 | Kata 2 | IA | 224,89 | 9/9 | 2 | green |
-| Fernanda | #27 | Kata 1 | Manual | 63,20 | 10/10 | 2 | green |
+| Fernanda | #27 | Kata 1 | Manual | 200,00 | 10/10 | 2 | green |
 | Fernanda | #29 | Kata 4 | IA | 74,02 | 7/7 | 2 | green |
-| Fernanda | #28 | Kata 3 | Manual | 58,83 | 9/9 | 2 | green |
+| Fernanda | #28 | Kata 3 | Manual | 210,00 | 9/9 | 2 | green |
 | Islayder | #21 | Kata 1 | IA | 75,00 | 10/10 | 1 | green |
 | Islayder | #24 | Kata 2 | Manual | 127,17 | 9/9 | 1 | green |
 | Islayder | #25 | Kata 3 | IA | 150,00 | 9/9 | 1 | green |
@@ -70,129 +110,99 @@ O estudo adotou medidas repetidas: cada participante foi exposto aos dois tratam
 | Vinicius | #31 | Kata 3 | IA | 324,52 | 9/9 | 1 | green |
 | Vinicius | #32 | Kata 4 | Manual | 451,74 | 7/7 | 2 | green |
 
-## 9. Contrabalanceamento
+### 4.2 Visualização Gráfica
 
-Islayder e Vinicius executaram a sequência Kata 1 IA, Kata 2 Manual, Kata 3 IA e Kata 4 Manual. Fernanda recebeu os tratamentos opostos e a ordem Kata 2 IA, Kata 1 Manual, Kata 4 IA e Kata 3 Manual. Assim, cada participante realizou dois trials por tratamento e cada kata apareceu nos dois tratamentos no conjunto, embora a alocação por kata seja 2:1 devido ao número ímpar de participantes.
+#### RQ1 — O uso de IA altera o tempo até green?
 
-## 10. Instrumentação
+| Tratamento | n | Média (s) | Mediana (s) | Q1 (s) | Q3 (s) | IQR (s) |
+|---|---:|---:|---:|---:|---:|---:|
+| IA | 6 | 149,73 | 112,50 | 74,265 | 206,168 | 131,903 |
+| Manual | 6 | 260,487 | 209,010 | 202,005 | 326,993 | 124,988 |
 
-O módulo `lab02/trials` implementa preparação, execução, time-box de 2.100 segundos, persistência atômica, snapshots finais, proteção dos testes e registro de ciclos. `trials.csv` e `trial_cycles.csv` preservam as execuções instrumentadas. Os dois trials IA de Islayder observados fora do runner permanecem no sidecar de dados informados pelo participante. O coletor estrutural usa Radon 6.0.1 para LOC e complexidade e jscpd 5.2.0, com configuração versionada, para duplicação.
+![Distribuição do tempo até green por tratamento](../figures/rq1_tempo_ia_vs_manual.png)
 
-## 11. Métricas
+*Figura 1 — Distribuição do tempo até green. Os pontos representam os 12 trials.*
 
-- **Tempo até green:** segundos decorridos até todos os testes passarem; trials no time-box seriam censurados em 2.100 s.
-- **Testes:** contagens absolutas passando, falhando e total, além da taxa final.
-- **Ciclos:** quantidade de execuções dos testes e primeiro ciclo em que ocorreu `green`.
-- **LOC:** linhas lógicas de código (`lloc`) de `solucao.py`.
-- **Complexidade ciclomática:** média por função/método e máximo observado no arquivo.
-- **Duplicação:** percentual, linhas e blocos duplicados.
+A mediana foi de 112,50 s com IA e 209,010 s no tratamento Manual. O Wilcoxon pareado pelas medianas individuais resultou em **W = 0,0** e **p = 0,25**. A diferença observada é descritiva e não constitui evidência estatística suficiente de efeito do tratamento.
 
-Medianas, quartis e IQR usam a convenção de interpolação linear do Pandas. O teste de Wilcoxon foi aplicado às medianas individuais: para cada participante, a mediana dos dois tempos IA foi pareada à mediana dos dois tempos manuais.
+![Medianas de tempo por participante e tratamento](../figures/rq1_mediana_participante.png)
 
-## 12. RQ1 — Tempo
+*Figura 2 — Medianas individuais usadas no pareamento por participante.*
 
-| Tratamento | n | Média (s) | Mediana (s) | Q1 (s) | Q3 (s) | IQR (s) | Green | Censurados |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| IA | 6 | 149,73 | 112,50 | 74,265 | 206,1675 | 131,9025 | 6 | 0 |
-| Manual | 6 | 212,4917 | 167,595 | 79,1925 | 326,4975 | 247,305 | 6 | 0 |
+#### RQ2 — O tratamento altera o resultado dos testes?
 
-As medianas por participante formaram três pares. O Wilcoxon resultou em **W = 2,0** e **p = 0,75**. Portanto, a amostra apresentou menor mediana e menor média no tratamento IA, mas não forneceu evidência estatística de diferença entre tratamentos. O pareamento é por participante e compara katas distintos, devendo ser interpretado com cautela.
+| Tratamento | Trials | Green | Testes passando | Falhando | Total | Taxa final |
+|---|---:|---:|---:|---:|---:|---:|
+| IA | 6 | 6 | 54 | 0 | 54 | 100% |
+| Manual | 6 | 6 | 51 | 0 | 51 | 100% |
 
-No recorte de Islayder, IA teve 75 s e 150 s, com média e mediana de 112,5 s e IQR de 37,5 s. Manual teve 127,17 s e 208,02 s, com média e mediana de 167,595 s e IQR de 40,425 s.
+![Percentual e contagem de testes finais passando](../figures/rq2_testes_ia_vs_manual.png)
 
-![Distribuição de tempo por tratamento](../figures/rq1_tempo_ia_vs_manual.png)
+*Figura 3 — Resultado agregado dos testes finais por tratamento.*
 
-## 13. RQ2 — Defeitos/Testes
+Todos os 105 testes finais passaram. Logo, RQ2 não apresentou diferença no desfecho final de aceitação: IA alcançou 54/54 e Manual alcançou 51/51, ambos sem falhas.
 
-| Tratamento | Trials | Green | Time-box | Testes passando | Falhando | Total | Taxa final mediana |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| IA | 6 | 6 | 0 | 54 | 0 | 54 | 100% |
-| Manual | 6 | 6 | 0 | 51 | 0 | 51 | 100% |
+#### RQ3 — O tratamento altera a estrutura do código?
 
-Todos os 105 testes finais passaram. Em Islayder, os resultados foram #21 10/10, #24 9/9, #25 9/9 e #26 7/7, todos `green`. Assim, **RQ2 não mostrou diferença no resultado final de aceitação**: ambos os tratamentos alcançaram 100% e zero falhas finais. A evolução intermediária, entretanto, diferiu e é tratada na seção de inovação.
+| Tratamento | LOC mediana | LOC IQR | CC média mediana | CC IQR | Duplicação mediana |
+|---|---:|---:|---:|---:|---:|
+| IA | 15,0 | 1,50 | 3,5 | 1,75 | 0% |
+| Manual | 11,0 | 2,25 | 4,0 | 0,75 | 0% |
 
-![Testes finais por tratamento](../figures/rq2_testes_ia_vs_manual.png)
+![Distribuição de LOC lógico por tratamento](../figures/rq3_loc_ia_vs_manual.png)
 
-## 14. RQ3 — Estrutura do Código
+*Figura 4 — LOC lógico dos 12 artefatos finais.*
 
-| Tratamento | Métrica | n | Mediana | Q1 | Q3 | IQR |
-|---|---|---:|---:|---:|---:|---:|
-| IA | LOC lógico | 6 | 15,0 | 14,25 | 15,75 | 1,50 |
-| Manual | LOC lógico | 6 | 11,0 | 10,25 | 12,50 | 2,25 |
-| IA | CC média | 6 | 3,5 | 3,00 | 4,75 | 1,75 |
-| Manual | CC média | 6 | 4,0 | 3,25 | 4,00 | 0,75 |
-| IA | Duplicação | 6 | 0% | 0% | 0% | 0% |
-| Manual | Duplicação | 6 | 0% | 0% | 0% | 0% |
+![Distribuição da complexidade ciclomática média](../figures/rq3_complexidade_ia_vs_manual.png)
 
-Os 12 artefatos tiveram métricas completas e reproduzíveis. No conjunto, IA apresentou maior mediana de LOC, menor mediana de complexidade média e a mesma duplicação mediana do tratamento Manual. Com seis arquivos por grupo e katas heterogêneos, esses resultados são descritivos e não demonstram efeito causal.
+*Figura 5 — Complexidade ciclomática média dos artefatos finais.*
 
-Para Islayder, #21 apresentou 15 LOC, CC média 4,0, CC máxima 4, duplicação 0%, zero linhas/blocos duplicados e uma função; #25 apresentou 27 LOC, CC média 2,6667, CC máxima 4, duplicação 0%, zero linhas/blocos duplicados e três funções. Os testes desses artefatos passaram em 10/10 e 9/9, respectivamente.
+IA apresentou maior mediana de LOC e menor mediana de complexidade média. A duplicação foi 0% em todos os artefatos. Como os tratamentos envolvem katas distintos e há somente seis arquivos por grupo, os resultados são descritivos.
 
-Os snapshots originais apontados pelos trials finais de Fernanda não foram versionados. Seus quatro artefatos estruturais foram reconstruídos a partir de códigos preparatórios já presentes no repositório, passam nos testes e reproduzem as métricas consolidadas. Essa reconstrução preserva mensurabilidade, mas limita a equivalência de proveniência com os snapshots originais.
+#### Inovação — Como os testes evoluem até green?
 
-![LOC por tratamento](../figures/rq3_loc_ia_vs_manual.png)
-
-![Complexidade por tratamento](../figures/rq3_complexidade_ia_vs_manual.png)
-
-![Duplicação por tratamento](../figures/rq3_duplicacao_ia_vs_manual.png)
-
-## 15. Inovação — Evolução por Ciclos
-
-| Tratamento | Trials | Ciclos — mediana | Intervalo de ciclos | Taxa mediana no 1º ciclo | Taxa mediana final |
+| Tratamento | Trials | Mediana de ciclos | Intervalo | Taxa mediana no 1º ciclo | Taxa final |
 |---|---:|---:|---:|---:|---:|
 | IA | 6 | 1 | 1–2 | 100% | 100% |
 | Manual | 6 | 2 | 1–2 | 14,285% | 100% |
 
-A inovação do protocolo foi preservar o desempenho a cada execução de testes, permitindo observar progresso e retrabalho, e não apenas o estado final. A mediana de IA atingiu o conjunto completo no primeiro ciclo; a mediana Manual precisou de dois ciclos. Em Islayder, #21, #24 e #25 ficaram verdes em um ciclo, e #26 evoluiu de 2/7 para 7/7 no segundo ciclo. O resultado sugere menor retrabalho mediano com IA nesta amostra, sem estabelecer causalidade.
+![Evolução da taxa de testes por ciclo observado](../figures/inovacao_evolucao_testes.png)
 
-![Ciclos até green](../figures/inovacao_ciclos_ate_green.png)
+*Figura 6 — Evolução dos testes ao longo dos ciclos registrados.*
 
-![Evolução dos testes](../figures/inovacao_evolucao_testes.png)
+![Ciclo em que cada trial atingiu green](../figures/inovacao_ciclos_ate_green.png)
 
-## 16. Dashboard
+*Figura 7 — Quantidade de ciclos necessária para atingir green.*
 
-O dashboard consolida RQ1, RQ2, RQ3 e inovação a partir dos CSVs finais, com 12 trials para tempo/testes/ciclos e 12 artefatos para estrutura. Ele valida a ausência de registros simulados na RQ3 e a presença dos três participantes antes de gerar a figura.
+A IA atingiu `green` em mediana de um ciclo, enquanto o tratamento Manual precisou de dois. Os dois grupos chegaram a 100% no encerramento.
 
-Para reproduzi-lo na raiz do repositório:
+![Dashboard consolidado do Laboratório 02](../figures/dashboard_final.png)
 
-```powershell
-.\.venv\Scripts\python.exe -m lab02.dashboard.build_dashboard
-```
+*Figura 8 — Dashboard final das questões de pesquisa e da inovação.*
 
-![Dashboard final](../figures/dashboard_final.png)
+### 4.3 Discussão
 
-## 17. Discussão
+A hipótese de menor tempo com IA foi parcialmente apoiada pela descrição dos dados: média e mediana foram menores nesse tratamento, e os três participantes apresentaram mediana individual menor com IA. Entretanto, o teste pareado não detectou diferença estatística. Assim, RQ1 sugere uma possível vantagem temporal nesta amostra, mas não permite afirmar causalidade.
 
-Os resultados finais convergem em três pontos. Primeiro, IA teve tempos centrais menores, mas com alta dispersão e sem diferença estatisticamente detectável no Wilcoxon. Segundo, os dois tratamentos terminaram com todos os testes passando; a distinção mais visível ocorreu na trajetória, pois IA apresentou menos ciclos e maior taxa no primeiro ciclo. Terceiro, os códigos IA foram mais longos na mediana, ligeiramente menos complexos pela média ciclomática e igualmente sem duplicação detectada. Essas dimensões não devem ser combinadas em um único julgamento de qualidade.
+Na RQ2, a hipótese de equivalência no resultado final foi confirmada: os dois tratamentos terminaram com 100% dos testes passando. A análise de inovação acrescentou uma diferença de processo, pois IA apresentou menor número mediano de ciclos e maior taxa de aprovação no primeiro ciclo.
 
-O relatório mantém separados: tentativas finais, tentativas inválidas, fixtures históricas simuladas e observações informadas fora do runner. Essa separação evita aumentar artificialmente a amostra e permite rastrear a origem de cada resultado.
+Na RQ3, os códigos com IA foram mais extensos na mediana, ligeiramente menos complexos pela média ciclomática e igualmente sem duplicação. Esses indicadores representam dimensões diferentes e não justificam classificar um tratamento como globalmente superior.
 
-## 18. Ameaças à Validade
+As principais ameaças à validade são o número reduzido de participantes, a diferença de dificuldade entre katas, efeitos de aprendizado e fadiga, variações de ambiente e ferramenta, e o baixo poder do Wilcoxon com três pares. LOC, complexidade e duplicação também não cobrem legibilidade, arquitetura, segurança ou facilidade de manutenção. Os resultados devem, portanto, ser interpretados como evidência local e exploratória.
 
-- **Amostra:** três participantes e seis observações por tratamento limitam poder estatístico e generalização.
-- **Heterogeneidade dos katas:** cada tratamento usa tarefas distintas para cada participante; diferenças de dificuldade podem se confundir com o tratamento.
-- **Experiência e aprendizado:** familiaridade com Python, assistentes e katas pode afetar tempo, estratégia e ciclos; a ordem não elimina completamente o efeito de aprendizado.
-- **Ferramenta de IA:** versões, interfaces e qualidade das respostas podem variar. Islayder usou Gemini no celular, enquanto dois registros de Fernanda têm proveniência `agent_delegated_codex_work`.
-- **Ambiente e instrumentação:** os trials IA de Islayder foram cronometrados fora do runner e informados pelo participante; não possuem os mesmos timestamps e snapshots automáticos dos demais trials.
-- **Proveniência estrutural:** os artefatos RQ3 de Fernanda são reconstruções testáveis de código já versionado, não os snapshots originais do runner.
-- **Piloto:** o protocolo prescreve piloto temporal externo, mas não há evidência versionada de sua execução; isso limita a verificação independente da calibração dos katas.
-- **Métricas:** LOC, complexidade e duplicação capturam apenas aspectos estruturais e não equivalem, isoladamente, a manutenibilidade ou qualidade global.
+## 5. Conclusão
 
-## 19. Conclusão
+O Laboratório 02 comparou seis trials com IA e seis manuais, totalizando 12 execuções e 12 artefatos estruturais. Em RQ1, IA apresentou mediana de 112,50 s, contra 209,010 s em Manual, mas sem diferença estatisticamente detectável. Em RQ2, os dois tratamentos concluíram todos os testes com sucesso.
 
-- **RQ1:** IA apresentou menor tempo médio e mediano, porém o Wilcoxon com três pares resultou em p = 0,75; não há evidência suficiente de diferença entre tratamentos.
-- **RQ2:** IA e Manual alcançaram todos os testes finais, com 54/54 e 51/51, respectivamente; não houve diferença no desfecho final de aceitação.
-- **RQ3:** IA teve maior LOC mediana (15 contra 11), menor CC média mediana (3,5 contra 4,0) e a mesma duplicação mediana (0%); o resultado é descritivo.
-- **Inovação:** IA apresentou mediana de um ciclo e 100% dos testes no primeiro ciclo, enquanto Manual apresentou mediana de dois ciclos e 14,285% no primeiro; ambos terminaram em 100%.
+Em RQ3, IA apresentou LOC mediana de 15, complexidade média mediana de 3,5 e duplicação de 0%; Manual apresentou LOC mediana de 11, complexidade média mediana de 4,0 e duplicação de 0%. Na inovação, IA chegou a `green` em mediana de um ciclo, contra dois ciclos no tratamento Manual.
 
-O Lab02 está consolidado com 12 trials finais, 12 artefatos estruturais, análises regeneráveis, gráficos e dashboard coerentes. As conclusões permanecem proporcionais à amostra e às limitações documentadas.
+Os resultados apontam diferenças de tempo, trajetória e estrutura, mas não sustentam uma conclusão geral de superioridade. A principal contribuição do trabalho foi integrar medidas de resultado e de processo em um fluxo rastreável e reproduzível. Estudos futuros devem ampliar o número de participantes, controlar melhor a dificuldade dos katas e repetir o protocolo com outras ferramentas e tarefas.
 
-## 20. Referências existentes
+## 6. Referências
 
-- [Protocolo e instrumentação dos trials](../../lab02/trials/README.md)
-- [Definições e execução das análises](../../lab02/analysis/README.md)
-- [Coletor e definições das métricas estruturais](../../lab02/metrics/README.md)
-- [Relatório consolidado da Sprint 03](../sprints/s03/relatorio_s03.md)
-- [Registro individual de Fernanda](../sprints/lab02_s02/fernanda.md)
-- [Registro individual de Islayder](../sprints/lab02_s02/islayder.md)
-- [Registro individual de Vinicius](../sprints/lab02_s02/vinicius.md)
+- ZUSE, Horst. *A framework of software measurement*. Walter de Gruyter, 2013.
+- Documentação do Python 3 e do pytest.
+- Documentação do SciPy para o teste de Wilcoxon.
+- Documentação do Radon 6.0.1.
+- Documentação do jscpd 5.2.0.
+- Artefatos, scripts de análise e registros experimentais do repositório do Laboratório 02.
