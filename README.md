@@ -43,3 +43,9 @@ Ver `VALIDACAO.md` — cada kata foi resolvido com o gabarito de referência e t
 - **Vazamento de solução já vista**: nenhum dos 4 katas é uma cópia literal de exercício público amplamente indexado; são variações autorais sobre padrões conhecidos (parsing, RLE, média móvel, alocação em array), então mesmo que a IA reconheça o *padrão* geral, ela não pode colar uma solução pronta de memória — precisa adaptar às regras específicas de cada enunciado.
 - **Memorização pela IA**: caso o grupo perceba, ao testar, que a IA acerta de primeira sem iteração em algum kata, isso deve ser registrado como observação qualitativa (nº de prompts) e discutido no relatório como limitação.
 - **Dificuldade desigual entre katas**: permanece como risco; deve ser mitigada por piloto temporal, contrabalanceamento de cada kata entre tratamentos e controle do identificador do kata na análise — ver `VALIDACAO.md`.
+
+## Lab03 — Mineração de métricas DORA
+
+A contribuição de Islayder para a Sprint 01 (#38 e #39) está em
+[lab03/README.md](lab03/README.md): seleção configurável, metadados e funil,
+com testes offline e contrato de integração para as coletas temporais do grupo.

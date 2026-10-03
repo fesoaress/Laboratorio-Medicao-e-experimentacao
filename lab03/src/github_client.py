@@ -78,8 +78,12 @@ class GitHubClient:
             remaining = error.headers.get("X-RateLimit-Remaining", "unknown")
             reset = error.headers.get("X-RateLimit-Reset", "unknown")
             retry_after = error.headers.get("Retry-After", "unknown")
+            # Alguns limites secundários só são identificados na mensagem.
+            # Examina o corpo sem jamais persisti-lo ou imprimi-lo.
+            detail = error.read(4096).decode("utf-8", errors="replace").lower()
+            error.close()
             if error.code == 429 or (error.code == 403 and (
-                remaining == "0" or retry_after != "unknown"
+                remaining == "0" or retry_after != "unknown" or "rate limit" in detail
             )):
                 raise RateLimitError(
                     f"Rate limit: remaining={remaining}, reset={reset}, retry_after={retry_after}.",
