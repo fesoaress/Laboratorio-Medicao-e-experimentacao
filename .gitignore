@@ -1,4 +1,6 @@
 .env
+.env.*
+!.env.example
 .codex/
 .venv/
 venv/
@@ -34,3 +36,11 @@ lab02/trials/workspaces/
 
 .DS_Store
 Thumbs.db
+
+# Lab03: caches, respostas cruas e evidências locais de testes
+lab03/data/raw/*
+!lab03/data/raw/.gitkeep
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
