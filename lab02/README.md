@@ -43,3 +43,36 @@ Ver `VALIDACAO.md` — cada kata foi resolvido com o gabarito de referência e t
 - **Vazamento de solução já vista**: nenhum dos 4 katas é uma cópia literal de exercício público amplamente indexado; são variações autorais sobre padrões conhecidos (parsing, RLE, média móvel, alocação em array), então mesmo que a IA reconheça o *padrão* geral, ela não pode colar uma solução pronta de memória — precisa adaptar às regras específicas de cada enunciado.
 - **Memorização pela IA**: caso o grupo perceba, ao testar, que a IA acerta de primeira sem iteração em algum kata, isso deve ser registrado como observação qualitativa (nº de prompts) e discutido no relatório como limitação.
 - **Dificuldade desigual entre katas**: permanece como risco; deve ser mitigada por piloto temporal, contrabalanceamento de cada kata entre tratamentos e controle do identificador do kata na análise — ver `VALIDACAO.md`.
+
+## Execução após a consolidação
+
+Execute os comandos abaixo na raiz do repositório. O Lab02 preserva seus
+resultados e snapshots de trials; o Lab01 possui código e dados separados.
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r lab02/requirements.txt -r lab02/trials/requirements.txt -r lab02/metrics/requirements.txt
+.\.venv\Scripts\python.exe -m pytest lab02/trials/tests lab02/metrics/tests lab02/analysis/tests lab02/dashboard/tests lab02/simulations/islayder_s02/tests -q
+```
+
+Katas e gabaritos ficam em `lab02/src/katas/`. O preparador e o runner continuam
+usando `python -m lab02.trials.prepare_trial` e `python -m lab02.trials.run_trial`.
+CSV histórico que menciona `src/katas/` permanece intacto; o leitor resolve
+essa referência para `lab02/src/katas/`.
+
+Relatórios, gráficos e sprints ficam em `lab02/reports/`:
+
+- [Relatório final Markdown](reports/final/lab02_relatorio_final.md)
+- [Relatório final DOCX](reports/final/lab02_relatorio_final.docx)
+- [Relatório final PDF](reports/final/lab02_relatorio_final.pdf)
+- [Análises e critérios](analysis/README.md)
+- [Instrumentação de trials](trials/README.md)
+- [Métricas estruturais](metrics/README.md)
+
+`reporting/requirements.txt` contém dependências opcionais de geração e
+inspeção dos relatórios. Os arquivos finais foram preservados da branch
+`Laboratorio-2` em `489577a7`, sem regerar DOCX, PDF ou gráficos versionados.
+O gerador `build_final_report` e o validador `qa_report` têm expectativas de
+uma versão anterior do texto; suas falhas históricas estão documentadas na
+[auditoria global](../.github/consolidation/README.md). O gerador com template
+exige um arquivo DOCX externo que não está versionado no repositório.
