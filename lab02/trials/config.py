@@ -5,7 +5,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parents[2]
 
 # Katas usados no experimento
-KATAS_DIR = BASE_DIR / "src" / "katas"
+KATAS_DIR = BASE_DIR / "lab02" / "src" / "katas"
 
 # Diretório onde os dados dos trials serão armazenados
 RESULTS_DIR = BASE_DIR / "lab02" / "trials" / "results"
