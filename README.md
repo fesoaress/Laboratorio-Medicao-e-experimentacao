@@ -67,19 +67,25 @@ O trabalho é organizado por Issues no GitHub Projects, com cada tarefa associad
 
 ## Configuração
 
-Instale as dependências do projeto:
+Execute os comandos deste README a partir de `lab01/` (`cd lab01` na raiz
+do repositório). A pasta é a raiz dos dados, relatórios e snapshots do Lab01.
+Os imports históricos `src.*` são locais a este laboratório.
+
+Instale as dependências do laboratório:
 
 ```text
 pip install -r requirements.txt
 ```
 
-Crie ou copie o arquivo `.env` a partir do modelo `.env.example` e preencha localmente:
+Crie o arquivo local `lab01/.env` (ou `.env` quando estiver em `lab01/`) e
+configure a variável `GITHUB_TOKEN` somente nesse ambiente local:
 
 ```text
 GITHUB_TOKEN=seu_token
 ```
 
-O arquivo `.env` é local e não deve ser versionado. O arquivo `.env.example` serve apenas como modelo e não deve conter token verdadeiro.
+O arquivo `.env` é local e não deve ser versionado. A árvore histórica não
+contém `.env.example`; nenhum modelo ausente foi fabricado na consolidação.
 
 ## Coleta da Sprint 2
 
@@ -121,3 +127,19 @@ A cada pagina, o coletor normaliza os dados, valida os registros, grava o CSV e 
 
 Atualizacao Sprint 2: o coletor foi preparado para ate 1.000 repositorios com CSV incremental, checkpoint/resume, retry/backoff, monitoramento de rate limit e validacoes automatizadas. A execucao real da coleta depende da configuracao local de GITHUB_TOKEN.
 
+## Testes e preservação
+
+Na raiz do repositório, usando o ambiente virtual compartilhado de validação:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r lab01/requirements.txt -r lab03/requirements-dev.txt
+.\.venv\Scripts\python.exe -m pytest lab01/tests -q
+```
+
+Também é possível executar `python -m pytest tests -q` dentro de `lab01/`,
+com pytest instalado. A configuração global fornece `lab01/` ao caminho de
+imports para executar os testes a partir da raiz.
+
+Os 80 arquivos da fonte `Laboratório-1` em `4133fa3c` foram recuperados.
+Código, dados, gráficos, DOCX, snapshots e testes permanecem iguais à fonte;
+somente este README ganhou o contexto operacional da nova estrutura.
