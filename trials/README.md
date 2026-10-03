@@ -73,7 +73,7 @@ Antes do primeiro trial real, confirme que o grupo concluiu o piloto temporal co
      --issue <ISSUE>
    ```
 
-10. Preencha `reports/sprints/lab02_s02/islayder.md` e depois faça manualmente o commit referenciando a Issue.
+10. Preencha `lab02/reports/sprints/lab02_s02/islayder.md` e depois faça manualmente o commit referenciando a Issue.
 
 Repita o procedimento para os quatro katas, alterando `--kata`, `--treatment` e `--issue` conforme a tabela. O workspace nunca é sobrescrito nem reutilizado. A reexecução oficial de Fernanda reaproveita as quatro Issues antigas, mas cria novos workspaces e novos `trial_id`; outras repetições continuam exigindo decisão explícita do grupo.
 

@@ -16,8 +16,8 @@ from docx.shared import Cm, Pt, RGBColor
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 DEFAULT_TEMPLATE = Path.home() / "Downloads" / "Template_Relatorio_Laboratorio.docx"
-DEFAULT_MARKDOWN = BASE_DIR / "reports" / "final" / "lab02_relatorio_final.md"
-DEFAULT_OUTPUT = BASE_DIR / "reports" / "final" / "lab02_relatorio_final.docx"
+DEFAULT_MARKDOWN = BASE_DIR / "lab02" / "reports" / "final" / "lab02_relatorio_final.md"
+DEFAULT_OUTPUT = BASE_DIR / "lab02" / "reports" / "final" / "lab02_relatorio_final.docx"
 
 NAVY = "1F3A5F"
 GREEN = "1F6E63"
