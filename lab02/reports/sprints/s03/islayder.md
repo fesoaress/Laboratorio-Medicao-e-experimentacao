@@ -51,9 +51,9 @@ Para Islayder, a mediana de LOC foi 21,0 em IA e 8,5 em Manual; a mediana de CC 
 
 ## Fontes e limites
 
-- Totais de aceitação: [`src/katas/kata1_normalizador_etiquetas/test_solucao.py`](../../../src/katas/kata1_normalizador_etiquetas/test_solucao.py) e [`src/katas/kata3_compactador_sensor/test_solucao.py`](../../../src/katas/kata3_compactador_sensor/test_solucao.py).
-- Relatório individual completo: [`reports/sprints/lab02_s02/islayder.md`](../lab02_s02/islayder.md).
+- Totais de aceitação: [`lab02/src/katas/kata1_normalizador_etiquetas/test_solucao.py`](../../../src/katas/kata1_normalizador_etiquetas/test_solucao.py) e [`lab02/src/katas/kata3_compactador_sensor/test_solucao.py`](../../../src/katas/kata3_compactador_sensor/test_solucao.py).
+- Relatório individual completo: [`lab02/reports/sprints/lab02_s02/islayder.md`](../lab02_s02/islayder.md).
 - #21 e #25: tempo, ciclo, status e aprovação integral informados pelo participante.
 - #24 e #26: dados preservados dos registros do runner.
-- RQ3: métricas reproduzíveis em [`metrics.csv`](../../../lab02/metrics/results/metrics.csv) e vínculo dos artefatos em [`manifest.csv`](../../../lab02/trials/results/rq3_artifacts/islayder/manifest.csv).
+- RQ3: métricas reproduzíveis em [`metrics.csv`](../../../metrics/results/metrics.csv) e vínculo dos artefatos em [`manifest.csv`](../../../trials/results/rq3_artifacts/islayder/manifest.csv).
 - Os katas diferem entre tratamentos; os resultados sustentam comparação descritiva, não causal.

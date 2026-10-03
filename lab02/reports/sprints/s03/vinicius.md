@@ -9,7 +9,7 @@
   ```bash
   python -m lab02.dashboard.build_dashboard
   ```
-- `reports/figures/dashboard_final.png`: saída do script, publicada como **Figura 8** do relatório final ("Dashboard final das questões de pesquisa e da inovação").
+- `lab02/reports/figures/dashboard_final.png`: saída do script, publicada como **Figura 8** do relatório final ("Dashboard final das questões de pesquisa e da inovação").
 
 ## Composição do painel
 
@@ -41,5 +41,5 @@ O rodapé do próprio painel registra a composição da amostra de RQ3 por prove
 
 - Script: `lab02/dashboard/build_dashboard.py`
 - Fontes lidas: `lab02/analysis/results/rq1_resumo.csv`, `rq2_resumo.csv`, `inovacao_resumo.csv`, `rq3_detalhe.csv`
-- Saída: `reports/figures/dashboard_final.png`
+- Saída: `lab02/reports/figures/dashboard_final.png`
 - Uso no relatório final: seção 3.6 (Inovações Propostas pelo Grupo), Figura 8 (seção 4.2) e discussão na seção 4.3.

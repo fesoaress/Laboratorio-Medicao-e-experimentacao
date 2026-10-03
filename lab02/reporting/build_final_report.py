@@ -20,8 +20,8 @@ from docx.shared import Cm, Pt, RGBColor
 
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-DEFAULT_MARKDOWN = BASE_DIR / "reports" / "final" / "lab02_relatorio_final.md"
-DEFAULT_OUTPUT = BASE_DIR / "reports" / "final" / "lab02_relatorio_final.docx"
+DEFAULT_MARKDOWN = BASE_DIR / "lab02" / "reports" / "final" / "lab02_relatorio_final.md"
+DEFAULT_OUTPUT = BASE_DIR / "lab02" / "reports" / "final" / "lab02_relatorio_final.docx"
 
 BLUE = "3333B2"
 MID_BLUE = "4D4DC4"

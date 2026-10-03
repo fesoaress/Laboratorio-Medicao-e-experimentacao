@@ -9,10 +9,10 @@ snapshots finais versionados no projeto.
 
 ## 2. Dados analisados
 
-Fontes: [`trials.csv`](../../../lab02/trials/results/trials.csv),
-[`trial_cycles.csv`](../../../lab02/trials/results/trial_cycles.csv),
-[`metrics.csv`](../../../lab02/metrics/results/metrics.csv) e
-[`auditoria_trials.csv`](../../../lab02/analysis/results/auditoria_trials.csv).
+Fontes: [`trials.csv`](../../../trials/results/trials.csv),
+[`trial_cycles.csv`](../../../trials/results/trial_cycles.csv),
+[`metrics.csv`](../../../metrics/results/metrics.csv) e
+[`auditoria_trials.csv`](../../../analysis/results/auditoria_trials.csv).
 
 | Recorte | Trials | Composição |
 |---|---:|---|
@@ -27,7 +27,7 @@ pela validação automática: dois IA, dois Manual, quatro katas únicos, ordem
 2 → 1 → 4 → 3, Issues #19, #27, #29 e #28 e status final `green`. Os snapshots
 originais não foram versionados; a RQ3 usa artefatos reconstruídos dos códigos
 preparatórios existentes e registra essa limitação. O resultado detalhado está em
-[`validacao_fernanda.csv`](../../../lab02/analysis/results/validacao_fernanda.csv).
+[`validacao_fernanda.csv`](../../../analysis/results/validacao_fernanda.csv).
 
 O recorte final de tempo, testes e ciclos contém três participantes completos
 e 12 trials. Cada tratamento possui seis observações. Para Islayder, #21 e #25
@@ -82,7 +82,7 @@ IA de Islayder:
 
 - [`inovacao_evolucao_testes.png`](../../figures/inovacao_evolucao_testes.png)
 - [`inovacao_ciclos_ate_green.png`](../../figures/inovacao_ciclos_ate_green.png)
-- [`inovacao_resumo.csv`](../../../lab02/analysis/results/inovacao_resumo.csv)
+- [`inovacao_resumo.csv`](../../../analysis/results/inovacao_resumo.csv)
 
 ## 6. RQ3 — Qualidade estrutural
 
@@ -161,8 +161,8 @@ final de 12 artefatos. A análise valida que nenhum `trial_id` iniciado por
 
 Detalhes e gráficos consolidados da RQ3:
 
-- [`rq3_detalhe.csv`](../../../lab02/analysis/results/rq3_detalhe.csv)
-- [`rq3_resumo.csv`](../../../lab02/analysis/results/rq3_resumo.csv)
+- [`rq3_detalhe.csv`](../../../analysis/results/rq3_detalhe.csv)
+- [`rq3_resumo.csv`](../../../analysis/results/rq3_resumo.csv)
 - [`rq3_loc_ia_vs_manual.png`](../../figures/rq3_loc_ia_vs_manual.png) — strip plot
 - [`rq3_complexidade_ia_vs_manual.png`](../../figures/rq3_complexidade_ia_vs_manual.png) — slope chart
 - [`rq3_duplicacao_ia_vs_manual.png`](../../figures/rq3_duplicacao_ia_vs_manual.png) — lollipop plot

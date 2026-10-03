@@ -11,7 +11,7 @@ from PIL import Image, ImageDraw
 
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-DEFAULT_PDF = BASE_DIR / "reports" / "final" / "lab02_relatorio_final.pdf"
+DEFAULT_PDF = BASE_DIR / "lab02" / "reports" / "final" / "lab02_relatorio_final.pdf"
 
 
 def render_and_validate(pdf_path: Path, render_dir: Path) -> tuple[int, int]:

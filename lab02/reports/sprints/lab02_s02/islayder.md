@@ -63,7 +63,7 @@ Como os trials IA possuem somente o ciclo final informado, não foi criada uma e
 
 ## RQ3 — Qualidade estrutural
 
-Os códigos finais estão listados em [`manifest.csv`](../../../lab02/trials/results/rq3_artifacts/islayder/manifest.csv). As métricas abaixo foram produzidas por `lab02/metrics/run_metrics.py`, usando Radon 6.0.1 e jscpd 5.2.0 sobre cada `solucao.py` real. Nenhuma linha `SIM-S02-*` entra no recorte final.
+Os códigos finais estão listados em [`manifest.csv`](../../../trials/results/rq3_artifacts/islayder/manifest.csv). As métricas abaixo foram produzidas por `lab02/metrics/run_metrics.py`, usando Radon 6.0.1 e jscpd 5.2.0 sobre cada `solucao.py` real. Nenhuma linha `SIM-S02-*` entra no recorte final.
 
 | Issue | Tratamento | ID estrutural | LOC | CC média | CC máxima | Duplicação | Linhas duplicadas | Blocos duplicados | Funções analisadas |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|

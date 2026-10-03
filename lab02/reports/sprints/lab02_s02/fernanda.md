@@ -47,7 +47,7 @@ Os caminhos originais registrados pelo runner não foram versionados. Para
 preservar a reprodutibilidade, a consolidação criou cópias rastreáveis dos
 códigos preparatórios já versionados, que passam os testes e reproduzem as
 métricas registradas. Eles estão declarados em
-[`manifest.csv`](../../../lab02/trials/results/rq3_artifacts/fernanda/manifest.csv)
+[`manifest.csv`](../../../trials/results/rq3_artifacts/fernanda/manifest.csv)
 e não são apresentados como snapshots originais do runner.
 
 | Issue | Tratamento | LOC | CC média | CC máxima | Duplicação | Linhas duplicadas | Blocos duplicados | Funções |

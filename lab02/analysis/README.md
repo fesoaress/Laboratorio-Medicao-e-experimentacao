@@ -15,11 +15,11 @@ Na raiz do repositório, com Python 3.11+:
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r lab02/requirements.txt
 .\.venv\Scripts\python.exe -m lab02.analysis.analyze_rq1_rq2
 ```
 
-`requirements.txt` contém Pandas e Matplotlib, já usados pelo projeto, e
+`lab02/requirements.txt` contém Pandas e Matplotlib, já usados pelo projeto, e
 SciPy para o Wilcoxon pareado quando houver pares válidos. O import de SciPy
 ocorre somente se o teste for aplicável. Os gráficos são gerados com o backend
 `Agg`, sem interface gráfica.
@@ -61,12 +61,12 @@ ocorre somente se o teste for aplicável. Os gráficos são gerados com o backen
 
 Em `results/`: auditoria por trial, resumo e detalhe de RQ1, pares e decisão
 do Wilcoxon, resumo de RQ2, resumo e detalhe da inovação. Em
-`reports/figures/`: os quatro gráficos `rq1_tempo_ia_vs_manual.png`,
+`lab02/reports/figures/`: os quatro gráficos `rq1_tempo_ia_vs_manual.png`,
 `rq2_testes_ia_vs_manual.png`, `inovacao_evolucao_testes.png` e
 `inovacao_ciclos_ate_green.png`.
 
 O texto interpretativo e a proveniência estão em
-[`reports/sprints/s03/relatorio_s03.md`](../../reports/sprints/s03/relatorio_s03.md).
+[`lab02/reports/sprints/s03/relatorio_s03.md`](../reports/sprints/s03/relatorio_s03.md).
 
 ## RQ3 e artefatos estruturais finais
 

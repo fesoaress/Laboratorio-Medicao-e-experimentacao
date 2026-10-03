@@ -20,7 +20,7 @@ arquivos chamados `test_solucao.py`:
 
 Os resultados esperados e confirmados são, respectivamente, `10 passed` e
 `9 passed`. As cópias de `test_solucao.py` preservam o conteúdo dos testes
-originais; nenhuma alteração foi feita em `src/katas/`.
+originais; nenhuma alteração foi feita em `lab02/src/katas/`.
 
 Os comandos de reprodução das métricas estão documentados em
 `lab02/metrics/README.md`. O script `lab02.analysis.analyze_rq3` valida a

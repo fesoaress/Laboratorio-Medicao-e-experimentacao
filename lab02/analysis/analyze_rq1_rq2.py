@@ -33,7 +33,7 @@ from lab02.trials.config import (
 from lab02.trials.test_runner import count_expected_tests
 
 RESULTS_DIR = BASE_DIR / "lab02" / "analysis" / "results"
-FIGURES_DIR = BASE_DIR / "reports" / "figures"
+FIGURES_DIR = BASE_DIR / "lab02" / "reports" / "figures"
 VALID_PARTICIPANTS = {"Islayder", "Fernanda", "Vinicius"}
 VALID_KATAS = set(ISLAYDER_ALLOCATION)
 ISSUES = {
@@ -41,7 +41,7 @@ ISSUES = {
     "Fernanda": {1: "#27", 2: "#19", 3: "#28", 4: "#29"},
     "Vinicius": {1: "#22", 2: "#30", 3: "#31", 4: "#32"},
 }
-# Incidentes documentados em reports/sprints/lab02_s02/{vinicius,fernanda}.md.
+# Incidentes documentados em lab02/reports/sprints/lab02_s02/{vinicius,fernanda}.md.
 DOCUMENTED_EXCLUSIONS = {
     "c825af06fdf34b8383348801c0fc5782": "interrompido; tentativa descartada (#1)",
     "8eee3cfc8eee49c98e5607ee320113bd": "time-box de processo residual; tentativa descartada (#22)",
@@ -145,7 +145,11 @@ def load_participant_reported() -> tuple[pd.DataFrame, pd.DataFrame]:
         "base informada: escopo diferente de #21 e #25 de Islayder",
     )
     for row in reported.itertuples(index=False):
-        test_path = BASE_DIR / row.test_path
+        # Mantém o CSV histórico intacto; resolve o caminho anterior à consolidação.
+        relative_test = Path(row.test_path)
+        if relative_test.parts[:2] == ("src", "katas"):
+            relative_test = Path("lab02") / relative_test
+        test_path = BASE_DIR / relative_test
         require(test_path.is_file(), f"{row.trial_id}: arquivo de teste ausente")
         require(
             count_expected_tests(test_path) == int(row.total_testes),

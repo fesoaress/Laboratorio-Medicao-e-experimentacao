@@ -2,7 +2,7 @@
 
 Execute da raiz: python -m lab02.dashboard.build_dashboard
 
-Saída: reports/figures/dashboard_final.png
+Saída: lab02/reports/figures/dashboard_final.png
 """
 
 from __future__ import annotations

@@ -6,11 +6,11 @@ Foram desenvolvidos os katas do experimento e os respectivos testes automatizado
 
 Artefatos implementados:
 
-- `src/katas/kata1_normalizador_etiquetas/solucao.py` + `test_solucao.py`;
-- `src/katas/kata2_balanceamento_turnos/solucao.py` + `test_solucao.py`;
-- `src/katas/kata3_compactador_sensor/solucao.py` + `test_solucao.py`;
-- `src/katas/kata4_manutencao_preditiva/solucao.py` + `test_solucao.py`;
-- `src/katas/gabarito/` (soluções de referência, uso interno do grupo, não copiado para os workspaces);
+- `lab02/src/katas/kata1_normalizador_etiquetas/solucao.py` + `test_solucao.py`;
+- `lab02/src/katas/kata2_balanceamento_turnos/solucao.py` + `test_solucao.py`;
+- `lab02/src/katas/kata3_compactador_sensor/solucao.py` + `test_solucao.py`;
+- `lab02/src/katas/kata4_manutencao_preditiva/solucao.py` + `test_solucao.py`;
+- `lab02/src/katas/gabarito/` (soluções de referência, uso interno do grupo, não copiado para os workspaces);
 - `README.md`: documentação dos katas e do fluxo de execução;
 - `VALIDACAO.md`: evidência da validação de equivalência entre os katas.
 
@@ -58,6 +58,6 @@ O stub original (entregue ao participante) começa em 0% de testes passando em t
 Rodar os testes de um kata:
 
 ```bash
-cd src/katas/kata1_normalizador_etiquetas
+cd lab02/src/katas/kata1_normalizador_etiquetas
 pytest test_solucao.py -v
 ```
