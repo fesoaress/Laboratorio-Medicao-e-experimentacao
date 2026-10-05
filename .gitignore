@@ -1,0 +1,13 @@
+.venv*/
+__pycache__/
+*.py[cod]
+.pytest_cache*/
+.test-tmp*/
+.coverage*
+htmlcov/
+.env
+.env.*
+data/raw/*
+!data/raw/.gitkeep
+data/processed/fernanda/
+.pnpm-store/

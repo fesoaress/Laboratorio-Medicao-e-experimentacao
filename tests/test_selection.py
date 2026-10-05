@@ -5,11 +5,11 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from lab03.src.config import SelectionConfig, load_config
-from lab03.src.github_client import (
+from src.config import SelectionConfig, load_config
+from src.github_client import (
     APIError, APIResponse, GitHubClient, RateLimitError, iter_pages, parse_links,
 )
-from lab03.src.repository_selector import select_candidates
+from src.repository_selector import select_candidates
 
 
 class FakeClient:
@@ -20,7 +20,7 @@ class FakeClient:
     def get(self, path, params=None):
         self.calls.append((path, params))
         response = next(self.responses)
-        if isinstance(response, Exception):
+        if isinstance(response, BaseException):
             raise response
         return response
 
@@ -108,7 +108,7 @@ def test_http_headers_and_environment_token(monkeypatch):
     response.read.return_value = b'{"ok": true}'
     response.headers, response.status = {"Link": ""}, 200
     opener = MagicMock(return_value=response)
-    monkeypatch.setattr("lab03.src.github_client.urlopen", opener)
+    monkeypatch.setattr("src.github_client.urlopen", opener)
     monkeypatch.setenv("GITHUB_TOKEN", "fixture-secret")
     assert GitHubClient().get("/x", {"q": "stars:>1000"}).data == {"ok": True}
     request = opener.call_args.args[0]
@@ -125,7 +125,7 @@ def test_http_headers_and_environment_token(monkeypatch):
 def test_http_errors_do_not_expose_response_body(monkeypatch, status, headers, expected):
     def fail(*args, **kwargs):
         raise HTTPError("https://api.github.com/x", status, "error", headers, io.BytesIO(b"secret"))
-    monkeypatch.setattr("lab03.src.github_client.urlopen", fail)
+    monkeypatch.setattr("src.github_client.urlopen", fail)
     with pytest.raises(expected) as captured:
         GitHubClient().get("/x")
     assert "secret" not in str(captured.value)
@@ -135,13 +135,13 @@ def test_http_errors_do_not_expose_response_body(monkeypatch, status, headers, e
 def test_http_connection_and_invalid_json(monkeypatch):
     def fail(*args, **kwargs):
         raise URLError("network")
-    monkeypatch.setattr("lab03.src.github_client.urlopen", fail)
+    monkeypatch.setattr("src.github_client.urlopen", fail)
     with pytest.raises(APIError, match="conexão"):
         GitHubClient().get("/x")
     response = MagicMock()
     response.__enter__.return_value = response
     response.read.return_value = b"not json"
-    monkeypatch.setattr("lab03.src.github_client.urlopen", lambda *args, **kwargs: response)
+    monkeypatch.setattr("src.github_client.urlopen", lambda *args, **kwargs: response)
     with pytest.raises(APIError, match="JSON"):
         GitHubClient().get("/x")
 

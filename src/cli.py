@@ -9,7 +9,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .config import DEFAULT_CONFIG, load_config
-from .funnel import build_funnel, load_evidence, print_funnel
+from .funnel import TemporalEvidence, build_funnel, classify, load_evidence, print_funnel
+from .deliveries import collect_delivery_data
+from .temporal import ObservationWindow
 from .github_client import GitHubClient
 from .pipeline import collect_metadata, save_outputs
 from .repository_selector import select_candidates
@@ -22,9 +24,10 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--query", action="append", help="Consulta ou fatia de busca; pode repetir")
     result.add_argument("--start-date", help="Início oficial ISO (YYYY-MM-DD)")
     result.add_argument("--end-date", help="Fim oficial exclusivo ISO (YYYY-MM-DD)")
-    result.add_argument("--output-dir", type=Path, default=Path("lab03/data/processed"))
+    result.add_argument("--output-dir", type=Path, default=Path("data/processed"))
     result.add_argument("--candidates-only", action="store_true", help="Executa somente a busca de #38")
     result.add_argument("--validation-csv", type=Path, help="Contagens temporais fornecidas por #40/#43")
+    result.add_argument("--collect-lead-time", action="store_true", help="Coleta #40/#41/#42 na janela oficial")
     return result
 
 
@@ -35,6 +38,10 @@ def main(argv: list[str] | None = None) -> int:
         config = load_config(args.config, sample_size=args.limit,
             search_queries=tuple(args.query) if args.query else None,
             start_date=args.start_date, end_date=args.end_date)
+        if args.collect_lead_time:
+            if args.candidates_only:
+                raise ValueError("--collect-lead-time não combina com --candidates-only.")
+            ObservationWindow(config.start_date, config.end_date)
         evidence = load_evidence(args.validation_csv)
         for item in evidence.values():
             if not config.start_date or (item.start_date, item.end_date) != (config.start_date, config.end_date):
@@ -61,13 +68,25 @@ def main(argv: list[str] | None = None) -> int:
     else:
         rows = collect_metadata(client, result.repositories, config, collected_at, evidence,
                                 stop_before_collection=bool(result.errors))
+        if args.collect_lead_time:
+            eligible = [row for row in rows if row["metadata_complete"] and row["has_github_actions"]
+                        and row["default_branch"].strip()]
+            deliveries = collect_delivery_data(client, eligible, ObservationWindow(config.start_date, config.end_date),
+                                               args.output_dir, per_page=config.per_page)
+            by_name = {row["full_name"].casefold(): row for row in deliveries}
+            for row in eligible:
+                delivery = by_name[row["full_name"].casefold()]
+                classify(row, config, TemporalEvidence(row["full_name"], config.start_date, config.end_date,
+                                                      delivery["release_count"], row["valid_workflow_runs"]))
+            manifest["delivery_errors"] = sum(row["status"] != "complete" for row in deliveries)
         funnel = build_funnel(rows)
         save_outputs(args.output_dir, rows, funnel)
         print_funnel(funnel)
         manifest["processed"] = sum(row["processed"] for row in rows)
         manifest["actions_enabled"] = sum(row["has_github_actions"] is True for row in rows)
         manifest["metadata_errors"] = sum(row["status"] in ("api_error", "metadata_error") for row in rows)
-        metadata_errors = any(row["status"] in ("api_error", "metadata_error", "pending_metadata") for row in rows)
+        metadata_errors = (any(row["status"] in ("api_error", "metadata_error", "pending_metadata") for row in rows)
+                           or bool(manifest.get("delivery_errors")))
     (args.output_dir / "selection_manifest_s01.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Candidatos únicos: {len(result.repositories)} / {config.sample_size}")
@@ -81,3 +100,7 @@ def main(argv: list[str] | None = None) -> int:
     if incomplete:
         print("A API indicou incomplete_results; consulte o manifesto e refine a busca.")
     return 1 if result.errors or metadata_errors or incomplete or len(result.repositories) < config.sample_size else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

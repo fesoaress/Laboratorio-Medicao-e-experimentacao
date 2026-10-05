@@ -4,14 +4,14 @@ from copy import deepcopy
 
 import pytest
 
-from lab03.src.cli import main
-from lab03.src.audit import audit, main as audit_main
-from lab03.src.config import SelectionConfig
-from lab03.src.funnel import TemporalEvidence, build_funnel, classify, load_evidence
-from lab03.src.github_client import APIError, APIResponse, RateLimitError
-from lab03.src.metadata import MetadataError, check_actions, count_contributors, parse_metadata
-from lab03.src.pipeline import REPOSITORY_FIELDS, collect_metadata, save_outputs
-from lab03.tests.test_selection import FakeClient, page
+from src.cli import main
+from src.audit import audit, main as audit_main
+from src.config import SelectionConfig
+from src.funnel import TemporalEvidence, build_funnel, classify, load_evidence
+from src.github_client import APIError, APIResponse, RateLimitError
+from src.metadata import MetadataError, check_actions, count_contributors, parse_metadata
+from src.pipeline import REPOSITORY_FIELDS, collect_metadata, save_outputs
+from tests.test_selection import FakeClient, page
 
 COLLECTED = "2026-10-03T20:00:00+00:00"
 
@@ -182,7 +182,7 @@ def test_csv_output_encoding_order_and_absence_of_fabricated_counts(repository, 
 
 def test_cli_integration_with_mock_api(repository, tmp_path, monkeypatch, capsys):
     client = FakeClient([page([repository], total=1), workflows(1), contributors()])
-    monkeypatch.setattr("lab03.src.cli.GitHubClient", lambda: client)
+    monkeypatch.setattr("src.cli.GitHubClient", lambda: client)
     assert main(["--limit", "1", "--output-dir", str(tmp_path)]) == 0
     assert read_csv(tmp_path / "repositories_s01.csv")[0]["default_branch"] == "trunk"
     manifest = json.loads((tmp_path / "selection_manifest_s01.json").read_text(encoding="utf-8"))
@@ -192,14 +192,14 @@ def test_cli_integration_with_mock_api(repository, tmp_path, monkeypatch, capsys
 
 
 def test_cli_search_error_saves_honest_empty_artifacts(tmp_path, monkeypatch):
-    monkeypatch.setattr("lab03.src.cli.GitHubClient", lambda: FakeClient([APIError("HTTP 500")]))
+    monkeypatch.setattr("src.cli.GitHubClient", lambda: FakeClient([APIError("HTTP 500")]))
     assert main(["--limit", "5", "--output-dir", str(tmp_path)]) == 1
     assert read_csv(tmp_path / "repositories_s01.csv") == []
     assert read_csv(tmp_path / "selection_funnel_s01.csv")[0]["count"] == "0"
 
 
 def test_cli_candidate_only_is_compact(repository, tmp_path, monkeypatch):
-    monkeypatch.setattr("lab03.src.cli.GitHubClient", lambda: FakeClient([page([repository], total=1)]))
+    monkeypatch.setattr("src.cli.GitHubClient", lambda: FakeClient([page([repository], total=1)]))
     assert main(["--limit", "1", "--candidates-only", "--output-dir", str(tmp_path)]) == 0
     assert not (tmp_path / "repositories_s01.csv").exists()
     assert json.loads((tmp_path / "candidates_s01.json").read_text(encoding="utf-8"))[0]["id"] == 42
@@ -236,7 +236,7 @@ def test_cli_hundred_candidates_with_mocked_api(repository, tmp_path, monkeypatc
     for identifier in range(100):
         responses.extend([workflows(1 if identifier % 2 else 0), contributors()])
     client = FakeClient(responses)
-    monkeypatch.setattr("lab03.src.cli.GitHubClient", lambda: client)
+    monkeypatch.setattr("src.cli.GitHubClient", lambda: client)
     assert main(["--limit", "100", "--output-dir", str(tmp_path)]) == 0
     summary = audit(tmp_path)
     assert summary == {"candidates": 100, "processed": 100, "actions_enabled": 50,
@@ -246,7 +246,7 @@ def test_cli_hundred_candidates_with_mocked_api(repository, tmp_path, monkeypatc
 
 
 def test_audit_rejects_duplicate_records_and_wrong_totals(repository, tmp_path, monkeypatch):
-    monkeypatch.setattr("lab03.src.cli.GitHubClient", lambda: FakeClient([page([repository]), workflows(1), contributors()]))
+    monkeypatch.setattr("src.cli.GitHubClient", lambda: FakeClient([page([repository]), workflows(1), contributors()]))
     assert main(["--limit", "1", "--output-dir", str(tmp_path)]) == 0
     assert audit_main([str(tmp_path)]) == 0
     path = tmp_path / "repositories_s01.csv"
@@ -263,7 +263,7 @@ def test_audit_rejects_duplicate_records_and_wrong_totals(repository, tmp_path, 
 
 
 def test_incomplete_search_and_invalid_validation_window_are_not_success(repository, tmp_path, monkeypatch):
-    monkeypatch.setattr("lab03.src.cli.GitHubClient", lambda: FakeClient([page([repository], incomplete=True), workflows(1), contributors()]))
+    monkeypatch.setattr("src.cli.GitHubClient", lambda: FakeClient([page([repository], incomplete=True), workflows(1), contributors()]))
     assert main(["--limit", "1", "--output-dir", str(tmp_path)]) == 1
     path = tmp_path / "validation.csv"
     path.write_text("full_name,start_date,end_date,release_count,valid_workflow_runs\na/b,2025-01-01,2026-01-01,5,50\n", encoding="utf-8")
@@ -275,11 +275,11 @@ def test_incomplete_search_and_invalid_validation_window_are_not_success(reposit
 def test_secondary_rate_limit_without_retry_header_stops(monkeypatch):
     import io
     from urllib.error import HTTPError
-    from lab03.src.github_client import GitHubClient
+    from src.github_client import GitHubClient
 
     def fail(*args, **kwargs):
         raise HTTPError("https://api.github.com/x", 403, "forbidden", {},
                         io.BytesIO(b'{"message":"You have exceeded a secondary rate limit."}'))
-    monkeypatch.setattr("lab03.src.github_client.urlopen", fail)
+    monkeypatch.setattr("src.github_client.urlopen", fail)
     with pytest.raises(RateLimitError):
         GitHubClient().get("/x")
