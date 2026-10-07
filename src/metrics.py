@@ -1,12 +1,20 @@
-"""Issue #42: Lead Time for Changes (a)/(b), em horas, com mediana e IQR."""
+"""Métricas do Lab03: Lead Time (RQ02), CFR (RQ03) e Recovery Time (RQ04)."""
 
 from __future__ import annotations
 
+import statistics
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from statistics import median
+from typing import Any
 
 from .commits import ReleaseInterval
 from .temporal import utc_datetime
+
+
+# =====================================================================
+# Lead Time for Changes (Issue #42 / RQ02)
+# =====================================================================
 
 
 @dataclass(frozen=True)
@@ -96,3 +104,92 @@ def calculate_lead_time(intervals: tuple[ReleaseInterval, ...]) -> LeadTimeResul
                           summarize_hours(v["lead_time_hours"] for v in commit_values),
                           without_previous, without_commits, ignored_compare_404,
                           tuple(release_values), tuple(commit_values))
+
+
+# =====================================================================
+# CFR (RQ03) e Recovery Time (RQ04) — Issues #44 / #45
+# =====================================================================
+
+
+def _parse_instant(value: str) -> datetime:
+    return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(timezone.utc)
+
+
+@dataclass(frozen=True)
+class ChangeFailureRateA:
+    successes: int
+    failures: int
+    ignored: int
+    cfr: float | None  # None quando não há successes+failures para formar a base
+
+
+def change_failure_rate_a(runs: list[dict[str, Any]]) -> ChangeFailureRateA:
+    """RQ03(a): falhas / (falhas + sucessos) entre todos os workflow runs do repo."""
+    successes = sum(run["status_class"] == "success" for run in runs)
+    failures = sum(run["status_class"] == "failure" for run in runs)
+    ignored = sum(run["status_class"] is None for run in runs)
+    total = successes + failures
+    return ChangeFailureRateA(successes, failures, ignored, failures / total if total else None)
+
+
+@dataclass(frozen=True)
+class RecoveryEpisode:
+    workflow_id: int
+    failure_started_at: str
+    recovered_at: str | None  # None quando censurado (nunca voltou a 'success' na janela)
+    hours: float | None
+
+
+def recovery_episodes(runs: list[dict[str, Any]]) -> list[RecoveryEpisode]:
+    """RQ04: episódios de falha por workflow, ordenados cronologicamente.
+
+    Runs com status_class None são ignorados antes de montar a sequência,
+    conforme a seção 3 ("não entra em nenhum cálculo"). Uma sequência de
+    falhas no início dos dados, sem nenhum 'success' anterior observado, não
+    tem início definido pela fórmula do enunciado ("começa na primeira falha
+    após um sucesso") e é descartada — registrar como censura à esquerda da
+    janela na seção de ameaças à validade do artigo.
+    """
+    by_workflow: dict[int, list[dict[str, Any]]] = {}
+    for run in runs:
+        if run["status_class"] is None:
+            continue
+        by_workflow.setdefault(run["workflow_id"], []).append(run)
+
+    episodes: list[RecoveryEpisode] = []
+    for workflow_id, workflow_runs in by_workflow.items():
+        ordered = sorted(workflow_runs, key=lambda run: _parse_instant(run["run_started_at"]))
+        seen_success = False
+        episode_start: str | None = None
+        for run in ordered:
+            if run["status_class"] == "success":
+                if episode_start is not None:
+                    hours = (_parse_instant(run["updated_at"]) - _parse_instant(episode_start)).total_seconds() / 3600
+                    episodes.append(RecoveryEpisode(workflow_id, episode_start, run["updated_at"], hours))
+                    episode_start = None
+                seen_success = True
+            elif run["status_class"] == "failure" and seen_success and episode_start is None:
+                episode_start = run["run_started_at"]
+        if episode_start is not None:
+            episodes.append(RecoveryEpisode(workflow_id, episode_start, None, None))
+    return episodes
+
+
+@dataclass(frozen=True)
+class RecoveryTimeSummary:
+    n_episodes: int
+    n_censored: int
+    median_hours: float | None
+    censored_proportion: float | None
+
+
+def repository_recovery_time(episodes: list[RecoveryEpisode]) -> RecoveryTimeSummary:
+    """Valor do repositório = mediana dos episódios resolvidos; censurados só entram na proporção."""
+    resolved = [episode.hours for episode in episodes if episode.hours is not None]
+    n = len(episodes)
+    n_censored = sum(episode.hours is None for episode in episodes)
+    return RecoveryTimeSummary(
+        n_episodes=n, n_censored=n_censored,
+        median_hours=statistics.median(resolved) if resolved else None,
+        censored_proportion=(n_censored / n) if n else None,
+    )

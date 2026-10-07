@@ -8,13 +8,14 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 
+from .cache import CacheStore, ResilientClient
 from .config import DEFAULT_CONFIG, load_config
-from .funnel import TemporalEvidence, build_funnel, classify, load_evidence, print_funnel
 from .deliveries import collect_delivery_data
-from .temporal import ObservationWindow
+from .funnel import TemporalEvidence, build_funnel, classify, load_evidence, print_funnel
 from .github_client import GitHubClient
 from .pipeline import collect_metadata, save_outputs
 from .repository_selector import select_candidates
+from .temporal import ObservationWindow
 
 
 def parser() -> argparse.ArgumentParser:
@@ -48,7 +49,8 @@ def main(argv: list[str] | None = None) -> int:
                 raise ValueError("CSV temporal não corresponde à janela oficial configurada.")
     except (OSError, ValueError, TypeError) as error:
         argument_parser.error(str(error))
-    client = GitHubClient()
+    cache = CacheStore(args.output_dir / "cache")
+    client = ResilientClient(GitHubClient(), cache)
     result = select_candidates(client, config)
     args.output_dir.mkdir(parents=True, exist_ok=True)
     collected_at = datetime.now(timezone.utc).isoformat()
