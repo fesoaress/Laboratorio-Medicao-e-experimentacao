@@ -1,0 +1,659 @@
+REPOSITÓRIO 01/60
+achannarasappa/ticker
+https://github.com/achannarasappa/ticker
+
+RELEASES SORTEADAS:
+1. v5.0.7 / v5.0.7 — 2025-10-06T02:15:47Z — https://github.com/achannarasappa/ticker/releases/tag/v5.0.7
+2. v5.1.0 / v5.1.0 — 2025-11-16T23:57:27Z — https://github.com/achannarasappa/ticker/releases/tag/v5.1.0
+3. v5.2.0 / v5.2.0 — 2025-12-28T22:43:46Z — https://github.com/achannarasappa/ticker/releases/tag/v5.2.0
+4. v5.2.1 / v5.2.1 — 2026-04-27T04:28:36Z — https://github.com/achannarasappa/ticker/releases/tag/v5.2.1
+5. v5.3.0 / v5.3.0 — 2026-06-21T17:09:34Z — https://github.com/achannarasappa/ticker/releases/tag/v5.3.0
+
+REPOSITÓRIO 02/60
+allure-framework/allure2
+https://github.com/allure-framework/allure2
+
+RELEASES SORTEADAS:
+1. 2.36.0 / 2.36.0 — 2025-12-10T16:40:53Z — https://github.com/allure-framework/allure2/releases/tag/2.36.0
+2. 2.39.0 / 2.39.0 — 2026-04-09T09:55:26Z — https://github.com/allure-framework/allure2/releases/tag/2.39.0
+3. 2.40.0 / 2.40.0 — 2026-05-06T13:09:27Z — https://github.com/allure-framework/allure2/releases/tag/2.40.0
+4. 2.41.0 / 2.41.0 — 2026-05-11T15:08:43Z — https://github.com/allure-framework/allure2/releases/tag/2.41.0
+5. 2.43.0 / 2.43.0 — 2026-06-16T12:03:40Z — https://github.com/allure-framework/allure2/releases/tag/2.43.0
+
+REPOSITÓRIO 03/60
+altair-graphql/altair
+https://github.com/altair-graphql/altair
+
+RELEASES SORTEADAS:
+1. v8.4.2 / v8.4.2 — 2025-12-13T13:01:15Z — https://github.com/altair-graphql/altair/releases/tag/v8.4.2
+2. v8.5.0 / v8.5.0 — 2025-12-20T15:47:10Z — https://github.com/altair-graphql/altair/releases/tag/v8.5.0
+3. v8.5.3 / v8.5.3 — 2026-05-24T16:23:32Z — https://github.com/altair-graphql/altair/releases/tag/v8.5.3
+4. v8.5.2 / v8.5.2 — 2026-06-04T22:41:30Z — https://github.com/altair-graphql/altair/releases/tag/v8.5.2
+5. v8.5.7 / v8.5.7 — 2026-06-06T09:15:30Z — https://github.com/altair-graphql/altair/releases/tag/v8.5.7
+
+REPOSITÓRIO 04/60
+amazon-science/chronos-forecasting
+https://github.com/amazon-science/chronos-forecasting
+
+RELEASES SORTEADAS:
+1. v2.0.0 / 2.0.0 — 2025-10-20T13:48:29Z — https://github.com/amazon-science/chronos-forecasting/releases/tag/v2.0.0
+2. v2.2.1 / 2.2.1 — 2025-12-16T12:08:18Z — https://github.com/amazon-science/chronos-forecasting/releases/tag/v2.2.1
+3. v2.2.2 / 2.2.2 — 2025-12-17T18:13:25Z — https://github.com/amazon-science/chronos-forecasting/releases/tag/v2.2.2
+4. v2.3.0 / 2.3.0 — 2026-06-18T11:30:31Z — https://github.com/amazon-science/chronos-forecasting/releases/tag/v2.3.0
+5. v2.3.2 / v2.3.2 — 2026-09-08T14:06:51Z — https://github.com/amazon-science/chronos-forecasting/releases/tag/v2.3.2
+
+REPOSITÓRIO 05/60
+AngleSharp/AngleSharp
+https://github.com/AngleSharp/AngleSharp
+
+RELEASES SORTEADAS:
+1. 1.3.1 / 1.3.1 — 2025-11-09T19:04:37Z — https://github.com/AngleSharp/AngleSharp/releases/tag/1.3.1
+2. v1.4.0 / 1.4.0 — 2025-11-13T21:14:54Z — https://github.com/AngleSharp/AngleSharp/releases/tag/v1.4.0
+3. 1.5.0 / 1.5.0 — 2026-06-06T16:27:35Z — https://github.com/AngleSharp/AngleSharp/releases/tag/1.5.0
+4. 1.5.2 / 1.5.2 — 2026-07-05T09:12:59Z — https://github.com/AngleSharp/AngleSharp/releases/tag/1.5.2
+5. v1.7.2 / 1.7.2 — 2026-08-23T22:27:19Z — https://github.com/AngleSharp/AngleSharp/releases/tag/v1.7.2
+
+REPOSITÓRIO 06/60
+armbian/build
+https://github.com/armbian/build
+
+RELEASES SORTEADAS:
+1. v25.11.0-trunk.351 / Weekly digest — 2025-10-20T06:41:41Z — https://github.com/armbian/build/releases/tag/v25.11.0-trunk.351
+2. v25.11.0-trunk.414 / Weekly digest — 2025-11-03T06:44:24Z — https://github.com/armbian/build/releases/tag/v25.11.0-trunk.414
+3. v26.2.0-trunk.32 / Weekly digest — 2025-12-01T06:48:23Z — https://github.com/armbian/build/releases/tag/v26.2.0-trunk.32
+4. v26.2.0-trunk.146 / Weekly digest — 2025-12-29T06:49:33Z — https://github.com/armbian/build/releases/tag/v26.2.0-trunk.146
+5. v26.2.0-trunk.623 / Weekly digest — 2026-03-23T07:24:46Z — https://github.com/armbian/build/releases/tag/v26.2.0-trunk.623
+
+REPOSITÓRIO 07/60
+arvidn/libtorrent
+https://github.com/arvidn/libtorrent
+
+RELEASES SORTEADAS:
+1. v2.0.12 / v2.0.12 — 2026-03-13T22:23:52Z — https://github.com/arvidn/libtorrent/releases/tag/v2.0.12
+2. v2.0.13 / v2.0.13 — 2026-06-08T20:19:04Z — https://github.com/arvidn/libtorrent/releases/tag/v2.0.13
+3. v2.1.0 / v2.1.0 — 2026-07-09T11:08:01Z — https://github.com/arvidn/libtorrent/releases/tag/v2.1.0
+4. v2.0.14 / v2.0.14 — 2026-08-10T13:56:19Z — https://github.com/arvidn/libtorrent/releases/tag/v2.0.14
+5. v2.0.15 / v2.0.15 — 2026-09-25T08:34:25Z — https://github.com/arvidn/libtorrent/releases/tag/v2.0.15
+
+REPOSITÓRIO 08/60
+bisq-network/bisq
+https://github.com/bisq-network/bisq
+
+RELEASES SORTEADAS:
+1. v1.10.0 / v1.10.0 — 2026-07-31T15:28:20Z — https://github.com/bisq-network/bisq/releases/tag/v1.10.0
+2. v1.10.1 / v1.10.1 — 2026-07-31T15:30:49Z — https://github.com/bisq-network/bisq/releases/tag/v1.10.1
+3. v1.10.4 / v1.10.4 — 2026-07-31T15:33:24Z — https://github.com/bisq-network/bisq/releases/tag/v1.10.4
+4. v1.10.5 / v1.10.5 — 2026-08-23T16:12:09Z — https://github.com/bisq-network/bisq/releases/tag/v1.10.5
+5. v1.10.8 / v1.10.8 — 2026-09-16T14:57:35Z — https://github.com/bisq-network/bisq/releases/tag/v1.10.8
+
+REPOSITÓRIO 09/60
+breaking-brake/cc-wf-studio
+https://github.com/breaking-brake/cc-wf-studio
+
+RELEASES SORTEADAS:
+1. v2.11.1 / v2.11.1 — 2025-11-21T23:45:31Z — https://github.com/breaking-brake/cc-wf-studio/releases/tag/v2.11.1
+2. v3.5.0 / v3.5.0 — 2025-12-09T01:42:40Z — https://github.com/breaking-brake/cc-wf-studio/releases/tag/v3.5.0
+3. v3.5.4 / v3.5.4 — 2025-12-11T01:27:08Z — https://github.com/breaking-brake/cc-wf-studio/releases/tag/v3.5.4
+4. v3.26.2 / v3.26.2 — 2026-03-01T08:41:01Z — https://github.com/breaking-brake/cc-wf-studio/releases/tag/v3.26.2
+5. v3.30.3 / v3.30.3 — 2026-03-23T03:27:04Z — https://github.com/breaking-brake/cc-wf-studio/releases/tag/v3.30.3
+
+REPOSITÓRIO 10/60
+cactus-compute/cactus
+https://github.com/cactus-compute/cactus
+
+RELEASES SORTEADAS:
+1. v1.7 / v1.7 — 2026-02-18T06:22:08Z — https://github.com/cactus-compute/cactus/releases/tag/v1.7
+2. v1.8 / v1.8 — 2026-02-24T02:06:48Z — https://github.com/cactus-compute/cactus/releases/tag/v1.8
+3. v1.10 / v1.10 — 2026-03-04T07:25:23Z — https://github.com/cactus-compute/cactus/releases/tag/v1.10
+4. v1.13 / v1.13 — 2026-04-14T01:54:31Z — https://github.com/cactus-compute/cactus/releases/tag/v1.13
+5. v2.2.1 / v2.2.1 — 2026-09-25T01:05:49Z — https://github.com/cactus-compute/cactus/releases/tag/v2.2.1
+
+REPOSITÓRIO 11/60
+certd/certd
+https://github.com/certd/certd
+
+RELEASES SORTEADAS:
+1. v1.37.17 / v1.37.17 — 2025-12-29T14:40:37Z — https://github.com/certd/certd/releases/tag/v1.37.17
+2. v1.38.4 / v1.38.4 — 2026-01-31T18:42:45Z — https://github.com/certd/certd/releases/tag/v1.38.4
+3. v1.39.3 / v1.39.3 — 2026-03-17T06:52:11Z — https://github.com/certd/certd/releases/tag/v1.39.3
+4. v1.42.5 / v1.42.5 — 2026-07-15T16:19:21Z — https://github.com/certd/certd/releases/tag/v1.42.5
+5. v1.42.6 / v1.42.6 — 2026-07-18T17:51:25Z — https://github.com/certd/certd/releases/tag/v1.42.6
+
+REPOSITÓRIO 12/60
+chakra-ui/ark
+https://github.com/chakra-ui/ark
+
+RELEASES SORTEADAS:
+1. @ark-ui/vue@5.26.0 / @ark-ui/vue@5.26.0 — 2025-10-08T20:52:24Z — https://github.com/chakra-ui/ark/releases/tag/%40ark-ui/vue%405.26.0
+2. @ark-ui/vue@5.28.0 / @ark-ui/vue@5.28.0 — 2025-11-14T14:49:17Z — https://github.com/chakra-ui/ark/releases/tag/%40ark-ui/vue%405.28.0
+3. @ark-ui/svelte@5.19.0 / @ark-ui/svelte@5.19.0 — 2026-02-27T01:40:36Z — https://github.com/chakra-ui/ark/releases/tag/%40ark-ui/svelte%405.19.0
+4. @ark-ui/vue@5.36.0 / @ark-ui/vue@5.36.0 — 2026-04-10T07:45:07Z — https://github.com/chakra-ui/ark/releases/tag/%40ark-ui/vue%405.36.0
+5. @ark-ui/vue@5.36.2 / @ark-ui/vue@5.36.2 — 2026-04-22T15:37:40Z — https://github.com/chakra-ui/ark/releases/tag/%40ark-ui/vue%405.36.2
+
+REPOSITÓRIO 13/60
+chakra-ui/zag
+https://github.com/chakra-ui/zag
+
+RELEASES SORTEADAS:
+1. @zag-js/marquee@1.35.3 / @zag-js/marquee@1.35.3 — 2026-03-02T20:34:44Z — https://github.com/chakra-ui/zag/releases/tag/%40zag-js/marquee%401.35.3
+2. @zag-js/auto-resize@1.35.3 / @zag-js/auto-resize@1.35.3 — 2026-03-02T20:38:26Z — https://github.com/chakra-ui/zag/releases/tag/%40zag-js/auto-resize%401.35.3
+3. @zag-js/utils@1.37.0 / @zag-js/utils@1.37.0 — 2026-03-16T21:05:35Z — https://github.com/chakra-ui/zag/releases/tag/%40zag-js/utils%401.37.0
+4. @zag-js/anatomy@1.41.1 / @zag-js/anatomy@1.41.1 — 2026-05-26T20:47:26Z — https://github.com/chakra-ui/zag/releases/tag/%40zag-js/anatomy%401.41.1
+5. @zag-js/listbox@1.41.1 / @zag-js/listbox@1.41.1 — 2026-05-26T20:47:50Z — https://github.com/chakra-ui/zag/releases/tag/%40zag-js/listbox%401.41.1
+
+REPOSITÓRIO 14/60
+charmbracelet/wish
+https://github.com/charmbracelet/wish
+
+RELEASES SORTEADAS:
+1. v2.0.0 / v2.0.0 — 2026-03-09T12:45:09Z — https://github.com/charmbracelet/wish/releases/tag/v2.0.0
+2. v2.0.1 / v2.0.1 — 2026-04-17T20:10:19Z — https://github.com/charmbracelet/wish/releases/tag/v2.0.1
+3. v2.0.2 / v2.0.2 — 2026-07-30T17:25:15Z — https://github.com/charmbracelet/wish/releases/tag/v2.0.2
+4. v2.0.3 / v2.0.3 — 2026-07-31T18:13:28Z — https://github.com/charmbracelet/wish/releases/tag/v2.0.3
+5. v2.0.4 / v2.0.4 — 2026-09-10T15:29:48Z — https://github.com/charmbracelet/wish/releases/tag/v2.0.4
+
+REPOSITÓRIO 15/60
+cloud-custodian/cloud-custodian
+https://github.com/cloud-custodian/cloud-custodian
+
+RELEASES SORTEADAS:
+1. 0.9.48.0 / 0.9.48.0 — 2025-12-01T19:04:50Z — https://github.com/cloud-custodian/cloud-custodian/releases/tag/0.9.48.0
+2. 0.9.49.0 / 0.9.49.0 — 2026-01-16T21:21:11Z — https://github.com/cloud-custodian/cloud-custodian/releases/tag/0.9.49.0
+3. 0.9.50.0 / 0.9.50.0 — 2026-03-18T17:16:59Z — https://github.com/cloud-custodian/cloud-custodian/releases/tag/0.9.50.0
+4. 0.9.51.0 / 0.9.51.0 — 2026-05-28T19:52:40Z — https://github.com/cloud-custodian/cloud-custodian/releases/tag/0.9.51.0
+5. 0.9.52.0 / 0.9.52.0 — 2026-09-03T19:16:59Z — https://github.com/cloud-custodian/cloud-custodian/releases/tag/0.9.52.0
+
+REPOSITÓRIO 16/60
+css-doodle/css-doodle
+https://github.com/css-doodle/css-doodle
+
+RELEASES SORTEADAS:
+1. v0.46.1 / v0.46.1 — 2025-10-31T01:25:07Z — https://github.com/css-doodle/css-doodle/releases/tag/v0.46.1
+2. v0.48.0 / v0.48.0 — 2025-11-28T16:40:08Z — https://github.com/css-doodle/css-doodle/releases/tag/v0.48.0
+3. v0.52.0 / v0.52.0 — 2026-09-20T12:44:58Z — https://github.com/css-doodle/css-doodle/releases/tag/v0.52.0
+4. v0.53.1 / v0.53.1 — 2026-09-27T01:16:29Z — https://github.com/css-doodle/css-doodle/releases/tag/v0.53.1
+5. v0.54.0 / v0.54.0 — 2026-09-28T14:51:24Z — https://github.com/css-doodle/css-doodle/releases/tag/v0.54.0
+
+REPOSITÓRIO 17/60
+dlt-hub/dlt
+https://github.com/dlt-hub/dlt
+
+RELEASES SORTEADAS:
+1. 1.18.2 / 1.18.2 — 2025-11-03T16:04:35Z — https://github.com/dlt-hub/dlt/releases/tag/1.18.2
+2. 1.19.0 / 1.19.0 — 2025-12-01T15:52:25Z — https://github.com/dlt-hub/dlt/releases/tag/1.19.0
+3. 1.19.1 / 1.19.1 — 2025-12-02T22:02:07Z — https://github.com/dlt-hub/dlt/releases/tag/1.19.1
+4. 1.26.0 / 1.26.0 — 2026-04-28T18:49:52Z — https://github.com/dlt-hub/dlt/releases/tag/1.26.0
+5. 1.29.0 / 1.29.0 — 2026-07-13T09:31:54Z — https://github.com/dlt-hub/dlt/releases/tag/1.29.0
+
+REPOSITÓRIO 18/60
+DSH-APP/DSHA
+https://github.com/DSH-APP/DSHA
+
+RELEASES SORTEADAS:
+1. v1.1.0 / DSHA v1.1.0 — 2026-08-16T13:47:16Z — https://github.com/DSH-APP/DSHA/releases/tag/v1.1.0
+2. v1.1.1 / DSHA v1.1.1 — 2026-08-20T12:51:35Z — https://github.com/DSH-APP/DSHA/releases/tag/v1.1.1
+3. v1.1.4 / DSHA v1.1.4 — 2026-08-22T01:42:29Z — https://github.com/DSH-APP/DSHA/releases/tag/v1.1.4
+4. v1.1.6 / DSHA v1.1.6 — 2026-08-24T13:00:56Z — https://github.com/DSH-APP/DSHA/releases/tag/v1.1.6
+5. v1.1.8 / DSHA v1.1.8 — 2026-08-25T09:06:22Z — https://github.com/DSH-APP/DSHA/releases/tag/v1.1.8
+
+REPOSITÓRIO 19/60
+dtcooper/raspotify
+https://github.com/dtcooper/raspotify
+
+RELEASES SORTEADAS:
+1. 0.47.1 / 0.47.1 — 2025-11-07T10:05:24Z — https://github.com/dtcooper/raspotify/releases/tag/0.47.1
+2. 0.48.0 / 0.48.0 — 2025-11-12T10:44:08Z — https://github.com/dtcooper/raspotify/releases/tag/0.48.0
+3. 0.48.1 / 0.48.1 — 2025-11-24T09:44:57Z — https://github.com/dtcooper/raspotify/releases/tag/0.48.1
+4. 0.48.2 / 0.48.2 — 2026-07-18T21:32:56Z — https://github.com/dtcooper/raspotify/releases/tag/0.48.2
+5. 0.48.3 / 0.48.3 — 2026-09-23T08:40:39Z — https://github.com/dtcooper/raspotify/releases/tag/0.48.3
+
+REPOSITÓRIO 20/60
+dundee/gdu
+https://github.com/dundee/gdu
+
+RELEASES SORTEADAS:
+1. v5.32.0 / gdu v5.32.0 — 2025-11-22T11:21:12Z — https://github.com/dundee/gdu/releases/tag/v5.32.0
+2. v5.33.0 / gdu v5.33.0 — 2026-02-13T23:12:43Z — https://github.com/dundee/gdu/releases/tag/v5.33.0
+3. v5.36.0 / v5.36.0 — 2026-04-27T22:31:42Z — https://github.com/dundee/gdu/releases/tag/v5.36.0
+4. v5.36.1 / v5.36.1 — 2026-04-29T22:00:38Z — https://github.com/dundee/gdu/releases/tag/v5.36.1
+5. v5.37.0 / v5.37.0 — 2026-08-18T08:48:32Z — https://github.com/dundee/gdu/releases/tag/v5.37.0
+
+REPOSITÓRIO 21/60
+fontsource/fontsource
+https://github.com/fontsource/fontsource
+
+RELEASES SORTEADAS:
+1. core-v0.2.0 / core: v0.2.0 — 2026-07-18T18:21:11Z — https://github.com/fontsource/fontsource/releases/tag/core-v0.2.0
+2. cli-v0.7.3 / cli: v0.7.3 — 2026-07-19T04:32:46Z — https://github.com/fontsource/fontsource/releases/tag/cli-v0.7.3
+3. scss-v0.2.4 / scss: v0.2.4 — 2026-07-19T09:53:15Z — https://github.com/fontsource/fontsource/releases/tag/scss-v0.2.4
+4. core-v0.3.0 / core: v0.3.0 — 2026-07-26T04:40:33Z — https://github.com/fontsource/fontsource/releases/tag/core-v0.3.0
+5. core-v0.5.1 / core: v0.5.1 — 2026-09-23T05:38:18Z — https://github.com/fontsource/fontsource/releases/tag/core-v0.5.1
+
+REPOSITÓRIO 22/60
+frangoteam/FUXA
+https://github.com/frangoteam/FUXA
+
+RELEASES SORTEADAS:
+1. v1.2.7 / v1.2.7 — 2025-10-02T20:14:38Z — https://github.com/frangoteam/FUXA/releases/tag/v1.2.7
+2. v1.2.9 / v1.2.9 — 2026-01-04T18:23:29Z — https://github.com/frangoteam/FUXA/releases/tag/v1.2.9
+3. v1.3.1 / v1.3.1 — 2026-04-09T20:10:32Z — https://github.com/frangoteam/FUXA/releases/tag/v1.3.1
+4. v1.3.2 / v1.3.2 — 2026-05-19T18:27:46Z — https://github.com/frangoteam/FUXA/releases/tag/v1.3.2
+5. v1.3.3 / v1.3.3 — 2026-06-21T20:21:16Z — https://github.com/frangoteam/FUXA/releases/tag/v1.3.3
+
+REPOSITÓRIO 23/60
+giggsey/libphonenumber-for-php
+https://github.com/giggsey/libphonenumber-for-php
+
+RELEASES SORTEADAS:
+1. 9.0.18 / 9.0.18 — 2025-11-10T15:56:29Z — https://github.com/giggsey/libphonenumber-for-php/releases/tag/9.0.18
+2. 9.0.19 / 9.0.19 — 2025-11-20T18:45:53Z — https://github.com/giggsey/libphonenumber-for-php/releases/tag/9.0.19
+3. 9.0.26 / 9.0.26 — 2026-03-13T11:35:23Z — https://github.com/giggsey/libphonenumber-for-php/releases/tag/9.0.26
+4. 9.0.37 / 9.0.37 — 2026-08-15T20:06:11Z — https://github.com/giggsey/libphonenumber-for-php/releases/tag/9.0.37
+5. 9.0.38 / 9.0.38 — 2026-09-01T10:45:59Z — https://github.com/giggsey/libphonenumber-for-php/releases/tag/9.0.38
+
+REPOSITÓRIO 24/60
+gitpython-developers/GitPython
+https://github.com/gitpython-developers/GitPython
+
+RELEASES SORTEADAS:
+1. 3.1.47 / 3.1.47 - with security fixes — 2026-04-25T01:41:34Z — https://github.com/gitpython-developers/GitPython/releases/tag/3.1.47
+2. 3.1.48 / 3.1.48 - Security — 2026-04-30T21:52:00Z — https://github.com/gitpython-developers/GitPython/releases/tag/3.1.48
+3. 3.1.51 / 3.1.51 - Security — 2026-07-12T14:44:14Z — https://github.com/gitpython-developers/GitPython/releases/tag/3.1.51
+4. 3.1.60 / 3.1.60 Security — 2026-08-28T11:03:09Z — https://github.com/gitpython-developers/GitPython/releases/tag/3.1.60
+5. 3.1.62 / 3.1.62 — 2026-09-07T02:58:18Z — https://github.com/gitpython-developers/GitPython/releases/tag/3.1.62
+
+REPOSITÓRIO 25/60
+gnmyt/Nexterm
+https://github.com/gnmyt/Nexterm
+
+RELEASES SORTEADAS:
+1. v1.0.6-OPEN-PREVIEW / Release 1.0.6-OPEN-PREVIEW — 2025-11-30T19:27:13Z — https://github.com/gnmyt/Nexterm/releases/tag/v1.0.6-OPEN-PREVIEW
+2. v1.0.7-OPEN-PREVIEW / Release 1.0.7-OPEN-PREVIEW — 2025-12-19T21:48:19Z — https://github.com/gnmyt/Nexterm/releases/tag/v1.0.7-OPEN-PREVIEW
+3. v1.0.8-OPEN-PREVIEW / Release 1.0.8-OPEN-PREVIEW — 2025-12-29T01:17:31Z — https://github.com/gnmyt/Nexterm/releases/tag/v1.0.8-OPEN-PREVIEW
+4. v1.0.9-OPEN-PREVIEW / Release 1.0.9-OPEN-PREVIEW — 2025-12-31T19:46:44Z — https://github.com/gnmyt/Nexterm/releases/tag/v1.0.9-OPEN-PREVIEW
+5. v1.2.0-BETA / Release 1.2.0-BETA — 2026-01-01T00:50:11Z — https://github.com/gnmyt/Nexterm/releases/tag/v1.2.0-BETA
+
+REPOSITÓRIO 26/60
+goadesign/goa
+https://github.com/goadesign/goa
+
+RELEASES SORTEADAS:
+1. v3.22.5 / v3.22.5 — 2025-10-04T17:09:24Z — https://github.com/goadesign/goa/releases/tag/v3.22.5
+2. v3.23.0 / v3.23.0 — 2025-11-26T01:35:05Z — https://github.com/goadesign/goa/releases/tag/v3.23.0
+3. v3.28.0 / Goa v3.28.0 — 2026-06-02T16:55:10Z — https://github.com/goadesign/goa/releases/tag/v3.28.0
+4. v3.30.0 / Goa v3.30.0 — 2026-08-19T18:49:49Z — https://github.com/goadesign/goa/releases/tag/v3.30.0
+5. v3.31.0 / Goa v3.31.0 — 2026-09-16T07:42:19Z — https://github.com/goadesign/goa/releases/tag/v3.31.0
+
+REPOSITÓRIO 27/60
+google/clusterfuzz
+https://github.com/google/clusterfuzz
+
+RELEASES SORTEADAS:
+1. v2.17.1 / v2.17.1 — 2025-11-26T20:45:44Z — https://github.com/google/clusterfuzz/releases/tag/v2.17.1
+2. v2.24.3 / v2.24.3 — 2026-02-18T12:23:14Z — https://github.com/google/clusterfuzz/releases/tag/v2.24.3
+3. v2.33.5 / v2.33.5 — 2026-06-10T17:04:53Z — https://github.com/google/clusterfuzz/releases/tag/v2.33.5
+4. v2.33.12 / v2.33.12 — 2026-07-07T18:40:17Z — https://github.com/google/clusterfuzz/releases/tag/v2.33.12
+5. v2.35.2 / v2.35.2 — 2026-07-23T13:38:54Z — https://github.com/google/clusterfuzz/releases/tag/v2.35.2
+
+REPOSITÓRIO 28/60
+grafana/mimir
+https://github.com/grafana/mimir
+
+RELEASES SORTEADAS:
+1. mimir-3.0.1 / 3.0.1 — 2025-11-28T17:25:43Z — https://github.com/grafana/mimir/releases/tag/mimir-3.0.1
+2. mimir-3.0.7 / 3.0.7 — 2026-06-17T01:07:33Z — https://github.com/grafana/mimir/releases/tag/mimir-3.0.7
+3. mimir-3.1.3 / 3.1.3 — 2026-07-16T17:15:13Z — https://github.com/grafana/mimir/releases/tag/mimir-3.1.3
+4. mimir-3.2.0 / 3.2.0 — 2026-08-19T13:59:51Z — https://github.com/grafana/mimir/releases/tag/mimir-3.2.0
+5. mimir-3.1.6 / 3.1.6 — 2026-09-10T05:11:43Z — https://github.com/grafana/mimir/releases/tag/mimir-3.1.6
+
+REPOSITÓRIO 29/60
+h2oai/h2o-llmstudio
+https://github.com/h2oai/h2o-llmstudio
+
+RELEASES SORTEADAS:
+1. v1.14.9 / v1.14.9 — 2026-02-20T08:41:58Z — https://github.com/h2oai/h2o-llmstudio/releases/tag/v1.14.9
+2. v1.14.14 / v1.14.14 — 2026-06-30T09:22:16Z — https://github.com/h2oai/h2o-llmstudio/releases/tag/v1.14.14
+3. v1.14.15 / v1.14.15 — 2026-07-10T05:56:07Z — https://github.com/h2oai/h2o-llmstudio/releases/tag/v1.14.15
+4. v1.15.0 / v1.15.0 — 2026-08-18T12:39:36Z — https://github.com/h2oai/h2o-llmstudio/releases/tag/v1.15.0
+5. v1.15.1 / v1.15.1 — 2026-09-17T09:41:11Z — https://github.com/h2oai/h2o-llmstudio/releases/tag/v1.15.1
+
+REPOSITÓRIO 30/60
+HarbourMasters/Shipwright
+https://github.com/HarbourMasters/Shipwright
+
+RELEASES SORTEADAS:
+1. 9.1.1 / Copper Bravo 9.1.1 — 2025-11-05T05:20:18Z — https://github.com/HarbourMasters/Shipwright/releases/tag/9.1.1
+2. 9.1.2 / Copper Charlie 9.1.2 — 2026-01-19T02:01:55Z — https://github.com/HarbourMasters/Shipwright/releases/tag/9.1.2
+3. 9.2.0 / Ackbar Alpha 9.2.0 — 2026-03-22T21:55:34Z — https://github.com/HarbourMasters/Shipwright/releases/tag/9.2.0
+4. 9.2.1 / Ackbar Bravo 9.2.1 — 2026-03-28T05:31:37Z — https://github.com/HarbourMasters/Shipwright/releases/tag/9.2.1
+5. 9.2.2 / Ackbar Charlie 9.2.2 — 2026-04-14T02:30:45Z — https://github.com/HarbourMasters/Shipwright/releases/tag/9.2.2
+
+REPOSITÓRIO 31/60
+huggingface/text-embeddings-inference
+https://github.com/huggingface/text-embeddings-inference
+
+RELEASES SORTEADAS:
+1. v1.8.3 / v1.8.3 — 2025-10-30T09:08:18Z — https://github.com/huggingface/text-embeddings-inference/releases/tag/v1.8.3
+2. v1.9.0 / v1.9.0 — 2026-02-17T13:42:14Z — https://github.com/huggingface/text-embeddings-inference/releases/tag/v1.9.0
+3. v1.9.1 / v1.9.1 — 2026-02-17T20:59:31Z — https://github.com/huggingface/text-embeddings-inference/releases/tag/v1.9.1
+4. v1.9.2 / v1.9.2 — 2026-02-25T11:17:59Z — https://github.com/huggingface/text-embeddings-inference/releases/tag/v1.9.2
+5. v1.9.4 / v1.9.4 — 2026-09-15T09:28:03Z — https://github.com/huggingface/text-embeddings-inference/releases/tag/v1.9.4
+
+REPOSITÓRIO 32/60
+JerBouma/FinanceToolkit
+https://github.com/JerBouma/FinanceToolkit
+
+RELEASES SORTEADAS:
+1. v2.0.6 / FinanceToolkit v2.0.6 — 2025-10-04T13:52:56Z — https://github.com/JerBouma/FinanceToolkit/releases/tag/v2.0.6
+2. v2.1.0 / FinanceToolkit v2.1.0 — 2026-06-09T13:50:12Z — https://github.com/JerBouma/FinanceToolkit/releases/tag/v2.1.0
+3. v2.1.2 / FinanceToolkit v2.1.2 — 2026-06-23T19:05:25Z — https://github.com/JerBouma/FinanceToolkit/releases/tag/v2.1.2
+4. v2.1.3 / FinanceToolkit v2.1.3 — 2026-06-27T09:03:12Z — https://github.com/JerBouma/FinanceToolkit/releases/tag/v2.1.3
+5. v2.2.0 / FinanceToolkit v2.2.0 — 2026-08-18T12:47:06Z — https://github.com/JerBouma/FinanceToolkit/releases/tag/v2.2.0
+
+REPOSITÓRIO 33/60
+jetkvm/kvm
+https://github.com/jetkvm/kvm
+
+RELEASES SORTEADAS:
+1. release/0.5.0 / 0.5.0 — 2025-12-08T14:01:52Z — https://github.com/jetkvm/kvm/releases/tag/release/0.5.0
+2. release/0.5.3 / 0.5.3 — 2026-02-07T21:13:04Z — https://github.com/jetkvm/kvm/releases/tag/release/0.5.3
+3. release/0.5.5 / 0.5.5 — 2026-03-31T09:25:09Z — https://github.com/jetkvm/kvm/releases/tag/release/0.5.5
+4. release/0.5.8 / 0.5.8 — 2026-05-04T09:19:46Z — https://github.com/jetkvm/kvm/releases/tag/release/0.5.8
+5. release/0.5.9 / 0.5.9 — 2026-09-09T08:14:37Z — https://github.com/jetkvm/kvm/releases/tag/release/0.5.9
+
+REPOSITÓRIO 34/60
+kimai/kimai
+https://github.com/kimai/kimai
+
+RELEASES SORTEADAS:
+1. 2.41.0 / 2.41.0 — 2025-11-11T15:17:21Z — https://github.com/kimai/kimai/releases/tag/2.41.0
+2. 2.44.0 / 2.44.0 — 2025-11-20T11:01:01Z — https://github.com/kimai/kimai/releases/tag/2.44.0
+3. 2.48.0 / 2.48.0 — 2026-01-31T18:10:59Z — https://github.com/kimai/kimai/releases/tag/2.48.0
+4. 2.55.0 / 2.55.0 — 2026-04-16T20:22:14Z — https://github.com/kimai/kimai/releases/tag/2.55.0
+5. 2.67.0 / 2.67.0 — 2026-09-13T20:40:29Z — https://github.com/kimai/kimai/releases/tag/2.67.0
+
+REPOSITÓRIO 35/60
+KnockOutEZ/wigolo
+https://github.com/KnockOutEZ/wigolo
+
+RELEASES SORTEADAS:
+1. v0.1.40-beta.0 / v0.1.40-beta.0 — 2026-07-01T17:47:58Z — https://github.com/KnockOutEZ/wigolo/releases/tag/v0.1.40-beta.0
+2. v0.1.40-beta.1 / v0.1.40-beta.1 — 2026-07-05T06:38:59Z — https://github.com/KnockOutEZ/wigolo/releases/tag/v0.1.40-beta.1
+3. v0.1.40-beta.2 / v0.1.40-beta.2 — 2026-07-06T04:02:19Z — https://github.com/KnockOutEZ/wigolo/releases/tag/v0.1.40-beta.2
+4. v0.1.41-beta.1 / v0.1.41-beta.1 — 2026-07-12T18:15:44Z — https://github.com/KnockOutEZ/wigolo/releases/tag/v0.1.41-beta.1
+5. v0.2.0 / v0.2.0 — 2026-07-17T11:34:07Z — https://github.com/KnockOutEZ/wigolo/releases/tag/v0.2.0
+
+REPOSITÓRIO 36/60
+marmelroy/PhoneNumberKit
+https://github.com/marmelroy/PhoneNumberKit
+
+RELEASES SORTEADAS:
+1. 4.1.8 / 4.1.8 — 2025-10-24T08:38:22Z — https://github.com/marmelroy/PhoneNumberKit/releases/tag/4.1.8
+2. 4.2.6 / 4.2.6 — 2026-02-26T23:20:12Z — https://github.com/marmelroy/PhoneNumberKit/releases/tag/4.2.6
+3. 4.2.9 / 4.2.9 — 2026-04-03T12:21:13Z — https://github.com/marmelroy/PhoneNumberKit/releases/tag/4.2.9
+4. 4.2.12 / 4.2.12 — 2026-05-09T06:59:13Z — https://github.com/marmelroy/PhoneNumberKit/releases/tag/4.2.12
+5. 4.2.13 / 4.2.13 — 2026-05-23T08:08:44Z — https://github.com/marmelroy/PhoneNumberKit/releases/tag/4.2.13
+
+REPOSITÓRIO 37/60
+mathesar-foundation/mathesar
+https://github.com/mathesar-foundation/mathesar
+
+RELEASES SORTEADAS:
+1. 0.6.0 / Version 0.6.0 — 2025-10-07T20:37:13Z — https://github.com/mathesar-foundation/mathesar/releases/tag/0.6.0
+2. 0.7.0 / Version 0.7.0 — 2025-10-31T18:24:15Z — https://github.com/mathesar-foundation/mathesar/releases/tag/0.7.0
+3. 0.7.1 / Version 0.7.1 — 2025-11-11T19:32:00Z — https://github.com/mathesar-foundation/mathesar/releases/tag/0.7.1
+4. 0.9.0 / Version 0.9.0 — 2026-02-10T21:20:55Z — https://github.com/mathesar-foundation/mathesar/releases/tag/0.9.0
+5. 0.11.0 / Version 0.11.0 — 2026-05-28T10:51:08Z — https://github.com/mathesar-foundation/mathesar/releases/tag/0.11.0
+
+REPOSITÓRIO 38/60
+MCP-UI-Org/mcp-ui
+https://github.com/MCP-UI-Org/mcp-ui
+
+RELEASES SORTEADAS:
+1. python-server-sdk/v1.0.0 / python-server-sdk/v1.0.0 — 2025-11-04T16:17:02Z — https://github.com/MCP-UI-Org/mcp-ui/releases/tag/python-server-sdk/v1.0.0
+2. server/v5.16.1 / server/v5.16.1 — 2025-12-01T00:10:58Z — https://github.com/MCP-UI-Org/mcp-ui/releases/tag/server/v5.16.1
+3. client/v5.17.3 / client/v5.17.3 — 2025-12-20T17:10:50Z — https://github.com/MCP-UI-Org/mcp-ui/releases/tag/client/v5.17.3
+4. server/v6.0.1 / server/v6.0.1 — 2026-02-06T16:33:25Z — https://github.com/MCP-UI-Org/mcp-ui/releases/tag/server/v6.0.1
+5. client/v7.0.0 / client/v7.0.0 — 2026-03-12T00:52:52Z — https://github.com/MCP-UI-Org/mcp-ui/releases/tag/client/v7.0.0
+
+REPOSITÓRIO 39/60
+Michael-A-Kuykendall/shimmy
+https://github.com/Michael-A-Kuykendall/shimmy
+
+RELEASES SORTEADAS:
+1. v2.4.2 / v2.4.2 — 2026-08-03T20:33:26Z — https://github.com/Michael-A-Kuykendall/shimmy/releases/tag/v2.4.2
+2. v2.5.0 / v2.5.0 — 2026-08-06T23:13:31Z — https://github.com/Michael-A-Kuykendall/shimmy/releases/tag/v2.5.0
+3. v2.6.0 / Shimmy v2.6.0 — 2026-08-27T00:48:57Z — https://github.com/Michael-A-Kuykendall/shimmy/releases/tag/v2.6.0
+4. v2.6.2 / Shimmy v2.6.2 — 2026-08-28T23:04:34Z — https://github.com/Michael-A-Kuykendall/shimmy/releases/tag/v2.6.2
+5. v2.6.3 / Shimmy v2.6.3 — 2026-08-29T00:05:43Z — https://github.com/Michael-A-Kuykendall/shimmy/releases/tag/v2.6.3
+
+REPOSITÓRIO 40/60
+mistralai/mistral-vibe
+https://github.com/mistralai/mistral-vibe
+
+RELEASES SORTEADAS:
+1. v1.0.0 / v1.0.0 — 2025-12-09T13:23:49Z — https://github.com/mistralai/mistral-vibe/releases/tag/v1.0.0
+2. v1.3.1 / v1.3.1 — 2025-12-24T12:53:18Z — https://github.com/mistralai/mistral-vibe/releases/tag/v1.3.1
+3. v2.2.1 / v2.2.1 — 2026-02-19T11:06:34Z — https://github.com/mistralai/mistral-vibe/releases/tag/v2.2.1
+4. v2.7.4 / v2.7.4 — 2026-04-09T16:41:36Z — https://github.com/mistralai/mistral-vibe/releases/tag/v2.7.4
+5. v2.16.1 / v2.16.1 — 2026-06-16T08:44:24Z — https://github.com/mistralai/mistral-vibe/releases/tag/v2.16.1
+
+REPOSITÓRIO 41/60
+modelcontextprotocol/go-sdk
+https://github.com/modelcontextprotocol/go-sdk
+
+RELEASES SORTEADAS:
+1. v1.1.0 / v1.1.0 — 2025-10-30T14:32:21Z — https://github.com/modelcontextprotocol/go-sdk/releases/tag/v1.1.0
+2. v1.3.0 / v1.3.0 — 2026-02-09T15:14:32Z — https://github.com/modelcontextprotocol/go-sdk/releases/tag/v1.3.0
+3. v1.4.0 / v1.4.0 — 2026-02-27T14:35:53Z — https://github.com/modelcontextprotocol/go-sdk/releases/tag/v1.4.0
+4. v1.6.0 / v1.6.0 — 2026-05-08T12:05:03Z — https://github.com/modelcontextprotocol/go-sdk/releases/tag/v1.6.0
+5. v1.8.0 / v1.8.0 — 2026-09-14T08:05:46Z — https://github.com/modelcontextprotocol/go-sdk/releases/tag/v1.8.0
+
+REPOSITÓRIO 42/60
+mylinuxforwork/dotfiles
+https://github.com/mylinuxforwork/dotfiles
+
+RELEASES SORTEADAS:
+1. 2.9.9.6 / v2.9.9.6 — 2026-01-16T21:36:24Z — https://github.com/mylinuxforwork/dotfiles/releases/tag/2.9.9.6
+2. 2.12.2 / v2.12.2 — 2026-04-04T15:54:46Z — https://github.com/mylinuxforwork/dotfiles/releases/tag/2.12.2
+3. 2.12.3 / v2.12.3 — 2026-05-10T09:49:19Z — https://github.com/mylinuxforwork/dotfiles/releases/tag/2.12.3
+4. 2.14.1 / v2.14.1 — 2026-07-09T13:40:01Z — https://github.com/mylinuxforwork/dotfiles/releases/tag/2.14.1
+5. 2.16 / v2.16 — 2026-09-24T19:08:33Z — https://github.com/mylinuxforwork/dotfiles/releases/tag/2.16
+
+REPOSITÓRIO 43/60
+netease-youdao/LobsterAI
+https://github.com/netease-youdao/LobsterAI
+
+RELEASES SORTEADAS:
+1. 2026.4.8 / LobsterAI 2026.4.8 — 2026-04-08T15:17:58Z — https://github.com/netease-youdao/LobsterAI/releases/tag/2026.4.8
+2. 2026.7.10 / LobsterAI 2026.7.10 — 2026-07-11T01:07:01Z — https://github.com/netease-youdao/LobsterAI/releases/tag/2026.7.10
+3. 2026.8.11 / LobsterAI 2026.8.11 — 2026-08-11T13:53:31Z — https://github.com/netease-youdao/LobsterAI/releases/tag/2026.8.11
+4. 2026.8.28 / LobsterAI 2026.8.28 — 2026-08-28T15:13:46Z — https://github.com/netease-youdao/LobsterAI/releases/tag/2026.8.28
+5. 2026.9.23 / LobsterAI 2026.9.23 — 2026-09-23T14:29:57Z — https://github.com/netease-youdao/LobsterAI/releases/tag/2026.9.23
+
+REPOSITÓRIO 44/60
+nyblnet/bento
+https://github.com/nyblnet/bento
+
+RELEASES SORTEADAS:
+1. v1.0.6 / bento/slides v1.0.6 — 2026-07-21T14:24:30Z — https://github.com/nyblnet/bento/releases/tag/v1.0.6
+2. v1.0.8 / bento/slides v1.0.8 — 2026-07-24T05:14:15Z — https://github.com/nyblnet/bento/releases/tag/v1.0.8
+3. v1.0.13 / bento/slides v1.0.13 — 2026-08-02T00:24:51Z — https://github.com/nyblnet/bento/releases/tag/v1.0.13
+4. v1.0.17 / bento/slides v1.0.17 — 2026-08-10T18:23:51Z — https://github.com/nyblnet/bento/releases/tag/v1.0.17
+5. v1.2.3 / bento/slides v1.2.3 — 2026-09-19T21:38:26Z — https://github.com/nyblnet/bento/releases/tag/v1.2.3
+
+REPOSITÓRIO 45/60
+obss/sahi
+https://github.com/obss/sahi
+
+RELEASES SORTEADAS:
+1. 0.12.1 / SAHI 0.12.1 Release - Bug Fix 🐞 — 2026-06-08T00:22:07Z — https://github.com/obss/sahi/releases/tag/0.12.1
+2. 0.12.3 / SAHI 0.12.3 - Apple Silicon GPU Support 🍎 — 2026-08-01T13:41:04Z — https://github.com/obss/sahi/releases/tag/0.12.3
+3. 0.12.4 / SAHI 0.12.4 - CLI Dependency Fix 🐛 — 2026-08-01T23:41:55Z — https://github.com/obss/sahi/releases/tag/0.12.4
+4. 0.12.7 / 0.12.7 — 2026-09-25T02:55:26Z — https://github.com/obss/sahi/releases/tag/0.12.7
+5. 0.12.8 / 0.12.8 — 2026-09-30T16:52:52Z — https://github.com/obss/sahi/releases/tag/0.12.8
+
+REPOSITÓRIO 46/60
+phusion/passenger
+https://github.com/phusion/passenger
+
+RELEASES SORTEADAS:
+1. release-6.1.2 / Release 6.1.2 — 2026-01-30T19:10:01Z — https://github.com/phusion/passenger/releases/tag/release-6.1.2
+2. release-6.1.4 / Release 6.1.4 — 2026-06-02T20:15:10Z — https://github.com/phusion/passenger/releases/tag/release-6.1.4
+3. release-6.1.6 / Release 6.1.6 — 2026-06-27T04:34:26Z — https://github.com/phusion/passenger/releases/tag/release-6.1.6
+4. release-6.1.7 / Release 6.1.7 — 2026-07-06T16:26:54Z — https://github.com/phusion/passenger/releases/tag/release-6.1.7
+5. release-6.1.8 / Release 6.1.8 — 2026-07-20T15:55:32Z — https://github.com/phusion/passenger/releases/tag/release-6.1.8
+
+REPOSITÓRIO 47/60
+pionxzh/wakaru
+https://github.com/pionxzh/wakaru
+
+RELEASES SORTEADAS:
+1. v1.1.0 / v1.1.0 — 2026-05-17T19:04:06Z — https://github.com/pionxzh/wakaru/releases/tag/v1.1.0
+2. v1.7.0 / v1.7.0 — 2026-07-12T15:50:42Z — https://github.com/pionxzh/wakaru/releases/tag/v1.7.0
+3. v1.9.0 / v1.9.0 — 2026-08-09T02:17:39Z — https://github.com/pionxzh/wakaru/releases/tag/v1.9.0
+4. v1.10.0 / v1.10.0 — 2026-08-25T18:51:44Z — https://github.com/pionxzh/wakaru/releases/tag/v1.10.0
+5. v1.12.0 / v1.12.0 — 2026-09-13T17:39:45Z — https://github.com/pionxzh/wakaru/releases/tag/v1.12.0
+
+REPOSITÓRIO 48/60
+qtile/qtile
+https://github.com/qtile/qtile
+
+RELEASES SORTEADAS:
+1. v0.34.0 / Release v0.34.0 — 2025-11-22T21:38:39Z — https://github.com/qtile/qtile/releases/tag/v0.34.0
+2. v0.34.1 / Release v0.34.1 — 2025-12-14T18:09:39Z — https://github.com/qtile/qtile/releases/tag/v0.34.1
+3. v0.36.0 / v0.36.0 — 2026-05-22T14:10:34Z — https://github.com/qtile/qtile/releases/tag/v0.36.0
+4. v0.37.0 / v0.37.0 — 2026-08-08T02:35:27Z — https://github.com/qtile/qtile/releases/tag/v0.37.0
+5. v0.37.1 / v0.37.1 — 2026-09-20T09:38:31Z — https://github.com/qtile/qtile/releases/tag/v0.37.1
+
+REPOSITÓRIO 49/60
+react-native-async-storage/async-storage
+https://github.com/react-native-async-storage/async-storage
+
+RELEASES SORTEADAS:
+1. @react-native-async-storage/async-storage@3.0.0 / Async Storage v3.0.0 — 2026-02-23T10:59:50Z — https://github.com/react-native-async-storage/async-storage/releases/tag/%40react-native-async-storage/async-storage%403.0.0
+2. @react-native-async-storage/async-storage@3.0.1 / Async Storage v3.0.1 — 2026-02-23T14:09:53Z — https://github.com/react-native-async-storage/async-storage/releases/tag/%40react-native-async-storage/async-storage%403.0.1
+3. @react-native-async-storage/expo-with-async-storage@1.0.0 / Expo plugin v1.0.0 — 2026-02-24T21:10:45Z — https://github.com/react-native-async-storage/async-storage/releases/tag/%40react-native-async-storage/expo-with-async-storage%401.0.0
+4. @react-native-async-storage/async-storage@3.0.2 / Async Storage v3.0.2 — 2026-03-26T13:54:42Z — https://github.com/react-native-async-storage/async-storage/releases/tag/%40react-native-async-storage/async-storage%403.0.2
+5. @react-native-async-storage/async-storage@3.0.3 / Async Storage v3.0.3 — 2026-05-19T07:31:48Z — https://github.com/react-native-async-storage/async-storage/releases/tag/%40react-native-async-storage/async-storage%403.0.3
+
+REPOSITÓRIO 50/60
+Respect/Validation
+https://github.com/Respect/Validation
+
+RELEASES SORTEADAS:
+1. 3.0.0 / 3.0.0 — 2026-02-09T17:50:21Z — https://github.com/Respect/Validation/releases/tag/3.0.0
+2. 3.0.2 / 3.0.2 — 2026-03-02T13:49:51Z — https://github.com/Respect/Validation/releases/tag/3.0.2
+3. 3.1.0 / 3.1.0 — 2026-03-02T13:50:13Z — https://github.com/Respect/Validation/releases/tag/3.1.0
+4. 3.1.1 / Release 3.1.1 — 2026-03-23T22:05:42Z — https://github.com/Respect/Validation/releases/tag/3.1.1
+5. 3.1.2 / 3.1.2 — 2026-06-02T15:07:15Z — https://github.com/Respect/Validation/releases/tag/3.1.2
+
+REPOSITÓRIO 51/60
+spatie/laravel-medialibrary
+https://github.com/spatie/laravel-medialibrary
+
+RELEASES SORTEADAS:
+1. 11.17.3 / 11.17.3 — 2025-11-04T10:16:12Z — https://github.com/spatie/laravel-medialibrary/releases/tag/11.17.3
+2. 11.17.5 / 11.17.5 — 2025-11-13T11:36:47Z — https://github.com/spatie/laravel-medialibrary/releases/tag/11.17.5
+3. 11.17.8 / 11.17.8 — 2026-01-05T09:32:31Z — https://github.com/spatie/laravel-medialibrary/releases/tag/11.17.8
+4. 11.21.2 / 11.21.2 — 2026-04-23T08:15:31Z — https://github.com/spatie/laravel-medialibrary/releases/tag/11.21.2
+5. 11.22.0 / 11.22.0 — 2026-04-28T09:19:06Z — https://github.com/spatie/laravel-medialibrary/releases/tag/11.22.0
+
+REPOSITÓRIO 52/60
+transformerlab/transformerlab-app
+https://github.com/transformerlab/transformerlab-app
+
+RELEASES SORTEADAS:
+1. v0.24.2 / 0.24.2 — 2025-11-06T21:15:18Z — https://github.com/transformerlab/transformerlab-app/releases/tag/v0.24.2
+2. v0.27.4 / 0.27.4 — 2025-12-19T16:47:29Z — https://github.com/transformerlab/transformerlab-app/releases/tag/v0.27.4
+3. v0.28.5 / v0.28.5 — 2026-02-03T18:49:20Z — https://github.com/transformerlab/transformerlab-app/releases/tag/v0.28.5
+4. v0.33.0 / v0.33.0 — 2026-03-25T18:41:35Z — https://github.com/transformerlab/transformerlab-app/releases/tag/v0.33.0
+5. v0.37.2 / v0.37.2 — 2026-05-05T19:40:25Z — https://github.com/transformerlab/transformerlab-app/releases/tag/v0.37.2
+
+REPOSITÓRIO 53/60
+tw93/Kaku
+https://github.com/tw93/Kaku
+
+RELEASES SORTEADAS:
+1. V0.6.0 / V0.6.0 Clarity ☀️ — 2026-03-08T12:18:16Z — https://github.com/tw93/Kaku/releases/tag/V0.6.0
+2. V0.10.0 / V0.10.0 Chat 🪄 — 2026-05-10T01:27:16Z — https://github.com/tw93/Kaku/releases/tag/V0.10.0
+3. V0.12.2 / V0.12.2 Steadier — 2026-06-13T00:58:19Z — https://github.com/tw93/Kaku/releases/tag/V0.12.2
+4. V0.13.0 / V0.13.0 Faster — 2026-07-05T16:13:17Z — https://github.com/tw93/Kaku/releases/tag/V0.13.0
+5. V0.17.0 / V0.17.0 Linked — 2026-08-02T04:40:54Z — https://github.com/tw93/Kaku/releases/tag/V0.17.0
+
+REPOSITÓRIO 54/60
+umputun/remark42
+https://github.com/umputun/remark42
+
+RELEASES SORTEADAS:
+1. v1.16.0 / Version 1.16.0 — 2026-05-22T18:29:54Z — https://github.com/umputun/remark42/releases/tag/v1.16.0
+2. v1.16.1 / Version 1.16.1 — 2026-06-02T00:36:27Z — https://github.com/umputun/remark42/releases/tag/v1.16.1
+3. v1.16.2 / Version 1.16.2 — 2026-07-09T20:11:30Z — https://github.com/umputun/remark42/releases/tag/v1.16.2
+4. v1.16.3 / Version 1.16.3 — 2026-07-10T00:13:35Z — https://github.com/umputun/remark42/releases/tag/v1.16.3
+5. v1.16.4 / Version 1.16.4 — 2026-07-10T03:31:26Z — https://github.com/umputun/remark42/releases/tag/v1.16.4
+
+REPOSITÓRIO 55/60
+vale-cli/vale
+https://github.com/vale-cli/vale
+
+RELEASES SORTEADAS:
+1. v3.13.0 / v3.13.0 — 2025-10-22T23:34:29Z — https://github.com/vale-cli/vale/releases/tag/v3.13.0
+2. v3.14.0 / v3.14.0 — 2026-03-13T00:16:12Z — https://github.com/vale-cli/vale/releases/tag/v3.14.0
+3. v3.15.1 / v3.15.1 — 2026-06-12T21:09:29Z — https://github.com/vale-cli/vale/releases/tag/v3.15.1
+4. v3.19.0 / v3.19.0 — 2026-08-26T21:36:16Z — https://github.com/vale-cli/vale/releases/tag/v3.19.0
+5. v3.21.0 / v3.21.0 — 2026-09-09T22:20:35Z — https://github.com/vale-cli/vale/releases/tag/v3.21.0
+
+REPOSITÓRIO 56/60
+voidzero-dev/vite-plus
+https://github.com/voidzero-dev/vite-plus
+
+RELEASES SORTEADAS:
+1. v0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38 / vite-plus v0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38 — 2026-01-22T08:25:38Z — https://github.com/voidzero-dev/vite-plus/releases/tag/v0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38
+2. v0.0.0-8a22e149.20260207-1117 / vite-plus v0.0.0-8a22e149.20260207-1117 — 2026-02-07T11:56:10Z — https://github.com/voidzero-dev/vite-plus/releases/tag/v0.0.0-8a22e149.20260207-1117
+3. v0.0.0-e32b32e5.20260224-0706 / vite-plus v0.0.0-e32b32e5.20260224-0706 — 2026-02-24T07:44:33Z — https://github.com/voidzero-dev/vite-plus/releases/tag/v0.0.0-e32b32e5.20260224-0706
+4. v0.1.8 / vite-plus v0.1.8 — 2026-03-12T09:09:34Z — https://github.com/voidzero-dev/vite-plus/releases/tag/v0.1.8
+5. v0.2.5 / vite-plus v0.2.5: Cleaner environments and more reliable workflows — 2026-07-17T01:21:15Z — https://github.com/voidzero-dev/vite-plus/releases/tag/v0.2.5
+
+REPOSITÓRIO 57/60
+wfxr/forgit
+https://github.com/wfxr/forgit
+
+RELEASES SORTEADAS:
+1. 25.10.0 / 25.10.0 — 2025-10-01T00:38:09Z — https://github.com/wfxr/forgit/releases/tag/25.10.0
+2. 26.04.0 / 26.04.0 — 2026-04-01T00:57:42Z — https://github.com/wfxr/forgit/releases/tag/26.04.0
+3. 26.04.1 / 26.04.1 — 2026-04-08T02:43:22Z — https://github.com/wfxr/forgit/releases/tag/26.04.1
+4. 26.08.0 / 26.08.0 — 2026-08-01T00:51:44Z — https://github.com/wfxr/forgit/releases/tag/26.08.0
+5. 26.09.0 / 26.09.0 — 2026-09-01T01:02:39Z — https://github.com/wfxr/forgit/releases/tag/26.09.0
+
+REPOSITÓRIO 58/60
+wkentaro/gdown
+https://github.com/wkentaro/gdown
+
+RELEASES SORTEADAS:
+1. v5.2.1 / v5.2.1 — 2026-01-11T09:33:40Z — https://github.com/wkentaro/gdown/releases/tag/v5.2.1
+2. v6.0.0 / v6.0.0 — 2026-04-12T06:38:15Z — https://github.com/wkentaro/gdown/releases/tag/v6.0.0
+3. v6.3.0 / v6.3.0 — 2026-09-16T10:10:17Z — https://github.com/wkentaro/gdown/releases/tag/v6.3.0
+4. v6.4.0 / v6.4.0 — 2026-09-17T09:16:30Z — https://github.com/wkentaro/gdown/releases/tag/v6.4.0
+5. v6.4.1 / v6.4.1 — 2026-09-29T09:19:23Z — https://github.com/wkentaro/gdown/releases/tag/v6.4.1
+
+REPOSITÓRIO 59/60
+zenml-io/zenml
+https://github.com/zenml-io/zenml
+
+RELEASES SORTEADAS:
+1. 0.92.0 / 0.92.0 — 2025-12-02T06:42:19Z — https://github.com/zenml-io/zenml/releases/tag/0.92.0
+2. 0.94.0 / 0.94.0 — 2026-03-04T18:22:00Z — https://github.com/zenml-io/zenml/releases/tag/0.94.0
+3. 0.94.1 / 0.94.1 — 2026-03-19T17:11:55Z — https://github.com/zenml-io/zenml/releases/tag/0.94.1
+4. 0.95.1 / 0.95.1 — 2026-06-18T12:24:26Z — https://github.com/zenml-io/zenml/releases/tag/0.95.1
+5. 0.96.0 / 0.96.0 — 2026-07-02T12:52:05Z — https://github.com/zenml-io/zenml/releases/tag/0.96.0
+
+REPOSITÓRIO 60/60
+zircote/swagger-php
+https://github.com/zircote/swagger-php
+
+RELEASES SORTEADAS:
+1. 5.4.1 / 5.4.1 — 2025-10-08T01:02:03Z — https://github.com/zircote/swagger-php/releases/tag/5.4.1
+2. 5.5.0 / 5.5.0 — 2025-10-16T03:19:36Z — https://github.com/zircote/swagger-php/releases/tag/5.5.0
+3. 6.3.1 / 6.3.1 — 2026-07-06T04:08:58Z — https://github.com/zircote/swagger-php/releases/tag/6.3.1
+4. 6.5.1 / 6.5.1 — 2026-07-30T04:13:31Z — https://github.com/zircote/swagger-php/releases/tag/6.5.1
+5. 6.5.2 / 6.5.2 — 2026-08-05T06:57:07Z — https://github.com/zircote/swagger-php/releases/tag/6.5.2
