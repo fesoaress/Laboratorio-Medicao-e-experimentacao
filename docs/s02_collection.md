@@ -31,6 +31,17 @@ submetidas são concluídas ao atingir o alvo, portanto o total pode exceder 300
 Somente inicie o sorteio quando `collection_manifest_s02.json` confirmar
 `target_met=true` e `final_sample>=300`.
 
+Antes do sorteio, confira os dados efetivamente exportados, incluindo contagens
+de releases/runs, IDs únicos, janela exclusiva, público/Actions e snapshot:
+
+```powershell
+.\.venv\Scripts\python.exe -m src.s02_audit data/processed/s02
+```
+
+O comando grava `collection_audit_s02.json` com hashes das fontes e retorna erro
+se houver contradições ou menos de 300 elegíveis. Para inspecionar uma coleta
+parcial, use `--allow-partial`; `ready_for_gold_sample` continua `false`.
+
 ## Critérios e estratégia
 
 Critérios preservados da S01: público, `stars>1000`, Actions, default branch
