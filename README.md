@@ -50,6 +50,14 @@ Erros e campos não medidos ficam explícitos; ausência não vira zero.
 Datas, notas, SHAs, runs e contexto são fatos da API, sem previsão corretiva
 ou decisão humana executada pelos coletores.
 
+## Amostra-ouro e validação humana S02
+
+Veja [docs/s02_validation.md](docs/s02_validation.md) para sortear 60×5 com
+seed 42, preencher os três CSVs independentes, validar rótulos e calcular
+concordância/consenso posteriormente. `python -m src.s02 --help` lista a CLI.
+O sorteio exige >=300 elegíveis auditados. Campos humanos começam vazios;
+a #54 e os resultados empíricos da #57 aguardam as avaliações humanas.
+
 ## Pipeline histórico S01
 
 ```powershell
