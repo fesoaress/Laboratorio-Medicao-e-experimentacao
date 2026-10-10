@@ -243,8 +243,8 @@ def export_outputs(output, checkpoints, manifest):
                 'private': payload['candidate'].get('private'),
                 'default_branch_sha': (payload['collection'] or {}).get('default_branch_sha', '')}
                for row, payload in zip(rows, payloads) if row['status'] == 'selected'])
-    # Funil S02 registra filtros na ordem realmente executada: pré-filtro de releases,
-    # runs, ancestralidade das releases. Não converte ausência de medição em zero.
+    # O funil separa a contagem publicada da ancestralidade comprovada.
+    # Testes pulados por reprovação anterior permanecem não medidos.
     window = ObservationWindow(**manifest['window'])
     funnel = build_s02_funnel(payloads, window)
     selected = sum(row['status'] == 'selected' for row in rows)
@@ -308,6 +308,7 @@ def main(argv=None):
     try:
         if export_outputs(output, checkpoints, manifest)['target_met']:
             return 0
+        selected_count = manifest['final_sample']
         with ThreadPoolExecutor(max_workers=args.workers) as pool:
             # Prioriza a faixa intermediária para não gastar toda a quota em
             # um único monorepo. Nenhuma faixa >1000 estrelas é excluída.
@@ -345,7 +346,12 @@ def main(argv=None):
                     p = future.result()
                     completed += 1
                     print(f"{p['row']['status']}: {p['row']['full_name']} releases={p['row']['release_count']} valid_runs={p['row']['valid_workflow_runs']}", flush=True)
-                    if completed % 8 == 0 or p['row']['status'] == 'selected':
+                    # Cada tarefa é única; checkpoints selected não são submetidos.
+                    # Conferir o alvo em memória evita reler todo o histórico a
+                    # cada aprovação. Exportação final inclui as tarefas em voo.
+                    selected_count += p['row']['status'] == 'selected'
+                    stopping = stopping or selected_count >= args.target
+                    if completed % 8 == 0 or stopping:
                         manifest['queries'] = queries
                         result = export_outputs(output, checkpoints, manifest)
                         print(f"PROGRESS candidates={result['candidates_processed']} eligible={result['final_sample']} target={args.target} calls={paced.calls}", flush=True)

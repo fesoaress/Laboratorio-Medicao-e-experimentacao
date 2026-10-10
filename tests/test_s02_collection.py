@@ -247,7 +247,8 @@ def test_main_rejects_invalid_collection_before_network(args):
     assert error.value.code == 2
 
 
-def test_main_collects_beyond_300_candidates_until_300_eligible_and_resumes(monkeypatch, tmp_path, window):
+@pytest.mark.parametrize('initial_selected', [0, 290])
+def test_main_collects_beyond_300_candidates_until_300_eligible_and_resumes(monkeypatch, tmp_path, window, initial_selected):
     output, raw = tmp_path / 'output', tmp_path / 'raw'
     monkeypatch.setattr(collection, 'load_config', lambda: SelectionConfig(start_date=window.start_date, end_date=window.end_date))
     source = [{'id': i, 'full_name': f'a/r{i}'} for i in range(500)]
@@ -260,8 +261,9 @@ def test_main_collects_beyond_300_candidates_until_300_eligible_and_resumes(monk
         return {'row': {'status': status, 'full_name': candidate['full_name'], 'release_count': 5, 'valid_workflow_runs': 50}}
     monkeypatch.setattr(collection, 'process_candidate', process)
     def export(output, checkpoints, manifest):
-        manifest.update(final_sample=finished.count('selected'), candidates_processed=len(finished),
-                        target_met=finished.count('selected') >= 300)
+        manifest.update(final_sample=initial_selected + finished.count('selected'),
+                        candidates_processed=initial_selected + len(finished),
+                        target_met=initial_selected + finished.count('selected') >= 300)
         save_json(output / 'collection_manifest_s02.json', manifest)
         return manifest
     monkeypatch.setattr(collection, 'export_outputs', export)
