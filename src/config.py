@@ -1,4 +1,4 @@
-"""Parâmetros da seleção; datas oficiais permanecem ausentes até confirmação."""
+"""Parâmetros da seleção; janela S02 definida pelo grupo em 10/10/2026."""
 
 from __future__ import annotations
 

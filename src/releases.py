@@ -24,7 +24,8 @@ class ReleaseCollection:
 
 def collect_releases_and_tags(
     client: Client, full_name: str, default_branch: str, window: ObservationWindow,
-    *, per_page: int = 100,
+    *, per_page: int = 100, collect_tags: bool = True, window_only: bool = False,
+    include_predecessor: bool = True,
 ) -> ReleaseCollection:
     """Preserva histórico anterior; filtra por published_at e ancestralidade.
 
@@ -51,17 +52,30 @@ def collect_releases_and_tags(
     def on_branch(sha):
         if sha not in membership:
             data = client.get(root + "/compare/" + quote(sha, safe="") + "..." + branch.sha,
-                              {"per_page": 1, "page": 1}).data
+                              {"per_page": 1, "page": 2 if window_only else 1}).data
             if not isinstance(data, dict) or data.get("status") not in ("ahead", "identical", "behind", "diverged"):
                 raise ValueError("Resposta inválida ao verificar ancestralidade da tag.")
             membership[sha] = data["status"] in ("ahead", "identical")
         return membership[sha]
 
     releases, excluded, seen = [], [], {}
-    for page in iter_pages(client, root + "/releases", {"per_page": per_page, "page": 1}):
-        if not isinstance(page.data, list):
-            raise ValueError("Resposta de releases deve ser uma lista.")
-        for raw in page.data:
+    def release_records():
+        buffered = []
+        for page in iter_pages(client, root + "/releases", {"per_page": per_page, "page": 1}):
+            if not isinstance(page.data, list):
+                raise ValueError("Resposta de releases deve ser uma lista.")
+            if window_only:
+                buffered.extend(page.data)
+            else:
+                yield from page.data
+        if window_only:
+            # A API ordena por criação, não necessariamente por publicação.
+            buffered.sort(key=lambda r: (utc_datetime(r['published_at']) if isinstance(r, dict)
+                          and r.get('published_at') else window.end,
+                          r.get('id', 0) if isinstance(r, dict) and type(r.get('id')) is int else 0), reverse=True)
+            yield from buffered
+    predecessor_found = False
+    for raw in release_records():
             if not isinstance(raw, dict) or type(raw.get("id")) is not int:
                 raise ValueError("Release sem identificador válido.")
             identifier = raw["id"]
@@ -80,15 +94,20 @@ def collect_releases_and_tags(
             if reason:
                 excluded.append({"release_id": identifier, "tag_name": raw.get("tag_name", ""), "reason": reason})
                 continue
+            before_window = utc_datetime(raw['published_at']) < window.start
+            if window_only and before_window and (not include_predecessor or raw['prerelease'] or predecessor_found):
+                continue
             commit = resolve(raw.get("tag_name"))
             if not on_branch(commit.sha):
                 excluded.append({"release_id": identifier, "tag_name": raw["tag_name"], "reason": "not_on_default_branch"})
                 continue
             releases.append(Release(identifier, raw["tag_name"], raw["published_at"], commit.sha,
                                     raw["prerelease"], raw.get("html_url", ""), raw.get("target_commitish", "")))
+            if before_window and not raw['prerelease']:
+                predecessor_found = True
 
     tags, seen_tags = [], {}
-    for page in iter_pages(client, root + "/tags", {"per_page": per_page, "page": 1}):
+    for page in iter_pages(client, root + "/tags", {"per_page": per_page, "page": 1}) if collect_tags else ():
         if not isinstance(page.data, list):
             raise ValueError("Resposta de tags deve ser uma lista.")
         for raw in page.data:

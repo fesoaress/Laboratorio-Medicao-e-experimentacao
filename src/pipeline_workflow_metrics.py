@@ -26,7 +26,7 @@ def collect_workflow_metrics(client: ResilientClient, row: dict[str, Any], confi
     cfr = change_failure_rate_a(runs)
     recovery = repository_recovery_time(recovery_episodes(runs))
     return {
-        "valid_workflow_runs": len(runs),
+        "valid_workflow_runs": sum(run["status_class"] is not None for run in runs),
         "cfr_a": cfr.cfr,
         "cfr_a_successes": cfr.successes,
         "cfr_a_failures": cfr.failures,

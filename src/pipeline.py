@@ -22,7 +22,7 @@ REPOSITORY_FIELDS = (
 def collect_metadata(
     client: Client, candidates: list[dict[str, Any]], config: SelectionConfig,
     collected_at: str, evidence: Mapping[str, TemporalEvidence] | None = None,
-    *, stop_before_collection: bool = False,
+    *, stop_before_collection: bool = False, raise_unauthorized: bool = False,
 ) -> list[dict[str, Any]]:
     rows = []
     stopped = stop_before_collection
@@ -43,6 +43,8 @@ def collect_metadata(
             classify(row, config, (evidence or {}).get(row["full_name"].casefold()))
         except APIError as error:
             row.update(status="api_error", reasons="api_error", error_detail=str(error))
+            if raise_unauthorized and error.status == 401:
+                raise
             stopped = isinstance(error, RateLimitError) or error.status == 401
         except MetadataError as error:
             row.update(status="metadata_error", reasons="metadata_error", error_detail=str(error))

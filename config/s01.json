@@ -2,6 +2,6 @@
   "sample_size": 100,
   "search_queries": ["stars:>1000"],
   "per_page": 100,
-  "start_date": null,
-  "end_date": null
+  "start_date": "2025-10-01",
+  "end_date": "2026-10-01"
 }

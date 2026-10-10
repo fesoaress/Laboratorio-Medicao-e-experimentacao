@@ -185,11 +185,15 @@ def test_csv_source_skips_incomplete_metadata_and_repos_without_actions(tmp_path
 @pytest.mark.parametrize("function,args", [(main, ["--repository", "a/b"]),
     (pipeline_main, ["--collect-lead-time"]),
     (pipeline_main, ["--collect-lead-time", "--candidates-only", "--start-date", "2025-01-01", "--end-date", "2026-01-01"])])
-def test_missing_window_or_incompatible_options_rejected_before_network(function, args, monkeypatch):
+def test_missing_window_or_incompatible_options_rejected_before_network(function, args, monkeypatch, tmp_path):
+    # O arquivo real agora tem a janela definida pelo grupo; este teste precisa
+    # continuar exercitando explicitamente uma configuração sem janela.
+    config = tmp_path / 'missing_window.json'
+    config.write_text('{"start_date": null, "end_date": null}', encoding='utf-8')
     monkeypatch.setattr("src.delivery_cli.GitHubClient", lambda: pytest.fail("Network must not run"))
     monkeypatch.setattr("src.cli.GitHubClient", lambda: pytest.fail("Network must not run"))
     with pytest.raises(SystemExit) as captured:
-        function(args)
+        function(['--config', str(config), *args])
     assert captured.value.code == 2
 
 
