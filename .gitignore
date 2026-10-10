@@ -10,4 +10,6 @@ htmlcov/
 data/raw/*
 !data/raw/.gitkeep
 data/processed/fernanda/
+# O snapshot completo de commits S02 é versionado em CSV gzip, sem truncamento.
+data/processed/s02/release_commits_s01.csv
 .pnpm-store/

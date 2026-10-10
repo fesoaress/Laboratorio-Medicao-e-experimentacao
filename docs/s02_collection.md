@@ -87,6 +87,16 @@ Respostas GraphQL e REST são preservadas sem headers de autenticação.
 Prefetch local apenas adianta o cache e não constitui amostra nem limite final
 de candidatos. Um erro nunca é convertido em zero ou aprovação.
 
+Completude da paginação significa correspondência com o total anunciado pela
+API durante a consulta. Não garante recuperar objetos anteriormente apagados.
+A documentação do GitHub descreve políticas de retenção para workflow runs,
+incluindo uma mudança de aplicação dessas políticas em 01/10/2026. Assim,
+as contagens e métricas descrevem os registros disponíveis e coletados dentro
+da janela; não se deve inferir ausência histórica de atividade quando faltam
+registros. A aprovação comprova pelo menos 50 runs válidos observados. Não
+atribuímos os erros de paginação de um projeto específico à retenção sem prova.
+Fonte: [retenção de workflow runs no GitHub](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#configuring-the-retention-period-for-checks-workflow-runs-commit-statuses-artifacts-and-logs-in-your-repository).
+
 ## Contexto e métricas
 
 Depois da seleção, execute, com o mesmo carregamento local do `.env`:
@@ -133,6 +143,33 @@ Em `data/processed/s02/`:
 
 Nenhuma heurística corretiva, classificação humana ou Kappa é executada por
 esses coletores. O smoke continua separado em `data/processed/smoke/`.
+
+O CSV completo de commits fica disponível localmente, mas pode ultrapassar o
+limite de tamanho de um blob no GitHub. Versione seu snapshot comprimido
+`release_commits_s01.csv.gz`; o `.csv` correspondente é ignorado pelo Git.
+Depois de concluir cada enriquecimento, recrie o gzip e confira a igualdade
+byte a byte por SHA-256, sem selecionar ou cortar commits:
+
+```python
+import gzip
+import hashlib
+import shutil
+from pathlib import Path
+
+source = Path('data/processed/s02/release_commits_s01.csv')
+target = source.with_suffix('.csv.gz')
+with source.open('rb') as incoming, target.open('wb') as outgoing:
+    with gzip.GzipFile(filename='', fileobj=outgoing, mode='wb', mtime=0) as compressed:
+        shutil.copyfileobj(incoming, compressed)
+with source.open('rb') as original, gzip.open(target, 'rb') as restored:
+    if hashlib.file_digest(original, 'sha256').digest() != hashlib.file_digest(restored, 'sha256').digest():
+        raise RuntimeError('Snapshot comprimido difere do CSV original.')
+```
+
+O gzip usa timestamp fixo e não inclui nome local no cabeçalho, permitindo
+reproduzir o mesmo snapshot. Não compacte enquanto o enriquecimento estiver
+reescrevendo o CSV. Para recuperar o arquivo após um clone, use `gzip.open`
+e `shutil.copyfileobj` no sentido inverso.
 
 ## Testes
 

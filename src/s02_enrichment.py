@@ -297,7 +297,8 @@ def main(argv=None):
         for future in as_completed(futures):
             result = future.result()
             results.append(result)
-            export_enrichment(args.output_dir, payloads, results)
+            if len(results) % 8 == 0 or len(results) == len(payloads):
+                export_enrichment(args.output_dir, payloads, results)
             print(f"CONTEXT {len(results)}/{len(payloads)} {result['full_name']} {result['status']}", flush=True)
     return int(any(r['status'] not in ('complete', 'metric_error', 'comparison_error') for r in results))
 
