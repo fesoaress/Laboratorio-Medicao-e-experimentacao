@@ -161,22 +161,22 @@ def process_candidate(client, candidate, config, window, collected_at, checkpoin
                     if row['status'] in ('discarded', 'api_error', 'metadata_error'):
                         save_json(checkpoint, payload)
                         return payload
-                runs, reports = collect_runs(client, row['full_name'], row['default_branch'], config.start_date, config.end_date)
-                payload.update(workflow_runs=runs, workflow_queries=reports)
-                valid = sum(r['status_class'] is not None for r in runs)
-                row['valid_workflow_runs'] = valid
-                if valid < 50:
-                    row.update(status='discarded', reasons='insufficient_workflow_runs')
+                window_releases = [r for r in raw_releases if not r['draft']
+                                   and window.contains(r['published_at'])]
+                snapshot = client.get(root + '/commits/' + quote(row['default_branch'], safe='')).data['sha']
+                context_client = ReleaseCommitClient(client, row['full_name'], window_releases, snapshot)
+                collection = collect_releases_and_tags(context_client, row['full_name'], row['default_branch'], window,
+                                                      collect_tags=False, window_only=True, include_predecessor=False)
+                payload['collection'] = asdict(collection)
+                count = len(collection.in_window(window))
+                row['release_count'] = count
+                if count < 5:
+                    row.update(status='discarded', reasons='insufficient_releases')
                 else:
-                    window_releases = [r for r in raw_releases if not r['draft']
-                                       and window.contains(r['published_at'])]
-                    snapshot = client.get(root + '/commits/' + quote(row['default_branch'], safe='')).data['sha']
-                    context_client = ReleaseCommitClient(client, row['full_name'], window_releases, snapshot)
-                    collection = collect_releases_and_tags(context_client, row['full_name'], row['default_branch'], window,
-                                                          collect_tags=False, window_only=True, include_predecessor=False)
-                    payload['collection'] = asdict(collection)
-                    classify(row, config, TemporalEvidence(row['full_name'], config.start_date, config.end_date,
-                                                          len(collection.in_window(window)), valid))
+                    runs, reports = collect_runs(client, row['full_name'], row['default_branch'], config.start_date, config.end_date)
+                    payload.update(workflow_runs=runs, workflow_queries=reports)
+                    valid = sum(r['status_class'] is not None for r in runs)
+                    classify(row, config, TemporalEvidence(row['full_name'], config.start_date, config.end_date, count, valid))
     except APIError as error:
         row.update(status='api_error', reasons='api_error', error_detail=str(error))
         if error.status == 401:
@@ -222,11 +222,11 @@ def build_s02_funnel(payloads, window):
                      and r.get('prerelease') is False and r.get('published_at') and window.contains(r['published_at'])})
         return count >= 5
     stage('published_stable_release_prefilter', release_prefilter, 'minimum_5_before_ancestry')
-    stage('workflow_filter', lambda p: None if p['row']['valid_workflow_runs'] is None
-          else p['row']['valid_workflow_runs'] >= 50, 'minimum_50_success_or_failure_push_runs_on_default_branch')
     stage('release_ancestry_filter', lambda p: None if p['collection'] is None else
           sum(not r['prerelease'] and window.contains(r['published_at']) for r in p['collection']['history']) >= 5,
-          'minimum_5_published_stable_releases_ancestral_to_recorded_default_branch_snapshot')
+          'minimum_5_stable_ancestral_releases;unmeasured_includes_early_workflow_rejections_from_initial_attempts')
+    stage('workflow_filter', lambda p: None if p['row']['valid_workflow_runs'] is None
+          else p['row']['valid_workflow_runs'] >= 50, 'minimum_50_success_or_failure_push_runs_on_default_branch')
     stages.append({'stage': 'final_sample', 'count': sum(p['row']['status'] == 'selected' for p in payloads),
                    'discarded': sum(p['row']['status'] == 'discarded' for p in payloads),
                    'pending': sum(p['row']['status'] not in ('selected', 'discarded') for p in payloads),

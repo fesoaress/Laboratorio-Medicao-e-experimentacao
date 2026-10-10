@@ -160,6 +160,7 @@ def test_candidate_rejects_later_incomplete_page():
 
 @pytest.mark.parametrize('kind,expected', [('private', 'metadata_error'), ('few_releases', 'discarded'),
                                          ('few_runs', 'discarded'), ('valid', 'selected'),
+                                         ('off_branch', 'discarded'),
                                          ('api', 'api_error'), ('malformed', 'metadata_error')])
 def test_candidate_filters_preserve_measured_counts(monkeypatch, tmp_path, window, kind, expected):
     candidate = {**metadata(), 'full_name': 'a/b', 'private': kind != 'private'}
@@ -177,16 +178,18 @@ def test_candidate_filters_preserve_measured_counts(monkeypatch, tmp_path, windo
     count = 49 if kind == 'few_runs' else 50
     monkeypatch.setattr(collection, 'collect_runs', lambda *a: ([{'status_class': 'success'} for _ in range(count)], []))
     monkeypatch.setattr(collection, 'ReleaseCommitClient', lambda *a: client)
-    history = tuple(Release(i, f'v{i}', '2025-03-15T00:00:00Z', str(i)) for i in range(5))
+    history = tuple(Release(i, f'v{i}', '2025-03-15T00:00:00Z', str(i)) for i in range(4 if kind == 'off_branch' else 5))
     monkeypatch.setattr(collection, 'collect_releases_and_tags', lambda *a, **k: ReleaseCollection('main', 'snapshot', history, (), ()))
     result = process_candidate(client, candidate, SelectionConfig(start_date=window.start_date, end_date=window.end_date),
                                window, '2026-01-01T00:00:00Z', tmp_path / 'checkpoint.json')
     assert result['row']['status'] == expected
     if kind == 'few_runs':
-        assert result['row']['valid_workflow_runs'] == 49 and result['row']['release_count'] is None
+        assert result['row']['valid_workflow_runs'] == 49 and result['row']['release_count'] == 5
     if kind == 'valid':
         assert result['row']['release_count'] == 5 and result['row']['valid_workflow_runs'] == 50
     if kind == 'few_releases':
+        assert result['row']['release_count'] == 4 and result['row']['valid_workflow_runs'] is None
+    if kind == 'off_branch':
         assert result['row']['release_count'] == 4 and result['row']['valid_workflow_runs'] is None
 
 
@@ -295,7 +298,7 @@ def test_funnel_does_not_confuse_release_upper_bound_with_ancestry(window):
     result = {r['stage']: r for r in collection.build_s02_funnel([p, missing], window)}
     assert result['actions_enabled']['count'] == 1 and result['actions_enabled']['pending'] == 1
     assert result['published_stable_release_prefilter']['count'] == 1
-    assert result['workflow_filter']['count'] == 1
+    assert result['workflow_filter']['count'] == 0
     assert result['release_ancestry_filter']['count'] == 0
     assert result['final_sample']['count'] == 0
 

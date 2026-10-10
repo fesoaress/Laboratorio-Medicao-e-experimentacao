@@ -7,7 +7,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 
-from .github_client import APIError, APIResponse
+from .github_client import APIError, APIResponse, header
 
 QUERY = '''query($ids: [ID!]!, $head: String!) {
   nodes(ids: $ids) { ... on Release { id tagName tagCommit {
@@ -34,6 +34,10 @@ def graphql(cache, query, variables):
         except HTTPError as error:
             if error.code == 403 and error.headers.get('X-RateLimit-Remaining') == '0':
                 delay = max(2, float(error.headers.get('X-RateLimit-Reset', time.time() + 60)) - time.time() + 2)
+            elif error.code in (403, 429) and (error.headers.get('Retry-After') or '').isdigit():
+                delay = max(1, int(error.headers['Retry-After']))
+            elif error.code == 403 and 'secondary rate limit' in error.read(4096).decode('utf-8', errors='replace').lower():
+                delay = 60
             elif error.code not in (429, 500, 502, 503, 504):
                 raise APIError(f'GraphQL retornou HTTP {error.code}.', status=error.code) from None
         except (URLError, OSError, ValueError):
@@ -41,8 +45,16 @@ def graphql(cache, query, variables):
         else:
             if not data.get('errors') and isinstance(data.get('data'), dict):
                 break
+            if header(stored.headers, 'X-RateLimit-Remaining') == '0':
+                delay = max(2, float(header(stored.headers, 'X-RateLimit-Reset') or time.time() + 60) - time.time() + 2)
+            elif header(stored.headers, 'Retry-After').isdigit():
+                delay = max(1, int(header(stored.headers, 'Retry-After')))
+            elif any(e.get('type') == 'RATE_LIMITED' for e in data.get('errors', [])):
+                delay = 60
         if attempt == 4:
             raise APIError('GraphQL indisponível ou retornou erros; detalhes não registrados.')
+        if delay > 60:
+            print(f'Espera de quota GraphQL: {int(delay)} segundos; checkpoints preservados.', flush=True)
         # A espera não serializa request, headers ou segredo.
         while delay > 0:
             interval = min(30, delay)

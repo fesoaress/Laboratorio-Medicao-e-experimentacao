@@ -81,6 +81,41 @@ def test_graphql_errors_or_missing_nodes_are_not_accepted(monkeypatch):
         context.query_nodes(None, [], 'head')
 
 
+def test_graphql_http_200_rate_limit_waits_until_reset_with_case_insensitive_headers(monkeypatch):
+    monkeypatch.setenv('GITHUB_TOKEN', 'fixture')
+    monkeypatch.setattr(context.time, 'time', lambda: 100)
+    sleeps, requests = [], []
+    monkeypatch.setattr(context.time, 'sleep', sleeps.append)
+    def respond(*args, **kwargs):
+        requests.append(1)
+        if len(requests) == 1:
+            response = Response(b'{"errors":[{"type":"RATE_LIMITED"}],"data":null}')
+            response.headers = {'x-ratelimit-remaining': '0', 'x-ratelimit-reset': '200'}
+            return response
+        return Response(b'{"data":{"nodes":[]}}')
+    monkeypatch.setattr(context, 'urlopen', respond)
+    assert context.query_nodes(None, [], 'head') == {'data': {'nodes': []}}
+    assert sleeps == [30, 30, 30, 12]
+
+
+@pytest.mark.parametrize('status,headers,body,expected', [
+    (429, {'Retry-After': '90'}, b'', [30, 30, 30]),
+    (403, {}, b'{"message":"secondary rate limit"}', [30, 30]),
+])
+def test_graphql_honors_secondary_rate_limit_and_retry_after(monkeypatch, status, headers, body, expected):
+    monkeypatch.setenv('GITHUB_TOKEN', 'fixture')
+    sleeps, requests = [], []
+    monkeypatch.setattr(context.time, 'sleep', sleeps.append)
+    def respond(req, **kwargs):
+        requests.append(1)
+        if len(requests) == 1:
+            raise HTTPError(req.full_url, status, '', headers, BytesIO(body))
+        return Response(b'{"data":{"nodes":[]}}')
+    monkeypatch.setattr(context, 'urlopen', respond)
+    context.query_nodes(None, [], 'head')
+    assert sleeps == expected
+
+
 class Client:
     cache = None
     def __init__(self):
@@ -151,7 +186,7 @@ def repository_page(nodes, total=1, next_page=False, cursor='cursor', branch='he
 
 
 def test_repository_adapter_preserves_notes_and_snapshot_across_pages(monkeypatch):
-    responses = iter([repository_page([release(1)], 2, True), repository_page([release(2)], 2)])
+    responses = iter([repository_page([release(1)], 2, True), repository_page([release(2)], 2, branch='new-push')])
     monkeypatch.setattr(discovery, 'graphql', lambda *a: next(responses))
     adapter = discovery.RepositoryReleaseClient(Client(), {'node_id': 'R1', 'full_name': 'a/b'})
     data = adapter.get('/repos/a/b/releases', {'per_page': 100, 'page': 1}).data

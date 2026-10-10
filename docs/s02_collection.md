@@ -15,7 +15,7 @@ para configuração, manifesto, código ou linha de comando. Exemplo PowerShell:
 .\.venv\Scripts\python.exe -m pip install python-dotenv==1.2.4
 @'
 from dotenv import load_dotenv
-load_dotenv('.env', override=False)
+load_dotenv('.env', override=True)
 import os
 print('GITHUB_TOKEN disponível: ' + ('sim' if os.environ.get('GITHUB_TOKEN', '').strip() else 'não'))
 from src.s02_collection import main
@@ -64,6 +64,9 @@ Um pré-filtro reprova contagens publicadas estáveis abaixo de 5 **antes** das
 chamadas REST de Actions/contribuidores. Portanto, Actions/contribuidores desses
 descartes podem estar não medidos. Isso não equivale a ausência de Actions.
 Após o pré-filtro, os componentes S01 de metadados são reutilizados.
+Ancestralidade é verificada antes dos runs para evitar consultas REST em
+repositórios que já falham nas releases. Checkpoints iniciais usaram a ordem
+inversa; os testes pulados por uma reprovação anterior ficam não medidos no funil.
 Runs são coletados com paginação e subdivisão temporal quando a consulta anuncia
 mais de 1.000 itens. O total de IDs únicos precisa corresponder ao anunciado.
 
@@ -78,7 +81,8 @@ Releases anteriores à janela só são verificadas no enriquecimento dos elegív
 até encontrar a predecessora estável ancestral mais recente, necessária aos intervalos.
 
 Cache e checkpoints são locais e ignorados pelo Git. O cliente REST espera o
-reset de quota e usa backoff em 5xx; GraphQL também repete falhas transitórias.
+reset de quota e usa backoff em 5xx; GraphQL também repete falhas transitórias
+e espera o reset quando a quota é sinalizada no corpo de uma resposta HTTP 200.
 Respostas GraphQL e REST são preservadas sem headers de autenticação.
 Prefetch local apenas adianta o cache e não constitui amostra nem limite final
 de candidatos. Um erro nunca é convertido em zero ou aprovação.
