@@ -234,7 +234,7 @@ def review_markdown(rows: list[dict]) -> str:
                 result += [f"- {commit['sha']} — {commit['html_url']}"]
                 result += ["> " + line for line in commit["message"].splitlines()]
             if not row["commits_context"]:
-                result.append("não coletados; consultar link acima")
+                result.append("Nenhum commit listado; consulte o status factual do intervalo e os links acima.")
             result += ["", "corrective_release: [VAZIO]", "notes: [VAZIO]", ""]
     return "\n".join(result)
 
@@ -263,7 +263,7 @@ def generate(repositories_path: Path, releases_path: Path, output_dir: Path, rep
             raise ValueError('Auditoria da coleta não libera o sorteio: exige >=300 elegíveis sem contradições.')
         if (verified['window'] != {'start_date': start_date, 'end_date': end_date}
                 or repositories_path.resolve() != (directory / 'repositories_final_s02.csv').resolve()
-                or releases_path.resolve() != (directory / 'releases_s01.csv').resolve()):
+                or releases_path.resolve() != Path(verified['sources'][2]['path']).resolve()):
             raise ValueError('Janela/fontes de sorteio diferem da coleta final auditada.')
     repositories = read_csv(repositories_path, ("full_name", "status", "metadata_complete", "has_github_actions",
                             "default_branch", "release_count", "valid_workflow_runs", 'private',

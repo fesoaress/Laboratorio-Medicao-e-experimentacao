@@ -91,3 +91,22 @@ def test_audit_csv_shape_errors_are_explicit(tmp_path, contents):
 
 def test_audit_cli_missing_sources_is_failure(tmp_path):
     assert main([str(tmp_path)]) == 1
+
+
+def test_compressed_snapshots_are_verified_and_work_after_clone(tmp_path):
+    import gzip
+    dataset(tmp_path, 300)
+    for name in ('releases_s01.csv', 'workflow_runs_s02.csv'):
+        source = tmp_path / name
+        with gzip.open(source.with_suffix('.csv.gz'), 'wb') as output:
+            output.write(source.read_bytes())
+    result = audit_collection(tmp_path)
+    assert result['ready_for_gold_sample']
+    assert all(r['path'].endswith('.csv.gz') for r in result['sources'][2:])
+    (tmp_path / 'releases_s01.csv').write_text('stale source', encoding='utf-8')
+    with pytest.raises(ValueError, match='desatualizado'):
+        audit_collection(tmp_path)
+    assert main([str(tmp_path)]) == 1
+    (tmp_path / 'releases_s01.csv').unlink()
+    (tmp_path / 'workflow_runs_s02.csv').unlink()
+    assert audit_collection(tmp_path)['ready_for_gold_sample']

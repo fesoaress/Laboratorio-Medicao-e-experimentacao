@@ -195,3 +195,16 @@ def test_predecessor_does_not_accept_unknown_comparison(monkeypatch, window):
         APIResponse(raw_commit('base'), {}), APIResponse({'status': 'unknown'}, {})]))
     with pytest.raises(APIError, match='não comprovada'):
         enrichment.with_predecessor(None, p, window)
+def test_export_snapshots_do_not_depend_on_worker_completion_order(tmp_path):
+    from src.s02_enrichment import export_enrichment
+    results = [{'full_name': name, 'status': 'complete', 'error_detail': '', 'outputs': {},
+                'workflow_metrics': {'full_name': name, 'successes': 1, 'failures': 0},
+                'recovery_episodes': [], 'predecessors': []}
+               for name in ('fixture/b', 'fixture/A')]
+    first, second = tmp_path / 'first', tmp_path / 'second'
+    export_enrichment(first, [], results)
+    export_enrichment(second, [], list(reversed(results)))
+    assert {p.name: p.read_bytes() for p in first.iterdir()} == {
+        p.name: p.read_bytes() for p in second.iterdir()}
+
+

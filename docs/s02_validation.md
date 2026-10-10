@@ -30,7 +30,7 @@ cria arquivos humanos. Manifesto registra exclusões e hashes SHA-256 das fontes
 
 ```powershell
 .\.venv\Scripts\python.exe -m src.s02_audit data/processed/s02
-.\.venv\Scripts\python.exe -m src.s02 generate --repositories data/processed/s02/repositories_final_s02.csv --releases data/processed/s02/releases_s01.csv --commits data/processed/s02/release_commits_s01.csv.gz --intervals data/processed/s02/release_intervals_s01.csv --start-date 2025-10-01 --end-date 2026-10-01 --seed 42
+.\.venv\Scripts\python.exe -m src.s02 generate --repositories data/processed/s02/repositories_final_s02.csv --releases data/processed/s02/releases_s01.csv.gz --commits data/processed/s02/release_commits_s01.csv.gz --intervals data/processed/s02/release_intervals_s01.csv --start-date 2025-10-01 --end-date 2026-10-01 --seed 42
 ```
 
 Os comandos são offline e não precisam de token. O gzip de commits contém o

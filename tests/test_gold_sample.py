@@ -354,3 +354,9 @@ def test_generate_checks_audited_window_and_canonical_sources(universe, tmp_path
     write_csv(lp, tuple(releases[0]), releases)
     result = generate(rp, lp, tmp_path / 'gold', tmp_path / 'review.md', **WINDOW)
     assert result['collection_verification']['ready_for_gold_sample']
+    import gzip
+    compressed = lp.with_suffix('.csv.gz')
+    with gzip.open(compressed, 'wb') as output:
+        output.write(lp.read_bytes())
+    result = generate(rp, compressed, tmp_path / 'gold-gzip', tmp_path / 'gzip.md', **WINDOW)
+    assert result['collection_verification']['ready_for_gold_sample']

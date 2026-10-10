@@ -255,6 +255,7 @@ def enrich(client, payload, window, destination):
 
 
 def export_enrichment(output, payloads, results):
+    results = sorted(results, key=lambda r: r['full_name'].casefold())
     for filename, fields in OUTPUT_FIELDS.items():
         if filename in ('releases_s01.csv', 'release_validation_s01.csv'):
             continue  # Coleta elegível conserva notas e contagens completas de runs.

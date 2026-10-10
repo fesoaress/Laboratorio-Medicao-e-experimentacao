@@ -144,10 +144,10 @@ Em `data/processed/s02/`:
 Nenhuma heurística corretiva, classificação humana ou Kappa é executada por
 esses coletores. O smoke continua separado em `data/processed/smoke/`.
 
-O CSV completo de commits fica disponível localmente, mas pode ultrapassar o
-limite de tamanho de um blob no GitHub. Versione seu snapshot comprimido
-`release_commits_s01.csv.gz`; o `.csv` correspondente é ignorado pelo Git.
-Depois de concluir cada enriquecimento, recrie o gzip e confira a igualdade
+Os CSVs completos de releases, runs e commits ficam disponíveis localmente,
+mas podem ultrapassar o limite de tamanho de um blob no GitHub. Versione seus
+snapshots `.csv.gz`; os três `.csv` correspondentes são ignorados pelo Git.
+Depois de concluir a coleta e o enriquecimento, recrie os gzip e confira a igualdade
 byte a byte por SHA-256, sem selecionar ou cortar commits:
 
 ```python
@@ -156,20 +156,25 @@ import hashlib
 import shutil
 from pathlib import Path
 
-source = Path('data/processed/s02/release_commits_s01.csv')
-target = source.with_suffix('.csv.gz')
-with source.open('rb') as incoming, target.open('wb') as outgoing:
-    with gzip.GzipFile(filename='', fileobj=outgoing, mode='wb', mtime=0) as compressed:
-        shutil.copyfileobj(incoming, compressed)
-with source.open('rb') as original, gzip.open(target, 'rb') as restored:
-    if hashlib.file_digest(original, 'sha256').digest() != hashlib.file_digest(restored, 'sha256').digest():
-        raise RuntimeError('Snapshot comprimido difere do CSV original.')
+for name in ('releases_s01.csv', 'workflow_runs_s02.csv', 'release_commits_s01.csv'):
+    source = Path('data/processed/s02') / name
+    target = source.with_suffix('.csv.gz')
+    with source.open('rb') as incoming, target.open('wb') as outgoing:
+        with gzip.GzipFile(filename='', fileobj=outgoing, mode='wb', mtime=0) as compressed:
+            shutil.copyfileobj(incoming, compressed)
+    with source.open('rb') as original, gzip.open(target, 'rb') as restored:
+        if hashlib.file_digest(original, 'sha256').digest() != hashlib.file_digest(restored, 'sha256').digest():
+            raise RuntimeError('Snapshot comprimido difere do CSV original.')
 ```
 
 O gzip usa timestamp fixo e não inclui nome local no cabeçalho, permitindo
 reproduzir o mesmo snapshot. Não compacte enquanto o enriquecimento estiver
 reescrevendo o CSV. Para recuperar o arquivo após um clone, use `gzip.open`
 e `shutil.copyfileobj` no sentido inverso.
+A auditoria prefere os snapshots comprimidos e recusa um gzip desatualizado
+se o CSV local também existe. Ela também funciona depois de um clone, quando
+somente os gzip versionados estão presentes. `.gitattributes` evita conversão
+de fim de linha nos artefatos, preservando os bytes usados nos hashes.
 
 ## Testes
 

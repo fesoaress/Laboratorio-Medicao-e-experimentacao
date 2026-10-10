@@ -2,8 +2,10 @@
 
 import argparse
 import csv
+import gzip
 import hashlib
 import json
+import sys
 from collections import Counter
 from pathlib import Path
 
@@ -13,7 +15,9 @@ from .workflow_runs import classify_conclusion
 
 
 def read_rows(path):
-    with path.open(encoding='utf-8-sig', newline='') as handle:
+    csv.field_size_limit(sys.maxsize)
+    opener = gzip.open if path.suffix == '.gz' else Path.open
+    with opener(path, mode='rt', encoding='utf-8-sig', newline='') as handle:
         reader = csv.DictReader(handle)
         if not reader.fieldnames or len(reader.fieldnames) != len(set(reader.fieldnames)):
             raise ValueError('CSV sem cabeçalho válido/único.')
@@ -31,11 +35,24 @@ def digest(path):
     return checksum.hexdigest()
 
 
+def csv_source(directory, name):
+    plain = directory / name
+    compressed = plain.with_suffix('.csv.gz')
+    if not compressed.exists():
+        return plain
+    if plain.exists():
+        with gzip.open(compressed, 'rb') as handle:
+            restored = hashlib.file_digest(handle, 'sha256').hexdigest()
+        if restored != digest(plain):
+            raise ValueError(f'Snapshot gzip desatualizado: {compressed}; recrie-o após a coleta.')
+    return compressed
+
+
 def audit_collection(directory):
     manifest_path = directory / 'collection_manifest_s02.json'
     manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
     window = ObservationWindow(**manifest['window'])
-    rp, lp, wp = [directory / name for name in
+    rp, lp, wp = [csv_source(directory, name) for name in
                   ('repositories_final_s02.csv', 'releases_s01.csv', 'workflow_runs_s02.csv')]
     repositories, releases, runs = map(read_rows, (rp, lp, wp))
     errors, indexed, repository_ids = [], {}, set()
