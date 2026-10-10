@@ -1,0 +1,6 @@
+# Preserva os bytes usados nos hashes e o texto original dentro dos CSVs.
+data/processed/s02/** -text
+data/gold_sample/** -text
+data/validation/** -text
+reports/lab03_s02_*.md -text
+reports/lab03_s02_*.txt -text
