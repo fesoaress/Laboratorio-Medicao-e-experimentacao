@@ -68,7 +68,7 @@ def predecessor_rows(history, payload, window):
             for r in history if not r.prerelease and utc_datetime(r.published_at) < window.start]
 
 
-def collect_tags(cache, name, head, window):
+def collect_tags(cache, name, head, window, client=None):
     owner, repo = name.split('/')
     after, expected, refs, seen_cursors = None, None, {}, set()
     while True:
@@ -102,15 +102,26 @@ def collect_tags(cache, name, head, window):
     identifiers = sorted(eligible)
     for start in range(0, len(identifiers), 25):
         data = graphql(cache, MEMBERSHIP_QUERY, {'ids': identifiers[start:start + 25], 'head': head})
-        for node in data['data']['nodes']:
-            if not node or node['id'] not in eligible:
+        nodes = data['data']['nodes']
+        if len(nodes) != len(identifiers[start:start + 25]):
+            raise APIError('Verificação de tags incompleta.')
+        for identifier, node in zip(identifiers[start:start + 25], nodes):
+            if (not node and client is None) or (node and node['id'] != identifier):
                 raise APIError('Ref ausente ao verificar ancestralidade.')
-            ref, commit = eligible[node['id']]
-            comparison = node.get('compare') or {}
+            ref, commit = eligible[identifier]
+            comparison = (node or {}).get('compare') or {}
             if (comparison.get('baseTarget', {}).get('oid') != commit['oid']
                     or comparison.get('headTarget', {}).get('oid') != head
                     or comparison.get('status') not in ('AHEAD', 'IDENTICAL', 'BEHIND', 'DIVERGED')):
-                raise APIError('Comparação de tag não corresponde ao snapshot.')
+                if client is None:
+                    raise APIError('Comparação de tag não corresponde ao snapshot.')
+                # A ref pode ter mudado. Verifica os SHAs já observados, sem
+                # substituir o commit da tag nem inferir ancestralidade.
+                path = f"/repos/{name}/compare/{commit['oid']}...{head}"
+                actual = client.get(path, {'per_page': 1, 'page': 2}).data
+                if not isinstance(actual, dict) or actual.get('status') not in ('ahead', 'identical', 'behind', 'diverged'):
+                    raise APIError('REST não comprova ancestralidade dos SHAs do snapshot.')
+                comparison = {'status': actual['status'].upper()}
             tags.append(Tag(ref['name'], commit['oid'], commit['authoredDate'],
                             comparison['status'] in ('AHEAD', 'IDENTICAL'), True))
     if len(tags) != len(eligible):
@@ -190,7 +201,7 @@ class IntervalClient:
         return self.client.get(path, params)
 
 
-def enrich(client, payload, window, destination):
+def enrich(client, payload, window, destination, *, git_repository=None):
     if destination.exists():
         old = json.loads(destination.read_text(encoding='utf-8'))
         if old['status'] in ('complete', 'metric_error', 'comparison_error'):
@@ -203,10 +214,24 @@ def enrich(client, payload, window, destination):
     try:
         history = with_predecessor(client, payload, window)
         result['predecessors'] = predecessor_rows(history, payload, window)
-        tags, scanned = collect_tags(client.cache, name, collection['default_branch_sha'], window)
+        if git_repository is None:
+            tags, scanned = collect_tags(client.cache, name, collection['default_branch_sha'], window, client)
+            adapter = None
+        else:
+            from .git_context import GitRepository, GitIntervalClient
+            repository = GitRepository(git_repository, name, collection['default_branch_sha'])
+            tags, scanned = repository.tags(window)
+            snapshot_path = git_repository.parent / (name.replace('/', '--') + '_tags_snapshot.json')
+            save_json(snapshot_path, {'remote_url': repository.remote_url,
+                                      'default_branch_sha': collection['default_branch_sha'],
+                                      'refs': repository.tag_snapshot})
+            result['context_source'] = {'transport': 'github_git_objects', 'remote_url': repository.remote_url,
+                                        'tag_snapshot': str(snapshot_path), 'git_directory': str(git_repository)}
+            adapter = GitIntervalClient(client, name, history, window, repository)
         result['tags_scanned'] = scanned
         result['outputs']['tags_s01.csv'] = [{'full_name': name, **asdict(t)} for t in tags]
-        adapter = IntervalClient(client, name, history, window)
+        if adapter is None:
+            adapter = IntervalClient(client, name, history, window)
         intervals = collect_release_intervals(adapter, name, history, window)
         result['outputs']['release_intervals_s01.csv'] = [
             {'full_name': name, 'release_id': i.release.release_id, 'tag_name': i.release.tag_name,

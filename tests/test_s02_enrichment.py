@@ -208,3 +208,26 @@ def test_export_snapshots_do_not_depend_on_worker_completion_order(tmp_path):
         p.name: p.read_bytes() for p in second.iterdir()}
 
 
+@pytest.mark.parametrize('node', [None,
+    {'id': '1', 'compare': {'baseTarget': {'oid': 'moved'}, 'headTarget': {'oid': 'head'}, 'status': 'AHEAD'}},
+    {'id': '1', 'compare': {'baseTarget': {'oid': 'base'}, 'headTarget': {'oid': 'other'}, 'status': 'AHEAD'}}])
+@pytest.mark.parametrize('status,expected', [('ahead', True), ('diverged', False)])
+def test_tags_verify_original_shas_via_rest_when_ref_comparison_changed(monkeypatch, window, node, status, expected):
+    responses = iter([tags_page([{'id': '1', 'name': 'v1', 'target': commit('base')}], 1),
+                      {'data': {'nodes': [node]}}])
+    monkeypatch.setattr(enrichment, 'graphql', lambda *a: next(responses))
+    client = FakeClient([APIResponse({'status': status}, {})])
+    tags, scanned = enrichment.collect_tags(None, 'a/b', 'head', window, client)
+    assert scanned == 1 and tags[0].commit_sha == 'base' and tags[0].on_default_branch is expected
+    assert client.calls == [('/repos/a/b/compare/base...head', {'per_page': 1, 'page': 2})]
+
+
+@pytest.mark.parametrize('response', [None, [], {'status': 'unknown'}])
+def test_tag_rest_fallback_never_assumes_missing_ancestry(monkeypatch, window, response):
+    responses = iter([tags_page([{'id': '1', 'name': 'v1', 'target': commit('base')}], 1),
+                      {'data': {'nodes': [None]}}])
+    monkeypatch.setattr(enrichment, 'graphql', lambda *a: next(responses))
+    with pytest.raises(APIError, match='REST não comprova'):
+        enrichment.collect_tags(None, 'a/b', 'head', window, FakeClient([APIResponse(response, {})]))
+
+

@@ -111,6 +111,10 @@ O enriquecimento reutiliza `collect_release_intervals`, `calculate_lead_time`,
 Tags são paginadas e desreferenciadas, inclusive anotadas. O CSV contém tags
 cujo `commit.authoredDate` está na janela; todas as refs examinadas ficam no
 cache bruto. Sua ancestralidade usa o mesmo snapshot da seleção.
+Se uma ref desaparecer ou sua comparação não corresponder aos OIDs observados,
+o enriquecimento confere por REST o SHA original da tag contra o SHA do snapshot.
+Não substitui o commit original pela nova ponta da ref. Ausência de prova
+continua sendo erro explícito.
 
 Comparações GraphQL entre releases são paginadas e conferidas contra
 `totalCount`. Em testes reais, algumas conexões terminaram em 1.000 itens mesmo
@@ -119,6 +123,17 @@ Tags movidas/removidas também exigem REST pelo SHA preservado. Nenhuma lista
 truncada é aceita como completa. Intervalos divergentes, erros e Lead Time
 negativo ficam explícitos, com métricas ausentes e dados brutos preservados.
 Erros de métricas não inventam uma nova regra de exclusão da elegibilidade.
+
+Para repositórios com dezenas de milhares de tags, `enrich(...,
+git_repository=Path(...))` também aceita um cache Git bare completo de commits
+e refs, obtido da URL pública com `--filter=tree:0` (sem checkout de arquivos).
+O adaptador recusa caches rasos e remotes diferentes; desreferencia tags
+anotadas, verifica ancestralidade no DAG contra o mesmo SHA da seleção e
+conserva mensagens e datas dos objetos commit. Os intervalos usam `base..head`
+com a comprovação de ancestralidade exigida pelo coletor da S01. O snapshot
+integral de refs e a origem ficam no cache bruto e no manifesto de contexto.
+Essa alternativa foi usada para `web-platform-tests/wpt`; não usa datas de
+tagger como substitutas de `commit.author.date`, nem classifica releases.
 
 ## Artefatos
 
