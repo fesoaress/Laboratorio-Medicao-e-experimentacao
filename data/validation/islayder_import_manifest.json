@@ -1,0 +1,89 @@
+{
+  "issue": 54,
+  "status": "human_labels_imported_and_validated",
+  "imported_at": "2026-10-11T00:29:30.161928+00:00",
+  "source": {
+    "path": "C:\\Users\\Islayder\\Downloads\\rotulacao_independente_60_repos.xlsx",
+    "sha256": "9597e65856063d947275af3bdde9b61b5fd845c02c2780d9d501c1dddffb897d",
+    "sheets": [
+      "300 Releases",
+      "60 Repositórios",
+      "Critérios"
+    ],
+    "labels_sheet": "300 Releases",
+    "source_modified": false,
+    "xlsx_versioned": false
+  },
+  "authority": "independent_human_labels_supplied_by_islayder",
+  "alignment": [
+    "repository",
+    "release (exact tag_name)"
+  ],
+  "source_repositories": 60,
+  "source_release_items": 300,
+  "releases_per_repository": 5,
+  "integrity": {
+    "missing": 0,
+    "extra": 0,
+    "duplicates": 0,
+    "repository_summary_consistent": true,
+    "factual_fields_preserved": true
+  },
+  "human_fields": [
+    "project_type",
+    "releases_represent_real_delivery",
+    "corrective_release",
+    "notes"
+  ],
+  "syntactic_normalizations": [],
+  "notes_preserved": 45,
+  "destination": {
+    "path": "data\\gold_sample\\gold_sample_islayder.csv",
+    "before_sha256": "60d28b31f09b5cebd8b043bb5595575497dfb9dba59122aeed111a6a97836c41",
+    "sha256": "9cb894ee51a8cfde238dbd3e978064d4ccfc159812f94449b391342419811a51"
+  },
+  "protected_file_hashes": {
+    "data\\gold_sample\\gold_sample.csv": "d08f17def77484b1da8c8d414dcadf2a01e119f92f056bc4210027eebe3606cd",
+    "data\\gold_sample\\sampling_manifest.json": "8f86669c880183fc783c4af0bb27906e5fb8f8d861834b8416c79652ac00b7ba",
+    "data\\gold_sample\\gold_sample_fernanda.csv": "60d28b31f09b5cebd8b043bb5595575497dfb9dba59122aeed111a6a97836c41",
+    "data\\gold_sample\\gold_sample_vinicius.csv": "60d28b31f09b5cebd8b043bb5595575497dfb9dba59122aeed111a6a97836c41"
+  },
+  "counts_from_final_csv": {
+    "project_type": {
+      "library_framework": 23,
+      "application_service": 25,
+      "cli_tool": 10,
+      "other": 2
+    },
+    "releases_represent_real_delivery": {
+      "yes": 59,
+      "no": 1,
+      "uncertain": 0
+    },
+    "corrective_release": {
+      "yes": 99,
+      "no": 201
+    }
+  },
+  "validation": {
+    "file": "data\\gold_sample\\gold_sample_islayder.csv",
+    "complete": true,
+    "repositories_evaluated": 60,
+    "repositories_missing": 0,
+    "releases_evaluated": 300,
+    "releases_missing": 0,
+    "errors": []
+  },
+  "automatic_label_creation_or_reinterpretation": false,
+  "corrective_heuristic_executed": false,
+  "other_raters_labels_consulted": false,
+  "agreement_analysis_executed": false,
+  "verification": {
+    "official_validator_exit_code": 0,
+    "focused_tests_passed": 74,
+    "full_suite_tests_passed": 407,
+    "coverage_percent": 97.70387965162313,
+    "coverage_floor_percent": 96,
+    "test_code_modified": false
+  }
+}

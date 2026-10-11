@@ -3,8 +3,19 @@
 Implementação das [#53](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/53),
 [#54](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/54) e
 [#57](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/57).
-A #54 continua pendente de preenchimento humano. A concordância e o consenso
-empíricos também aguardam as três avaliações completas.
+A rotulagem independente de Islayder (#54) foi importada e validada em
+10/10/2026: 60/60 repositórios e 300/300 releases, sem erros. A #57 aguarda os
+arquivos completos de Fernanda e Vinicius; concordância e consenso não foram
+calculados nesta importação.
+
+Fonte humana: `C:\Users\Islayder\Downloads\rotulacao_independente_60_repos.xlsx`,
+aba `300 Releases`, conferida também contra o resumo `60 Repositórios`.
+O alinhamento usou `repository` e tag exata, nunca posição de linha. Os valores
+já estavam no schema oficial e foram copiados literalmente, incluindo 45
+observações. Nenhum julgamento foi produzido ou reinterpretado automaticamente,
+e nenhuma heurística corretiva foi usada. A planilha original foi preservada e
+não foi adicionada ao Git. Hashes, integridade e contagens do CSV final estão em
+[`islayder_import_manifest.json`](../data/validation/islayder_import_manifest.json).
 
 ## Fontes e sorteio
 

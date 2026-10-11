@@ -1,5 +1,12 @@
 # Lab03 S02 — execução real
 
+Atualização de 10/10/2026: a rotulagem humana independente de Islayder foi
+importada da planilha fornecida e validada (60/60 repositórios, 300/300 releases,
+zero erros). A #54 está tecnicamente concluída. A #57 aguarda Fernanda e
+Vinicius. Consulte [lab03_s02_validation.md](lab03_s02_validation.md).
+Os resultados de campos vazios abaixo descrevem a geração inicial, anterior
+à importação; seu diagnóstico histórico permanece preservado.
+
 Branch: `Laboratorio-3`. Coleta finalizada em 10/10/2026, sem push.
 Janela UTC: **[2025-10-01, 2026-10-01)**, com fim exclusivo, definida pelo grupo.
 
@@ -90,8 +97,8 @@ retomada, objetos Git reais em fixture sintética local, Kappa conhecido e
 consenso. Fixtures de testes não foram usadas na coleta real.
 
 As Issues #53, #54 e #57 têm commits locais vinculados por número.
-A #54 continua pendente de rotulagem humana; Kappa e consenso empíricos
-aguardam os três CSVs completos. Instruções de preenchimento e comandos de
+A #54 foi concluída após a importação humana descrita na atualização inicial;
+Kappa e consenso empíricos aguardam Fernanda e Vinicius. Instruções e comandos de
 validação/análise estão em [s02_validation.md](../docs/s02_validation.md).
 Não houve push. A coleta e o contexto terminaram; o token temporário pode ser
 revogado pelo usuário. `.env` e dados brutos não são versionados.
