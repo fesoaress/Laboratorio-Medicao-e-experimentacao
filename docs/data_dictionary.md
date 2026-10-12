@@ -213,3 +213,100 @@ Cada execução usa uma pasta nova para conservar resultados, código e fontes d
 cada versão. Não há arquivos de resultados empíricos da #58 enquanto o consenso
 estiver ausente. O status do classificador não substitui o fechamento do dataset
 final, a integração das variantes DORA ou o relatório de concordância.
+
+## S02 — dataset_final_s02.csv (#51)
+
+Uma linha por repositório elegível da amostra final (311 linhas). Merge por
+`full_name` a partir de `repositories_final_s02.csv`, com left join nas fontes
+de métricas. Colunas de variante são nomeadas explicitamente para evitar
+ambiguidade entre definições operacionais.
+
+### Metadados (origem: repositories_final_s02.csv)
+
+- `repository_id`: inteiro, `repository.id`.
+- `full_name`, `owner`, `name`: texto, identidade GitHub.
+- `html_url`: URL do repositório.
+- `stargazers_count`: inteiro, contagem no `collected_at`.
+- `language`: texto, linguagem principal detectada pela API.
+- `created_at`: timestamp, data de criação.
+- `repo_age_days`: inteiro, dias entre `created_at` e `collected_at`.
+- `default_branch`: texto, branch principal.
+- `contributors_count`: inteiro, contagem via API.
+- `has_github_actions`: booleano, sinaliza fluxo de CI.
+- `collected_at`: timestamp UTC da coleta de metadados.
+- `release_count`: inteiro, releases estáveis na janela.
+- `valid_workflow_runs`: inteiro, runs com status classificável na janela.
+- `metadata_complete`: booleano, metadados coletados sem erro.
+- `status`: texto, `selected` (reprovado no funil ficou fora).
+- `reasons`: texto, motivos do estado final.
+- `description`: texto, descrição pública do repositório.
+
+### Deployment Frequency — RQ01 (origem: deployment_frequency_s02.csv)
+
+- `deployment_frequency_releases`: inteiro, releases estáveis na janela.
+  Mesmo valor que `release_count`, repetido para preservar variante.
+- `deployment_frequency_window_days`: real, duração da janela em dias (365.0).
+- `deployment_frequency_per_week`: real, `releases / (window_days/7)`.
+- `deployment_frequency_per_month`: real, `releases / (window_days/30)`.
+
+### Lead Time for Changes — RQ02 (origem: lead_time_s01.csv)
+
+Variante (a) — por release:
+
+- `lead_time_release_count`: inteiro, observações de RQ02(a).
+- `lead_time_release_median_hours`: real/ausente, mediana.
+- `lead_time_release_q1_hours`, `lead_time_release_q3_hours`: reais/ausentes.
+- `lead_time_release_iqr_hours`: real/ausente, Q3 − Q1.
+
+Variante (b) — por commit:
+
+- `lead_time_commit_count`: inteiro, observações de RQ02(b).
+- `lead_time_commit_median_hours`: real/ausente, mediana.
+- `lead_time_commit_q1_hours`, `lead_time_commit_q3_hours`: reais/ausentes.
+- `lead_time_commit_iqr_hours`: real/ausente, Q3 − Q1.
+
+Diagnóstico:
+
+- `lead_time_window_start`, `lead_time_window_end`: datas ISO da janela.
+- `lead_time_releases_without_predecessor`: inteiro, primeiras releases ignoradas.
+- `lead_time_releases_without_new_commits`: inteiro, intervalos completos vazios.
+- `lead_time_releases_ignored_compare_404`: inteiro, releases excluídas apenas
+  do Lead Time por 404 no compare; não reduz `release_count`.
+
+Quartis: interpolação linear em `(n−1)×p`, tipo 7. Sem observações:
+count=0 e estatísticas vazias. Duração negativa nunca vira zero.
+
+### Change Failure Rate — RQ03 (origem: workflow_metrics_s02.csv)
+
+Variante (a) — CI:
+
+- `cfr_ci_successes`: inteiro, workflow runs com status `success`.
+- `cfr_ci_failures`: inteiro, workflow runs com status `failure`.
+- `cfr_ci_ignored`: inteiro, runs sem status classificável (não entram na razão).
+- `cfr_ci`: real/ausente, `failures / (failures + successes)`;
+  ausente quando denominador é zero.
+
+Variante (b) — entrega:
+
+- `cfr_delivery`: real/ausente, `releases corretivas / release_count` conforme
+  `gold_sample_consensus.csv`. Vazio enquanto o consenso não for consolidado.
+- `cfr_delivery_source`: texto/ausente, caminho do consenso usado.
+
+### Recovery Time — RQ04 (origem: workflow_metrics_s02.csv)
+
+- `recovery_time_n_episodes`: inteiro, total de episódios de falha observados.
+- `recovery_time_n_censored`: inteiro, episódios sem retorno a sucesso na janela.
+- `recovery_time_median_hours`: real/ausente, mediana dos episódios resolvidos;
+  censurados não entram na mediana.
+- `recovery_time_censored_proportion`: real/ausente, `n_censored / n_episodes`;
+  ausente quando não há episódios.
+
+Episódios individuais ficam em `recovery_episodes_s02.csv` (uma linha por
+`workflow_id`), com `failure_started_at`, `recovered_at` e `hours`.
+
+### Convenções
+
+- Vazio é ausente/não medido, nunca zero. `0` em contagens é valor real.
+- Frações (`cfr_*`, `censored_proportion`) em [0,1].
+- Durações em horas decimais.
+- `full_name` é a chave de merge entre todas as fontes desta seção.
