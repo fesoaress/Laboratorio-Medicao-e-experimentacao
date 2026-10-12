@@ -15,7 +15,8 @@ from .workflow_runs import classify_conclusion
 
 
 def read_rows(path):
-    csv.field_size_limit(sys.maxsize)
+    # C long é de 32 bits no Windows, mesmo em Python de 64 bits.
+    csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
     opener = gzip.open if path.suffix == '.gz' else Path.open
     with opener(path, mode='rt', encoding='utf-8-sig', newline='') as handle:
         reader = csv.DictReader(handle)

@@ -38,7 +38,8 @@ LABEL_FIELDS = (*CONTEXT_FIELDS, *HUMAN_FIELDS)
 
 
 def read_csv(path: Path, required=(), *, exact=False, selected_items=None) -> list[dict]:
-    csv.field_size_limit(sys.maxsize)
+    # Windows usa C long de 32 bits mesmo com Python de 64 bits.
+    csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
     opener = gzip.open if path.suffix == '.gz' else Path.open
     with opener(path, mode='rt', encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)

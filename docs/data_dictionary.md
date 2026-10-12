@@ -1,10 +1,11 @@
-# Dicionário de dados — Fernanda, Lab03S01
+# Dicionário de dados — Fernanda, Lab03 S01/S02
 
 CSVs UTF-8, vírgula, cabeçalhos estáveis; mensagens multilinha/aspas escapadas
 pelo módulo `csv`. Booleanos: `True`/`False`. Vazio é ausente/não medido, nunca
 zero. Timestamps ISO preservam o fuso da API; cálculos/filtros são em UTC.
-Janela com fim exclusivo. `full_name` (texto `owner/repo`) aparece em todos os
-arquivos e identifica o repositório. SHAs e URLs são texto.
+Janela com fim exclusivo. `full_name` (texto `owner/repo`) identifica o
+repositório nos arquivos S01. Na amostra-ouro, o nome é `repository`.
+SHAs e URLs são texto.
 
 ## releases_s01.csv
 
@@ -143,3 +144,72 @@ Compatível com `src.funnel.load_evidence` e `--validation-csv`.
 CSVs de seleção/metadados preservam o contrato de Islayder em
 `src.pipeline.REPOSITORY_FIELDS` e `src.funnel.FUNNEL_FIELDS`.
 Novos componentes atualizam apenas evidência de releases, sem fabricar runs.
+
+## S02 — rotulagem humana de Fernanda (#55)
+
+O contrato cego completo está em `src.gold_sample.CONTEXT_FIELDS`; o protocolo
+e as categorias estão em [s02_validation.md](s02_validation.md). Contexto e
+identidade nunca são editados pelo formulário. `gold_sample_fernanda.csv` contém
+300 linhas, com exatamente as cinco releases sorteadas de cada um dos 60 projetos.
+
+- `item_id`: texto, `repository.casefold() + "::release::" + release_id`; chave
+  de alinhamento independente da posição da linha.
+- `project_type`: categoria humana `library_framework`, `application_service`,
+  `cli_tool` ou `other`; mesma resposta nas cinco linhas do projeto.
+- `releases_represent_real_delivery`: categoria humana `yes`, `no` ou `uncertain`;
+  mesma resposta nas cinco linhas do projeto.
+- `corrective_release`: categoria humana `yes` ou `no`, uma por release.
+- `notes`: texto opcional, observações/evidências humanas; aceita multilinha.
+
+Vazio nos três campos categóricos significa **não avaliado**, nunca `no`.
+São 420 decisões independentes, representadas em 900 células obrigatórias pela
+repetição dos rótulos de projeto. `gold_sample_consensus.csv` posterior usa o
+mesmo contrato, com os rótulos consolidados na #57.
+
+## S02 — predictions.csv (#58)
+
+Arquivo derivado, gerado somente após a rotulagem de Fernanda e o consenso.
+Jamais é entrada/sugestão para a revisão independente. Uma linha por release
+da amostra-ouro; não representa o dataset completo dos 311 repositórios.
+
+- `item_id`, `repository`, `release_id`, `tag_name`: identidades da amostra.
+- `previous_tag`: tag da release estável imediatamente anterior no histórico
+  completo; vazio quando não há predecessor disponível.
+- `consensus`: rótulo corretivo humano consolidado (`yes`/`no`).
+- `version`: versão explícita da política (`v1`/`v2`).
+- `corrective_release`: **previsão automática** `yes`/`no`, distinta do campo
+  humano de mesmo nome no CSV individual. Consulte o caminho do arquivo.
+- `reason`: texto, regra que determinou a decisão; descrita em `corrective.py`.
+- `patch_only`: booleano, major/minor iguais e patch estritamente maior.
+- `correction_commits`, `feature_commits`: inteiros, assuntos de commits com
+  sinais lexicais segundo a versão. Um assunto misto pode entrar em ambos.
+- `correction_notes`, `feature_notes`: inteiros, entradas nas notes com sinais;
+  cabeçalhos só contextualizam as listas, sem contar como mudanças.
+- `commit_context_complete`: booleano, `interval_status == "complete"`;
+  False registra contexto parcial/indisponível, não ausência de correções.
+
+## S02 — evaluation.json e histórico da heurística
+
+- `items`: inteiro, 300 pares alinhados nesta amostra.
+- `positive_label`: `yes`.
+- `tp`, `fp`, `fn`, `tn`: inteiros da matriz de confusão.
+- `precision`, `recall`, `f1`: reais em [0,1], calculados com scikit-learn;
+  `zero_division=0` produz zero computacional em denominadores nulos.
+- `precision_defined`, `recall_defined`, `f1_defined`: booleanos; devem ser
+  consultados antes de interpretar zeros como resultados empíricos definidos.
+- `threshold`: 0,70, aplicado a F1 sem arredondamento.
+- `status`: `accepted`, `needs_refinement` ou
+  `unassessable_no_positive_consensus`.
+- `version`, `policy`: identificador e descrição da regra avaliada.
+- `sources`: caminhos/SHA-256 da amostra, próprio CSV, consenso e dois históricos.
+- `evaluated_at`: timestamp UTC da avaliação.
+- `python`, `sklearn`: versões do ambiente.
+- `implementation_sha256`: SHA-256 de `corrective.py.txt`, preservado na execução.
+- `predictions_sha256`: SHA-256 do CSV derivado.
+- `incomplete_commit_context`: número de releases cujo intervalo não é completo.
+- `limitations`: lista de limitações metodológicas explícitas.
+
+Cada execução usa uma pasta nova para conservar resultados, código e fontes de
+cada versão. Não há arquivos de resultados empíricos da #58 enquanto o consenso
+estiver ausente. O status do classificador não substitui o fechamento do dataset
+final, a integração das variantes DORA ou o relatório de concordância.
