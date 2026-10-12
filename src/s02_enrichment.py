@@ -15,8 +15,8 @@ from .commits import collect_release_intervals
 from .deliveries import OUTPUT_FIELDS, SUMMARY_FIELDS
 from .github_client import APIError, APIResponse, GitHubClient
 from .graphql_context import graphql, ReleaseCommitClient
-from .metrics import (calculate_lead_time, change_failure_rate_a, recovery_episodes,
-                      repository_recovery_time)
+from .metrics import (calculate_lead_time, change_failure_rate_a, deployment_frequency,
+                      recovery_episodes, repository_recovery_time)
 from .pipeline import write_csv
 from .s02_collection import PacedClient, safe_sleep, save_json
 from .temporal import ObservationWindow, Release, Tag, utc_datetime, parse_commit
@@ -275,6 +275,15 @@ def enrich(client, payload, window, destination, *, git_repository=None):
     result['workflow_metrics'] = {'full_name': name, **asdict(change_failure_rate_a(runs)),
                                   **asdict(repository_recovery_time(episodes))}
     result['recovery_episodes'] = [{'full_name': name, **asdict(e)} for e in episodes]
+
+    # NOVO: Deployment Frequency (RQ01) — Issue #52
+    df = deployment_frequency(
+        release_count=payload['row'].get('release_count') or 0,
+        start_date=window.start_date,
+        end_date=window.end_date,
+    )
+    result['deployment_frequency'] = {'full_name': name, **asdict(df)}
+
     save_json(destination, result)
     return result
 
@@ -294,6 +303,12 @@ def export_enrichment(output, payloads, results):
     write_csv(output / 'recovery_episodes_s02.csv',
               ('full_name', 'workflow_id', 'failure_started_at', 'recovered_at', 'hours'),
               (e for r in results for e in r['recovery_episodes']))
+
+    # NOVO: Deployment Frequency (RQ01) — Issue #52
+    write_csv(output / 'deployment_frequency_s02.csv',
+              ('full_name', 'releases', 'window_days', 'per_week', 'per_month'),
+              (r['deployment_frequency'] for r in results if 'deployment_frequency' in r))
+
     write_csv(output / 'release_predecessors_s02.csv',
               ('full_name', 'release_id', 'tag_name', 'published_at', 'commit_sha', 'prerelease',
                'html_url', 'target_commitish', 'release_body'),
@@ -303,7 +318,7 @@ def export_enrichment(output, payloads, results):
         'statuses': {s: sum(r['status'] == s for r in results) for s in sorted({r['status'] for r in results})},
         'tags_date_source': 'commit.authoredDate', 'tags_scope': 'in_window_only;all_refs_scanned_in_raw_cache',
         'corrective_heuristic_executed': False,
-        'repositories': [{k: v for k, v in r.items() if k not in ('outputs', 'workflow_metrics', 'recovery_episodes', 'predecessors')} for r in results]})
+        'repositories': [{k: v for k, v in r.items() if k not in ('outputs', 'workflow_metrics', 'recovery_episodes', 'predecessors', 'deployment_frequency')} for r in results]})
 
 
 def main(argv=None):

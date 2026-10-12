@@ -193,3 +193,36 @@ def repository_recovery_time(episodes: list[RecoveryEpisode]) -> RecoveryTimeSum
         median_hours=statistics.median(resolved) if resolved else None,
         censored_proportion=(n_censored / n) if n else None,
     )
+
+
+# =====================================================================
+# Deployment Frequency (RQ01) — Issue #52
+# =====================================================================
+
+
+@dataclass(frozen=True)
+class DeploymentFrequency:
+    releases: int
+    window_days: float
+    per_week: float | None
+    per_month: float | None
+
+
+def deployment_frequency(release_count: int, start_date: str, end_date: str) -> DeploymentFrequency:
+    """RQ01: releases estáveis por unidade de tempo na janela observada.
+
+    Usa a contagem de releases elegíveis por repositório e a janela oficial
+    em UTC. Devolve None quando a janela é vazia ou negativa, para não dividir
+    por zero nem produzir valor artificialmente alto.
+    """
+    start = datetime.fromisoformat(start_date).replace(tzinfo=timezone.utc)
+    end = datetime.fromisoformat(end_date).replace(tzinfo=timezone.utc)
+    days = (end - start).total_seconds() / 86400
+    if days <= 0:
+        return DeploymentFrequency(release_count, days, None, None)
+    return DeploymentFrequency(
+        releases=release_count,
+        window_days=days,
+        per_week=release_count / (days / 7),
+        per_month=release_count / (days / 30),
+    )
