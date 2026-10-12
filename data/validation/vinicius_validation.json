@@ -1,0 +1,9 @@
+{
+  "file": "data/gold_sample/gold_sample_vinicius.csv",
+  "complete": true,
+  "repositories_evaluated": 60,
+  "repositories_missing": 0,
+  "releases_evaluated": 300,
+  "releases_missing": 0,
+  "errors": []
+}
