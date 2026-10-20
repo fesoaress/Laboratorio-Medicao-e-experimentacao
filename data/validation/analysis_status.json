@@ -1,0 +1,81 @@
+{
+  "status": "complete",
+  "validation": {
+    "islayder": {
+      "file": "data\\gold_sample\\gold_sample_islayder.csv",
+      "complete": true,
+      "repositories_evaluated": 60,
+      "repositories_missing": 0,
+      "releases_evaluated": 300,
+      "releases_missing": 0,
+      "errors": []
+    },
+    "fernanda": {
+      "file": "data\\gold_sample\\gold_sample_fernanda.csv",
+      "complete": true,
+      "repositories_evaluated": 60,
+      "repositories_missing": 0,
+      "releases_evaluated": 300,
+      "releases_missing": 0,
+      "errors": []
+    },
+    "vinicius": {
+      "file": "data\\gold_sample\\gold_sample_vinicius.csv",
+      "complete": true,
+      "repositories_evaluated": 60,
+      "repositories_missing": 0,
+      "releases_evaluated": 300,
+      "releases_missing": 0,
+      "errors": []
+    }
+  },
+  "sources": [
+    {
+      "path": "data\\gold_sample\\gold_sample.csv",
+      "sha256": "d08f17def77484b1da8c8d414dcadf2a01e119f92f056bc4210027eebe3606cd"
+    },
+    {
+      "path": "data\\gold_sample\\gold_sample_islayder.csv",
+      "sha256": "9cb894ee51a8cfde238dbd3e978064d4ccfc159812f94449b391342419811a51"
+    },
+    {
+      "path": "data\\gold_sample\\gold_sample_fernanda.csv",
+      "sha256": "f0b3bca6461306a6c3695538a152213b7991215610f200f17c29417625a00cfb"
+    },
+    {
+      "path": "data\\gold_sample\\gold_sample_vinicius.csv",
+      "sha256": "370fb02756ca4d10141a90857f60600885558fb4a975f6fd976edc3475d8eb9d"
+    },
+    {
+      "path": "data\\gold_sample\\manual_resolutions.csv",
+      "sha256": "6ebebbf81ce530db316579070cadc268494b0dd097bf979d9e797d0d891b9391"
+    }
+  ],
+  "unresolved": 0,
+  "kappa": [
+    {
+      "dimension": "project_type",
+      "items": 60,
+      "raters": 3,
+      "kappa": 0.8628963153384747,
+      "interpretation": "quase perfeita",
+      "status": "calculated"
+    },
+    {
+      "dimension": "releases_represent_real_delivery",
+      "items": 60,
+      "raters": 3,
+      "kappa": 0.15401301518438168,
+      "interpretation": "leve",
+      "status": "calculated"
+    },
+    {
+      "dimension": "corrective_release",
+      "items": 300,
+      "raters": 3,
+      "kappa": 0.7352941176470585,
+      "interpretation": "substancial",
+      "status": "calculated"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+dimension,items,raters,kappa,interpretation,status
+project_type,60,3,0.8628963153384747,quase perfeita,calculated
+releases_represent_real_delivery,60,3,0.15401301518438168,leve,calculated
+corrective_release,300,3,0.7352941176470585,substancial,calculated

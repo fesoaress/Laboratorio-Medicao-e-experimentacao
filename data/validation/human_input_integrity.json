@@ -1,0 +1,56 @@
+{
+  "initial_head": "a8428d241b92743c30b25ff35d2ffaf2cb70358b",
+  "verification_date": "2026-10-20",
+  "same_canonical_sample": true,
+  "files": [
+    {
+      "rater": "islayder",
+      "path": "data/gold_sample/gold_sample_islayder.csv",
+      "sha256_before": "9cb894ee51a8cfde238dbd3e978064d4ccfc159812f94449b391342419811a51",
+      "sha256_after": "9cb894ee51a8cfde238dbd3e978064d4ccfc159812f94449b391342419811a51",
+      "unchanged": true,
+      "validation": {
+        "file": "data\\gold_sample\\gold_sample_islayder.csv",
+        "complete": true,
+        "repositories_evaluated": 60,
+        "repositories_missing": 0,
+        "releases_evaluated": 300,
+        "releases_missing": 0,
+        "errors": []
+      }
+    },
+    {
+      "rater": "fernanda",
+      "path": "data/gold_sample/gold_sample_fernanda.csv",
+      "sha256_before": "f0b3bca6461306a6c3695538a152213b7991215610f200f17c29417625a00cfb",
+      "sha256_after": "f0b3bca6461306a6c3695538a152213b7991215610f200f17c29417625a00cfb",
+      "unchanged": true,
+      "validation": {
+        "file": "data\\gold_sample\\gold_sample_fernanda.csv",
+        "complete": true,
+        "repositories_evaluated": 60,
+        "repositories_missing": 0,
+        "releases_evaluated": 300,
+        "releases_missing": 0,
+        "errors": []
+      }
+    },
+    {
+      "rater": "vinicius",
+      "path": "data/gold_sample/gold_sample_vinicius.csv",
+      "sha256_before": "370fb02756ca4d10141a90857f60600885558fb4a975f6fd976edc3475d8eb9d",
+      "sha256_after": "370fb02756ca4d10141a90857f60600885558fb4a975f6fd976edc3475d8eb9d",
+      "unchanged": true,
+      "validation": {
+        "file": "data\\gold_sample\\gold_sample_vinicius.csv",
+        "complete": true,
+        "repositories_evaluated": 60,
+        "repositories_missing": 0,
+        "releases_evaluated": 300,
+        "releases_missing": 0,
+        "errors": []
+      }
+    }
+  ],
+  "verified_after_consensus_and_cfr": true
+}
