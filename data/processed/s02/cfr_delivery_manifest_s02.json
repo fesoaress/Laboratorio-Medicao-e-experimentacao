@@ -1,0 +1,35 @@
+{
+  "policy": "any_corrective_7d_v1",
+  "definition": "Cada release estável original é falha se existe qualquer release estável com publicação estritamente posterior e em até 7 dias, classificada como corretiva pela heurística validada. Intermediárias não impedem evidência. Originais a partir de end-7d são censuradas incondicionalmente, mas podem ser evidência para anteriores. Sem corretiva positiva conhecida, qualquer classificação posterior indisponível no intervalo torna o original não calculável. Ausência de predecessora não exclui o original. Cada original conta no máximo uma vez.",
+  "decision_source": "Definição operacional confirmada pelo grupo em 20/10/2026, com trechos do enunciado RQ03(b).",
+  "window": {
+    "start_date": "2025-10-01",
+    "end_date": "2026-10-01"
+  },
+  "right_censoring_cutoff": "2026-09-24T00:00:00+00:00",
+  "heuristic_version": "v5",
+  "evaluation": "data/validation/corrective/v5/evaluation.json",
+  "evaluation_sha256": "2bea07214e34b5c0e5f519a1004ea70f8befed0345d228c6fd7fd17ce0d05a5f",
+  "population_manifest": "data/processed/s02/corrective_v5/manifest.json",
+  "population_manifest_sha256": "8dbec7063af2d174c19d1c852a3447b18fd2a8f4b1ab5effe9be83e6ce1b8ae8",
+  "predictions_sha256": "43f2e9e867711d127a7c860475aea13075f799274ccdac8c88f56e2b7a01ad06",
+  "repositories": 311,
+  "valid_repositories": 311,
+  "missing_repositories": 0,
+  "release_statuses": {
+    "not_failed": 6406,
+    "failed": 20038,
+    "right_censored": 677,
+    "unassessable_context": 31
+  },
+  "outputs": [
+    {
+      "path": "data/processed/s02/cfr_delivery_s02.csv",
+      "sha256": "7c0bd28858c5634756b32ca0782ee269c3c5670193915d70920a39a23a4f8b78"
+    },
+    {
+      "path": "data/processed/s02/cfr_delivery_releases_s02.csv",
+      "sha256": "7507b59195c481415b4acc5e37f9c1ffab41a33f943f71c975512ed8df7e70b2"
+    }
+  ]
+}
