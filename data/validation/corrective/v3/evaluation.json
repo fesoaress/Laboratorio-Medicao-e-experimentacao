@@ -1,0 +1,50 @@
+{
+  "items": 300,
+  "positive_label": "yes",
+  "tp": 48,
+  "fp": 5,
+  "fn": 62,
+  "tn": 185,
+  "precision": 0.9056603773584906,
+  "recall": 0.43636363636363634,
+  "f1": 0.588957055214724,
+  "precision_defined": true,
+  "recall_defined": true,
+  "f1_defined": true,
+  "threshold": 0.7,
+  "status": "needs_refinement",
+  "version": "v3",
+  "policy": "Maioria estrita de entradas corretivas entre TODAS as mudanças nas notas; listas de contribuidores, links de changelog e blocos de código não são mudanças. Sem entradas nas notas, usa maioria estrita de assuntos de commits não tipados como manutenção/merge. Notas com mudanças têm precedência; patch SemVer isolado não é evidência suficiente.",
+  "sources": [
+    {
+      "path": "data\\gold_sample\\gold_sample.csv",
+      "sha256": "d08f17def77484b1da8c8d414dcadf2a01e119f92f056bc4210027eebe3606cd"
+    },
+    {
+      "path": "data\\gold_sample\\gold_sample_fernanda.csv",
+      "sha256": "f0b3bca6461306a6c3695538a152213b7991215610f200f17c29417625a00cfb"
+    },
+    {
+      "path": "data\\gold_sample\\gold_sample_consensus.csv",
+      "sha256": "db6f8bf9fe93c059a840491fa8b8de93195d1e6854391a6e0e3eaf23bb80f0e3"
+    },
+    {
+      "path": "data\\processed\\s02\\releases_s01.csv.gz",
+      "sha256": "e02fc1b7ae2b2eac66ca6049010879135f1d7c2e8f3d28f268ec455e2e1c858a"
+    },
+    {
+      "path": "data\\processed\\s02\\release_predecessors_s02.csv",
+      "sha256": "232e4202b3b93790512e0a3c542be0b18cce9f18a8da80d1626315110230b0fc"
+    }
+  ],
+  "evaluated_at": "2026-10-20T18:18:00.709565+00:00",
+  "python": "3.13.15",
+  "sklearn": "1.9.1",
+  "implementation_sha256": "a0a31b6eb20a2c801a1ff2d6be6dc833c7299407e918475de6b4159120f1528b",
+  "incomplete_commit_context": 11,
+  "limitations": [
+    "Heurística identifica sinais; não prova causalidade nem defeito recente.",
+    "Reavaliações na mesma amostra são validação interna, sem teste externo independente."
+  ],
+  "predictions_sha256": "2c95762539e857d959b7435e434bd0835d2e5f8bba13bb06676cc56407828611"
+}

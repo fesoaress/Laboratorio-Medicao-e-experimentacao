@@ -1,0 +1,50 @@
+{
+  "items": 300,
+  "positive_label": "yes",
+  "tp": 106,
+  "fp": 115,
+  "fn": 4,
+  "tn": 75,
+  "precision": 0.4796380090497738,
+  "recall": 0.9636363636363636,
+  "f1": 0.6404833836858006,
+  "precision_defined": true,
+  "recall_defined": true,
+  "f1_defined": true,
+  "threshold": 0.7,
+  "status": "needs_refinement",
+  "version": "v2",
+  "policy": "Predominância de correções sobre features nas notas; na ausência de sinais nas notas, nos commits. Ignora commits de manutenção explicitamente tipados; empate é negativo. Patch SemVer é fallback somente quando não há sinais de correção/feature.",
+  "sources": [
+    {
+      "path": "data\\gold_sample\\gold_sample.csv",
+      "sha256": "d08f17def77484b1da8c8d414dcadf2a01e119f92f056bc4210027eebe3606cd"
+    },
+    {
+      "path": "data\\gold_sample\\gold_sample_fernanda.csv",
+      "sha256": "f0b3bca6461306a6c3695538a152213b7991215610f200f17c29417625a00cfb"
+    },
+    {
+      "path": "data\\gold_sample\\gold_sample_consensus.csv",
+      "sha256": "db6f8bf9fe93c059a840491fa8b8de93195d1e6854391a6e0e3eaf23bb80f0e3"
+    },
+    {
+      "path": "data\\processed\\s02\\releases_s01.csv.gz",
+      "sha256": "e02fc1b7ae2b2eac66ca6049010879135f1d7c2e8f3d28f268ec455e2e1c858a"
+    },
+    {
+      "path": "data\\processed\\s02\\release_predecessors_s02.csv",
+      "sha256": "232e4202b3b93790512e0a3c542be0b18cce9f18a8da80d1626315110230b0fc"
+    }
+  ],
+  "evaluated_at": "2026-10-20T18:16:32.814589+00:00",
+  "python": "3.13.15",
+  "sklearn": "1.9.1",
+  "implementation_sha256": "54f2ead60e946d3951f5023e14100099e45c1a92a30ef630da0a94805d4a59db",
+  "incomplete_commit_context": 11,
+  "limitations": [
+    "Heurística identifica sinais; não prova causalidade nem defeito recente.",
+    "Reavaliações na mesma amostra são validação interna, sem teste externo independente."
+  ],
+  "predictions_sha256": "08f2bb5c9dfba6a7ef5afaeeffac52731c2e3da89212d50bb7c3abad389f4812"
+}

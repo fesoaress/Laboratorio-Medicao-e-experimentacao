@@ -1,0 +1,50 @@
+{
+  "items": 300,
+  "positive_label": "yes",
+  "tp": 57,
+  "fp": 9,
+  "fn": 53,
+  "tn": 181,
+  "precision": 0.8636363636363636,
+  "recall": 0.5181818181818182,
+  "f1": 0.6477272727272727,
+  "precision_defined": true,
+  "recall_defined": true,
+  "f1_defined": true,
+  "threshold": 0.7,
+  "status": "needs_refinement",
+  "version": "v4",
+  "policy": "Mesma maioria estrita de v3 entre mudanças funcionais: exclui seções de dependências, documentação e mudanças internas, assuntos explicitamente tipados como manutenção/refactor e entradas administrativas de release. Remove prefixos de SHA antes de identificar o tipo. Mantém mudanças funcionais desconhecidas no denominador e não usa patch isolado.",
+  "sources": [
+    {
+      "path": "data\\gold_sample\\gold_sample.csv",
+      "sha256": "d08f17def77484b1da8c8d414dcadf2a01e119f92f056bc4210027eebe3606cd"
+    },
+    {
+      "path": "data\\gold_sample\\gold_sample_fernanda.csv",
+      "sha256": "f0b3bca6461306a6c3695538a152213b7991215610f200f17c29417625a00cfb"
+    },
+    {
+      "path": "data\\gold_sample\\gold_sample_consensus.csv",
+      "sha256": "db6f8bf9fe93c059a840491fa8b8de93195d1e6854391a6e0e3eaf23bb80f0e3"
+    },
+    {
+      "path": "data\\processed\\s02\\releases_s01.csv.gz",
+      "sha256": "e02fc1b7ae2b2eac66ca6049010879135f1d7c2e8f3d28f268ec455e2e1c858a"
+    },
+    {
+      "path": "data\\processed\\s02\\release_predecessors_s02.csv",
+      "sha256": "232e4202b3b93790512e0a3c542be0b18cce9f18a8da80d1626315110230b0fc"
+    }
+  ],
+  "evaluated_at": "2026-10-20T18:19:05.446548+00:00",
+  "python": "3.13.15",
+  "sklearn": "1.9.1",
+  "implementation_sha256": "5c7b09ad7bf0c5e2c24db57c372de11505a3e1862d1bf14c7e9c2c6003601688",
+  "incomplete_commit_context": 11,
+  "limitations": [
+    "Heurística identifica sinais; não prova causalidade nem defeito recente.",
+    "Reavaliações na mesma amostra são validação interna, sem teste externo independente."
+  ],
+  "predictions_sha256": "d7ad7ec9a8c982c078fb11d5d9c864242839b6c2b025b326a17a8d9d04f5014c"
+}

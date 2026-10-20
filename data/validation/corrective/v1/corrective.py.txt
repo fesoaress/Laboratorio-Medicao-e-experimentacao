@@ -1,0 +1,97 @@
+"""Heurísticas versionadas de release corretiva (#58), sem acesso a votos humanos."""
+
+from __future__ import annotations
+
+import re
+from dataclasses import asdict, dataclass
+
+# Não se usa substring: 'prefix', 'fixture' e 'fixed-point' não são um 'fix'.
+CORRECTION = re.compile(r"\b(?:fix(?:es|ed|ing)?|bugfix(?:es)?|hotfix(?:es)?|revert(?:s|ed|ing)?)\b(?!-point)", re.I)
+FEATURE = re.compile(r"\b(?:feat(?:ure)?s?|enhancement(?:s)?|breaking changes?)\b", re.I)
+MAINTENANCE = re.compile(r"^(?:docs?|tests?|ci|build|chore|style)(?:\([^)]*\))?!?:", re.I)
+MAINTENANCE_FIX = re.compile(r"^fix\((?:docs?|tests?|ci|build|deps?|style)\)!?:", re.I)
+SEMVER = re.compile(r"v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?")
+POLICIES = {
+    "v1": "Incremento apenas do patch SemVer OU mensagem de commit com fix, bugfix, hotfix ou revert.",
+    "v2": "Predominância de correções sobre features nas notas; na ausência de sinais nas notas, nos commits. "
+          "Ignora commits de manutenção explicitamente tipados; empate é negativo. "
+          "Patch SemVer é fallback somente quando não há sinais de correção/feature.",
+}
+
+
+def semver(tag: str) -> tuple[int, int, int] | None:
+    match = SEMVER.fullmatch(tag.strip())
+    return tuple(map(int, match.groups())) if match else None
+
+
+def patch_only(previous_tag: str, tag: str) -> bool:
+    previous, current = semver(previous_tag), semver(tag)
+    return bool(previous and current and previous[:2] == current[:2] and current[2] > previous[2])
+
+
+def message_signals(message: str, *, exclude_maintenance: bool = False) -> tuple[bool, bool]:
+    subject = message.splitlines()[0] if message else ""
+    if exclude_maintenance and (MAINTENANCE.match(subject) or MAINTENANCE_FIX.match(subject)):
+        return False, False
+    return bool(CORRECTION.search(subject)), bool(FEATURE.search(subject))
+
+
+def note_signals(body: str) -> tuple[int, int]:
+    """Conta entradas, não palavras; seções Markdown propagam o tipo às listas."""
+    fixes = features = 0
+    section = (False, False)
+    for line in body.splitlines():
+        text = line.strip()
+        if not text:
+            continue
+        if text.startswith("#"):
+            section = message_signals(text)
+            continue
+        if text.startswith(("- ", "* ", "+ ")):
+            own = message_signals(text)
+            signals = own if any(own) else section
+        else:
+            signals = message_signals(text)
+        fixes += int(signals[0])
+        features += int(signals[1])
+    return fixes, features
+
+
+@dataclass(frozen=True)
+class Prediction:
+    version: str
+    corrective_release: str
+    reason: str
+    patch_only: bool
+    correction_commits: int
+    feature_commits: int
+    correction_notes: int
+    feature_notes: int
+    commit_context_complete: bool
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+
+def predict(*, tag: str, previous_tag: str = "", body: str = "", messages=(),
+            interval_status: str = "", version: str = "v1") -> Prediction:
+    if version not in POLICIES:
+        raise ValueError(f"Versão de heurística desconhecida: {version}")
+    patch = patch_only(previous_tag, tag)
+    signals = [message_signals(message, exclude_maintenance=version == "v2") for message in messages]
+    fixes, features = sum(s[0] for s in signals), sum(s[1] for s in signals)
+    note_fixes, note_features = note_signals(body)
+    if version == "v1":
+        positive = patch or fixes > 0
+        reason = "patch_or_correction_commit" if positive else "no_positive_signal"
+    elif note_fixes or note_features:
+        positive = note_fixes > note_features
+        reason = "notes_corrections_predominate" if positive else "notes_not_predominantly_corrective"
+    elif fixes or features:
+        positive = fixes > features
+        reason = "commits_corrections_predominate" if positive else "commits_not_predominantly_corrective"
+    else:
+        positive = patch
+        reason = "patch_fallback" if positive else "no_positive_signal"
+    return Prediction(version, "yes" if positive else "no", reason, patch, fixes, features,
+                      note_fixes, note_features, interval_status == "complete")

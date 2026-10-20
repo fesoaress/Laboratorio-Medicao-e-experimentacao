@@ -1,0 +1,44 @@
+{
+  "version": "v5",
+  "policy": "Refinamento lexical de v2: reconhece adições, introduções, suporte e melhorias como sinais funcionais concorrentes às correções; ignora manutenção explicitamente tipada e seções administrativas. Compara correções contra sinais funcionais nas notas; na ausência de sinais usa commits. Empate é negativo; patch isolado não classifica.",
+  "evaluation": "data/validation/corrective/v5/evaluation.json",
+  "evaluation_sha256": "2bea07214e34b5c0e5f519a1004ea70f8befed0345d228c6fd7fd17ce0d05a5f",
+  "implementation_sha256": "65006df6f7349620b67ed9626f18bd6e86247bd4edc5351cb6bc3139a9f20ba9",
+  "sources": [
+    {
+      "path": "data/processed/s02/collection_manifest_s02.json",
+      "sha256": "288f3968ee8602d024f0518d13b4cfe96bfe6f365e3ed03d2c872e3a3036473a"
+    },
+    {
+      "path": "data/processed/s02/repositories_final_s02.csv",
+      "sha256": "f8dfd49154868f18555100e5712f340f837d07d4bbb485c450b379a5aa299930"
+    },
+    {
+      "path": "data/processed/s02/releases_s01.csv.gz",
+      "sha256": "e02fc1b7ae2b2eac66ca6049010879135f1d7c2e8f3d28f268ec455e2e1c858a"
+    },
+    {
+      "path": "data/processed/s02/release_predecessors_s02.csv",
+      "sha256": "232e4202b3b93790512e0a3c542be0b18cce9f18a8da80d1626315110230b0fc"
+    },
+    {
+      "path": "data/processed/s02/release_intervals_s01.csv",
+      "sha256": "830b557778f371a38d09a09a4d0d4ca1ba8914a8c55b90e6d938b15cdc3daaec"
+    },
+    {
+      "path": "data/processed/s02/release_commits_s01.csv.gz",
+      "sha256": "e9841c10060748c1491654d4db884054e976efc34ed72ebb4a90b469b7d196e7"
+    }
+  ],
+  "window": {
+    "start_date": "2025-10-01",
+    "end_date": "2026-10-01"
+  },
+  "repositories": 311,
+  "releases": 27152,
+  "classification_usable": {
+    "True": 26972,
+    "False": 180
+  },
+  "predictions_sha256": "43f2e9e867711d127a7c860475aea13075f799274ccdac8c88f56e2b7a01ad06"
+}
