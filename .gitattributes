@@ -4,3 +4,6 @@ data/gold_sample/** -text
 data/validation/** -text
 reports/lab03_s02_*.md -text
 reports/lab03_s02_*.txt -text
+data/processed/s03/** -text
+reports/s03/** -text
+figures/s03/** -text

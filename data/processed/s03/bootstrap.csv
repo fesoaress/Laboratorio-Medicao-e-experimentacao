@@ -1,0 +1,6 @@
+statistic,n,estimate,lower95,upper95,iterations,valid_replicates,seed,method,status
+median_df,311,0.326027397260274,0.287671232876712,0.364383561643836,2000,2000,42,repository_percentile_95,calculated
+median_cfr_a,311,0.052863436123348,0.0432995341189366,0.0611455108359133,2000,2000,42,repository_percentile_95,calculated
+median_cfr_b,311,0.227272727272727,0.2,0.272727272727273,2000,2000,42,repository_percentile_95,calculated
+rho_df_cfr_a,311,0.0634060248320311,-0.0514977430525008,0.179665000656066,2000,2000,42,repository_percentile_95,calculated
+rho_df_cfr_b,311,0.65137360569113,0.577618146486395,0.716264706032201,2000,2000,42,repository_percentile_95,calculated

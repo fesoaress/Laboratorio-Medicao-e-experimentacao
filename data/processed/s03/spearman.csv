@@ -1,0 +1,3 @@
+outcome,n,rho,p,p_permutation,permutations,seed,status,p_permutation_holm
+cfr_a,311,0.0634060248320311,0.264937469934445,0.2639,9999,42,calculated,0.2639
+cfr_b,311,0.65137360569113,6.20397778211565e-39,0.0001,9999,42,calculated,0.0002

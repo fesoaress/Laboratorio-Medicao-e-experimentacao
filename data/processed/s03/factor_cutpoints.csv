@@ -1,0 +1,4 @@
+factor,q25,cutpoints,tie_policy
+stargazers_count,5188.5,5188.5|5406.0|5951.5,right_closed; never split equal values
+contributors_count,34,34.0|82.0|168.5,right_closed; never split equal values
+repo_age_days,576.5,576.5|2153.0|3768.0,right_closed; never split equal values

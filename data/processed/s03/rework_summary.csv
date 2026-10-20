@@ -1,0 +1,2 @@
+metric,unit,n,missing,median,q1,q3,iqr,minimum,maximum
+rework_rate,fraction,274,37,0.421052631578947,0.237581699346405,0.6,0.362418300653595,0,1

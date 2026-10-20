@@ -1,0 +1,16 @@
+factor,metric,family,test,statistic,p,effect,effect_name,n,groups,status,p_holm
+stargazers_count,df,primary_12,Kruskal–Wallis,4.34589815738039,0.226454617210915,0.0140190263141303,epsilon_squared_H_over_n_minus_1,311,4,calculated,0.905818468843661
+stargazers_count,lt_release,primary_12,Kruskal–Wallis,4.19380456961551,0.241282897657403,0.0161300175754443,epsilon_squared_H_over_n_minus_1,261,4,calculated,0.905818468843661
+stargazers_count,cfr_a,primary_12,Kruskal–Wallis,5.40253996442743,0.144585412812216,0.0174275482723465,epsilon_squared_H_over_n_minus_1,311,4,calculated,0.722927064061081
+stargazers_count,recovery,primary_12,Kruskal–Wallis,1.14054707695052,0.76729595872323,0.00400191956824743,epsilon_squared_H_over_n_minus_1,286,4,calculated,1
+stargazers_count,cfr_b,supplementary_3,Kruskal–Wallis,2.51643459936412,0.47232830368763,0.00811753096569072,epsilon_squared_H_over_n_minus_1,311,4,calculated,0.47232830368763
+contributors_count,df,primary_12,Kruskal–Wallis,8.65333545692792,0.0342733569733426,0.0279139853449288,epsilon_squared_H_over_n_minus_1,311,4,calculated,0.205640141840056
+contributors_count,lt_release,primary_12,Kruskal–Wallis,13.0527288345595,0.00452395280946082,0.0502028032098442,epsilon_squared_H_over_n_minus_1,261,4,calculated,0.0452395280946082
+contributors_count,cfr_a,primary_12,Kruskal–Wallis,0.257729329361833,0.967771979394715,0.000831384933425269,epsilon_squared_H_over_n_minus_1,311,4,calculated,1
+contributors_count,recovery,primary_12,Kruskal–Wallis,11.9788170679401,0.00745607765976527,0.0420309370804915,epsilon_squared_H_over_n_minus_1,286,4,calculated,0.0596486212781222
+contributors_count,cfr_b,supplementary_3,Kruskal–Wallis,5.1494668190806,0.161173967211718,0.0166111832873568,epsilon_squared_H_over_n_minus_1,311,4,calculated,0.322347934423437
+repo_age_days,df,primary_12,Kruskal–Wallis,39.4940122714368,1.36394296064512e-08,0.12740003958528,epsilon_squared_H_over_n_minus_1,311,4,calculated,1.50033725670963e-07
+repo_age_days,lt_release,primary_12,Kruskal–Wallis,43.5632391847992,1.86857118438408e-09,0.167550919941535,epsilon_squared_H_over_n_minus_1,261,4,calculated,2.2422854212609e-08
+repo_age_days,cfr_a,primary_12,Kruskal–Wallis,10.5141764492511,0.0146650378486286,0.0339166982233907,epsilon_squared_H_over_n_minus_1,311,4,calculated,0.1026552649404
+repo_age_days,recovery,primary_12,Kruskal–Wallis,12.7994705720557,0.00509095410594138,0.0449104230598446,epsilon_squared_H_over_n_minus_1,286,4,calculated,0.0458185869534724
+repo_age_days,cfr_b,supplementary_3,Kruskal–Wallis,47.88628571592,2.25149874911706e-10,0.154471889406193,epsilon_squared_H_over_n_minus_1,311,4,calculated,6.75449624735118e-10
