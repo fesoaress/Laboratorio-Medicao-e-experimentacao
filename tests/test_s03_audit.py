@@ -16,6 +16,13 @@ def test_independent_audit_reconciles_homologated_s02(real_audit):
     assert real_audit["fleiss_kappa"]["releases_represent_real_delivery"] == pytest.approx(.15401301518438)
 
 
+def test_audit_sources_use_versioned_compressed_inputs(real_audit):
+    sources = {s["path"] for s in real_audit["protected_sources"]}
+    for name in ("release_commits_s01.csv", "releases_s01.csv", "workflow_runs_s02.csv"):
+        assert f"data/processed/s02/{name}" not in sources
+        assert f"data/processed/s02/{name}.gz" in sources
+
+
 def test_audit_refuses_changed_human_hash(monkeypatch):
     monkeypatch.setattr(s03_audit, "sha256", lambda p: "changed")
     with pytest.raises(ValueError, match="homologada"):

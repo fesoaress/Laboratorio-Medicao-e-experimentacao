@@ -108,7 +108,9 @@ def run(root=Path(".")):
     if sha256(folder / "corrective_v5/release_predictions.csv") != population["predictions_sha256"]:
         raise ValueError("População corretiva diverge do manifesto homologado.")
     statuses = independent_cfr(predictions, read_csv(folder / "cfr_delivery_releases_s02.csv"), timestamp("2026-10-01T00:00:00Z").timestamp())
-    protected = sorted([*gold.glob("*.csv"), *folder.rglob("*")])
+    # Expansões locais ignoradas não são entradas: as fontes canônicas são gzip.
+    local_expansions = {folder / name for name in ("release_commits_s01.csv", "releases_s01.csv", "workflow_runs_s02.csv")}
+    protected = sorted(p for p in [*gold.glob("*.csv"), *folder.rglob("*")] if p not in local_expansions)
     sources = [{"path": p.relative_to(root).as_posix(), "sha256": sha256(p)} for p in protected if p.is_file()]
     decision_counts = Counter("unanimous" if len({r[f"{v}_label"] for v in RATERS}) == 1 else
                               "manual" if r["needs_manual_review"] else "majority" for r in votes)
