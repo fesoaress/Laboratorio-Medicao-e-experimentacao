@@ -363,3 +363,12 @@ predecessora não exclui o original. Sem positiva conhecida, classificação
 posterior indisponível torna o original não calculável e fora do denominador.
 Somente eventos estáveis dentro da janela entram no cálculo. As regras
 completas e os casos de borda estão em `cfr_delivery_policy.md`.
+
+## S03 — análises e variantes
+
+O [contrato S03](s03_analysis.md#dicionário-das-saídas) define as tabelas
+derivadas, unidades, grãos, ausentes, famílias de testes, proveniência de
+comparações e censuras. A base S02 acima permanece homologada e inalterada.
+As variantes C2/C3 usam seus próprios eventos e intervalos, preservados
+em `data/processed/s03/`; seus resultados não sobrescrevem os da S02.
+Retrabalho conta corretivas e é distinto do numerador de CFR(b).

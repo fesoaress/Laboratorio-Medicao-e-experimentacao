@@ -5,7 +5,7 @@ A branch `Laboratorio-3` organiza o laboratório em `src/`, `tests/`, `config/`,
 
 ## Instalação e testes
 
-Python 3.11+; execução local em Python 3.13.15:
+Python 3.12+; execução local em Python 3.13.15:
 
 ```powershell
 python -m venv .venv
@@ -93,6 +93,21 @@ Lead Time negativo e intervalos divergentes preservam evidências e métricas au
 
 Veja o [dicionário de dados](docs/data_dictionary.md) e o
 [relatório histórico S01](reports/s01_islayder.md).
+
+## Sprint 03 — análise reexecutável
+
+```powershell
+$env:MPLCONFIGDIR = Join-Path $env:TEMP 'lab03-mpl'
+.\.venv\Scripts\python.exe -m src.s03
+.\.venv\Scripts\python.exe -m pytest --cov=src --cov-report=term-missing --cov-fail-under=96
+```
+
+Consulte [execução, fontes e contratos](docs/s03_analysis.md),
+[metodologia S03](article/metodologia_s03.md) e
+[processo/participação](reports/s03/process.md). As saídas estatísticas
+ficam em `data/processed/s03/`, gráficos em `figures/s03/` e manifests em
+`reports/s03/`. A análise offline usa o snapshot complementar da RQ07;
+não exige token nem nova seleção. Os dados homologados da S02 são preservados.
 
 Referências: [busca REST](https://docs.github.com/en/rest/search/search#search-repositories),
 [paginação](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api),
