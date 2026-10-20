@@ -1,5 +1,7 @@
 """RQ05–06: correlações, grupos independentes, Holm e efeitos (#64, #65)."""
 
+from numbers import Integral
+
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -11,7 +13,11 @@ FACTORS = ("stargazers_count", "contributors_count", "repo_age_days")
 
 
 def spearman(x, y, permutations=9999, seed=42):
+    if isinstance(permutations, (bool, np.bool_)) or not isinstance(permutations, Integral) or permutations < 1:
+        raise ValueError("O número de permutações deve ser um inteiro positivo.")
     x, y = np.asarray(x, float), np.asarray(y, float)
+    if x.ndim != 1 or y.ndim != 1 or x.shape != y.shape:
+        raise ValueError("Spearman exige vetores unidimensionais de mesmo tamanho.")
     valid = np.isfinite(x) & np.isfinite(y)
     x, y = x[valid], y[valid]
     result = dict(n=len(x), rho=None, p=None, p_permutation=None, permutations=permutations, seed=seed, status="insufficient_or_constant")
@@ -29,6 +35,8 @@ def spearman(x, y, permutations=9999, seed=42):
 
 def holm(rows, field="p", output="p_holm"):
     indices = [i for i, r in enumerate(rows) if r.get(field) is not None and np.isfinite(r[field])]
+    if any(not 0 <= rows[i][field] <= 1 for i in indices):
+        raise ValueError("Holm exige p-valores finitos entre 0 e 1.")
     for row in rows:
         row[output] = None
     if indices:
@@ -57,6 +65,9 @@ def compare_groups(groups):
     if len(groups) < 2:
         return output
     if len(groups) == 2:
+        if np.ptp(np.concatenate(groups)) == 0:
+            output.update(test="Mann–Whitney", status="constant")
+            return output
         statistic, p = stats.mannwhitneyu(*groups, alternative="two-sided", method="asymptotic")
         output.update(test="Mann–Whitney", statistic=float(statistic), p=float(p),
                       effect=2 * statistic / (len(groups[0]) * len(groups[1])) - 1, effect_name="Cliff_delta", status="calculated")

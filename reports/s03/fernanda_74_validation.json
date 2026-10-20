@@ -1,0 +1,81 @@
+{
+  "issue": 74,
+  "date": "2026-10-20",
+  "branch": "Laboratorio-3",
+  "base_head": "0757aa08a66ba6b758ce305d7a9f1d546557439e",
+  "status": "passed_local_linux_not_remote_ci",
+  "execution": {
+    "platform": "Linux container; project mounted read-only",
+    "python": "3.12.15",
+    "image": "python:3.12-slim",
+    "image_digest": "sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+    "requirements": "requirements-dev.txt",
+    "versions": {
+      "pytest": "9.1.1",
+      "pytest-cov": "7.1.0",
+      "numpy": "2.5.3",
+      "scipy": "1.18.1",
+      "pandas": "3.0.6",
+      "statsmodels": "0.15.0",
+      "scikit-learn": "1.9.1",
+      "matplotlib": "3.11.2"
+    },
+    "command": "python -m pytest -q --basetemp=/tmp/pytest-lab03 -o cache_dir=/tmp/pytest-cache --cov=src --cov-report=term-missing --cov-report=json:/results/coverage.json --cov-fail-under=96 --junitxml=/results/junit.xml"
+  },
+  "tests": 630,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "new_regression_cases": 43,
+  "coverage_percent": 96.98165776642675,
+  "coverage_threshold": 96,
+  "statements": 4307,
+  "covered_lines": 4177,
+  "modified_module_coverage": {
+    "src/s03_inference.py": 100.0,
+    "src/s03_bootstrap.py": 100.0
+  },
+  "published_artifacts": {
+    "manifest_sha256": "62269bbf537404bac807c06285e793c57b22b6e63fe398ca15c466af8e621fbe",
+    "verified_counts": {
+      "sources": 70,
+      "outputs": 18,
+      "figures": 27
+    },
+    "all_hashes_unchanged": true,
+    "inference_recomputed_in_memory": true,
+    "empirical_comparison_tolerance": {
+      "rtol": 1e-12,
+      "atol": 1e-14
+    },
+    "compared_tables": [
+      "spearman",
+      "factor_tests",
+      "factor_groups",
+      "factor_cutpoints",
+      "bootstrap"
+    ]
+  },
+  "implementation": [
+    {
+      "path": "src/s03_inference.py",
+      "sha256_normalized_lf": "f52f878d8219838b145221e196baab7001c33ffd5548dbc4f55c10716c399e44"
+    },
+    {
+      "path": "src/s03_bootstrap.py",
+      "sha256_normalized_lf": "9e94f2d95cf053eda70f826e50d7c194dcdab8d24899e560c41b6e1c28416371"
+    },
+    {
+      "path": "tests/test_s03_inference_edge_cases.py",
+      "sha256_normalized_lf": "3c60e86147048321cc2e517b02a2a2e33b977d7b6c510611b8a5945414778853"
+    }
+  ],
+  "pending": [
+    "member_code_review",
+    "commit_referencing_74",
+    "remote_ci_for_new_commit"
+  ],
+  "remote_ci_confirmed": false,
+  "commit_created": false,
+  "push_performed": false
+}

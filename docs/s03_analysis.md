@@ -26,6 +26,35 @@ de imagem foram reproduzidos byte a byte no mesmo ambiente. Versões de
 bibliotecas/fontes e sistema operacional podem afetar novas renderizações.
 Fixtures sintéticas dos testes não são os dados empíricos.
 
+### Contratos e regressões de inferência (#74)
+
+`s03_inference.spearman` exige dois vetores unidimensionais do mesmo tamanho
+e um número inteiro positivo de permutações; booleanos não são contagens.
+`s03_bootstrap.bootstrap` exige vetores com a mesma unidade repositório e
+um inteiro de pelo menos 1.000 reamostragens. Matrizes não são achatadas
+implicitamente. Ausentes/infinidades continuam excluídos por par nas
+correlações, sem imputação. Holm rejeita probabilidades finitas fora de
+[0,1] antes de modificar as linhas; resultados não calculáveis continuam
+fora do ajuste e as famílias permanecem separadas. Dois grupos inteiramente
+constantes retornam `status=constant`, com estatística, p e efeito ausentes,
+assim como os demais testes não calculáveis.
+
+As regressões em `tests/test_s03_inference_edge_cases.py` verificam
+permutações com empates e duas caudas por enumeração controlada, cortes
+globais e limites fechados à direita, Holm por família e hipóteses
+indefinidas, Cliff por contagem de dominâncias, H com correção de empates,
+bootstrap pareado, contagem de réplicas constantes e interpolação percentil.
+Também recalculam em memória as cinco tabelas publicadas de inferência e
+bootstrap, sem reescrevê-las (tolerância relativa 1e-12 e absoluta 1e-14).
+
+```powershell
+.\.venv-s01\Scripts\python.exe -m pytest tests/test_s03_inference_edge_cases.py -q
+```
+
+A evidência da revisão e as condições da suíte completa ficam em
+`reports/s03/revisao_fernanda_74.md`; o CI remoto só pode ser confirmado
+depois da publicação do respectivo commit.
+
 ## Coleta complementar autorizada
 
 A execução real utilizou os componentes próprios S01/S02, `urllib`, cache

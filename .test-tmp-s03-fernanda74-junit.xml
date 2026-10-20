@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="7" failures="0" skipped="0" tests="7" time="4.807" timestamp="2026-10-20T20:02:43.868958-03:00" hostname="Fernanda-PC"><testcase classname="" name="tests.test_cfr_delivery" time="0.000"><error message="collection failure">tests\test_cfr_delivery.py:10: in &lt;module&gt;
+    from tests.test_corrective_population import population_files
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+.venv-s01\Lib\site-packages\_pytest\assertion\rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests\test_corrective_population.py:9: in &lt;module&gt;
+    from tests.test_s02_dataset import save
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+.venv-s01\Lib\site-packages\_pytest\assertion\rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests\test_s02_dataset.py:7: in &lt;module&gt;
+    from src import s02_dataset as dataset
+src\s02_dataset.py:21: in &lt;module&gt;
+    csv.field_size_limit(sys.maxsize)
+E   OverflowError: Python int too large to convert to C long</error></testcase><testcase classname="" name="tests.test_corrective_population" time="0.000"><error message="collection failure">tests\test_corrective_population.py:9: in &lt;module&gt;
+    from tests.test_s02_dataset import save
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+.venv-s01\Lib\site-packages\_pytest\assertion\rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests\test_s02_dataset.py:7: in &lt;module&gt;
+    from src import s02_dataset as dataset
+src\s02_dataset.py:21: in &lt;module&gt;
+    csv.field_size_limit(sys.maxsize)
+E   OverflowError: Python int too large to convert to C long</error></testcase><testcase classname="" name="tests.test_s02_dataset" time="0.000"><error message="collection failure">tests\test_s02_dataset.py:7: in &lt;module&gt;
+    from src import s02_dataset as dataset
+src\s02_dataset.py:21: in &lt;module&gt;
+    csv.field_size_limit(sys.maxsize)
+E   OverflowError: Python int too large to convert to C long</error></testcase><testcase classname="" name="tests.test_s02_quality" time="0.000"><error message="collection failure">tests\test_s02_quality.py:5: in &lt;module&gt;
+    from src import s02_dataset as dataset
+src\s02_dataset.py:21: in &lt;module&gt;
+    csv.field_size_limit(sys.maxsize)
+E   OverflowError: Python int too large to convert to C long</error></testcase><testcase classname="" name="tests.test_s03_audit" time="0.000"><error message="collection failure">tests\test_s03_audit.py:2: in &lt;module&gt;
+    from src import s03_audit
+src\s03_audit.py:12: in &lt;module&gt;
+    from .s02_quality import audit as audit_dataset
+src\s02_quality.py:10: in &lt;module&gt;
+    from .s02_dataset import (DEPLOYMENT_FIELDS, FUTURE_FIELDS, LEAD_TIME_FIELDS,
+src\s02_dataset.py:21: in &lt;module&gt;
+    csv.field_size_limit(sys.maxsize)
+E   OverflowError: Python int too large to convert to C long</error></testcase><testcase classname="" name="tests.test_s03_empirical" time="0.000"><error message="collection failure">tests\test_s03_empirical.py:11: in &lt;module&gt;
+    from src.s03_audit import independent_cfr
+src\s03_audit.py:12: in &lt;module&gt;
+    from .s02_quality import audit as audit_dataset
+src\s02_quality.py:10: in &lt;module&gt;
+    from .s02_dataset import (DEPLOYMENT_FIELDS, FUTURE_FIELDS, LEAD_TIME_FIELDS,
+src\s02_dataset.py:21: in &lt;module&gt;
+    csv.field_size_limit(sys.maxsize)
+E   OverflowError: Python int too large to convert to C long</error></testcase><testcase classname="" name="tests.test_s03_system" time="0.000"><error message="collection failure">tests\test_s03_system.py:9: in &lt;module&gt;
+    from src import s03, s03_sensitivity
+src\s03.py:12: in &lt;module&gt;
+    from . import s03_audit, s03_bootstrap, s03_descriptive, s03_figures, s03_inference, s03_sensitivity
+src\s03_audit.py:12: in &lt;module&gt;
+    from .s02_quality import audit as audit_dataset
+src\s02_quality.py:10: in &lt;module&gt;
+    from .s02_dataset import (DEPLOYMENT_FIELDS, FUTURE_FIELDS, LEAD_TIME_FIELDS,
+src\s02_dataset.py:21: in &lt;module&gt;
+    csv.field_size_limit(sys.maxsize)
+E   OverflowError: Python int too large to convert to C long</error></testcase></testsuite></testsuites>
