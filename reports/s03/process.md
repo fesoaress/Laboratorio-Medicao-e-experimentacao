@@ -56,3 +56,22 @@ de código da S03. O grupo deve dividir e registrar contribuições reais de
 código, respectivas revisões e commits. Não serão produzidos commits com
 autoria alheia nem coautorias presumidas. A evidência de participação humana
 é pendência de processo separada da validação técnica das análises.
+
+## Publicação e CI S03 verificados
+
+O código e os resultados em `7aa3620fb819fd5e2abb3d98718678685abdc922`
+foram publicados com push normal na `Laboratorio-3`.
+[CI 39486894538](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/actions/runs/39486894538):
+584 testes aprovados, cobertura 96,97%, mínimo 96% mantido, Python 3.12.15,
+conclusão `success`. O manifesto de publicação está em `ci_s03.json`.
+
+O primeiro CI detectou referência a três expansões CSV locais ignoradas.
+A correção restringiu a proveniência às fontes gzip versionadas e adicionou
+um teste de regressão. Nenhuma métrica ou figura mudou. Uma exportação limpa
+do Git executou o pipeline completo sem `.env`, cache bruto ou esses CSVs,
+reproduzindo as 18 tabelas e 27 imagens byte a byte; nove testes de auditoria
+e integridade também passaram nessa exportação.
+
+As Issues técnicas #61–#72 foram fechadas com essas evidências. A #73
+permanece aberta pelas ações humanas descritas acima. Commits documentais
+posteriores registram a evidência sem alterar o código ou os dados analisados.

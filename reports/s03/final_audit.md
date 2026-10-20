@@ -2,7 +2,7 @@
 
 ## 1. Branch e histórico
 
-Branch `Laboratorio-3`; HEAD inicial `0fb56f6133ddfa0b47bbe93415c90ac767ead396`; HEAD imutável do código/artefatos de cálculo `da3b4175b06ea45162c9386c23ed42f2e1d4ebd6`. Commits documentais posteriores registram artigo e evidências. O SHA publicado e o CI remoto estão em `ci_s03.json`, e o HEAD documental mais recente no histórico Git.
+Branch `Laboratorio-3`; HEAD inicial `0fb56f6133ddfa0b47bbe93415c90ac767ead396`; HEAD imutável do código/artefatos de cálculo `7aa3620fb819fd5e2abb3d98718678685abdc922`. Commits documentais posteriores registram artigo e evidências. O SHA publicado e o CI remoto estão em `ci_s03.json`, e o HEAD documental mais recente no histórico Git.
 
 `main` permanece `07df90fc3a418c4a149b30ba6dd1a151bf396b8b`. Não houve merge/rebase com main, force push, alteração da seleção ou sobrescrita S01/S02. Os cinco commits S02 foram publicados com push normal após auditoria; seu CI passou (523 testes; 97,97%).
 
@@ -20,7 +20,7 @@ Há 350 unanimidades, 69 maiorias e uma resolução humana; zero pendências de 
 
 Consenso SHA-256: `db6f8bf9fe93c059a840491fa8b8de93195d1e6854391a6e0e3eaf23bb80f0e3`.
 
-Kappa de Fleiss: tipo=0,862896; representatividade=0,154013; corretiva=0,735294. V5: TP83/FP36/FN27/TN154; precisão0,697479, recall0,754545, F1=0,724891. CFR(b) estável: 20.038 falhos, 6.406 não falhos, 677 censurados, 31 não avaliáveis; denominador26.444.
+Kappa de Fleiss: tipo=0,862896; representatividade=0,154013; corretiva=0,735294. V5: TP=83/FP=36/FN=27/TN=154; precisão 0,697479, recall 0,754545, F1=0,724891. CFR(b) estável: 20.038 falhos, 6.406 não falhos, 677 censurados, 31 não avaliáveis; denominador 26.444.
 
 ## 3. População, janela e completude — RQ01–04
 
@@ -79,7 +79,7 @@ Geral C1 exige quatro valores: Low=1, Medium=2, High=3, Elite=4; piso da mediana
 | cfr_a | 311 | 0.063406025 | 0.26493747 | 0.2639 | 9999 | 42 | calculated | 0.2639 |
 | cfr_b | 311 | 0.65137361 | 6.2039778e-39 | 0.0001 | 9999 | 42 | calculated | 0.0002 |
 
-Associação DF×CFR(a) pequena e sem evidência ao nível de5%; DF×CFR(b) positiva expressiva. P de permutação usa9.999 trocas, seed42, Holm conjunto dos dois testes. O p assintótico de scipy.stats.spearmanr também está preservado. Não há inferência causal.
+Associação DF×CFR(a) pequena e sem evidência ao nível de 5%; DF×CFR(b) positiva expressiva. P de permutação usa 9.999 trocas, seed 42, Holm conjunto dos dois testes. O p assintótico de scipy.stats.spearmanr também está preservado. Não há inferência causal.
 
 ## 6. RQ06 — fatores e efeitos
 
@@ -101,15 +101,15 @@ Associação DF×CFR(a) pequena e sem evidência ao nível de5%; DF×CFR(b) posi
 | repo_age_days | recovery | primary_12 | Kruskal–Wallis | 12.799471 | 0.0050909541 | 0.044910423 | epsilon_squared_H_over_n_minus_1 | 286 | 4 | calculated | 0.045818587 |
 | repo_age_days | cfr_b | supplementary_3 | Kruskal–Wallis | 47.886286 | 2.2514987e-10 | 0.15447189 | epsilon_squared_H_over_n_minus_1 | 311 | 4 | calculated | 6.7544962e-10 |
 
-Família principal:12 testes, Holm conjunto; suplementar CFR(b):3 testes, outro Holm explícito. Todos os testes efetivos têm quatro grupos e usam Kruskal–Wallis. ε²=H/(n−1), conforme professor. O suporte Mann–Whitney/delta de Cliff está implementado e testado, sem inventar sua aplicação empírica. Cortes, n, medianas e IQR de cada grupo estão em factor_cutpoints.csv e factor_groups.csv. Não se identificam pares específicos pelo teste global.
+Família principal: 12 testes, Holm conjunto; suplementar CFR(b): 3 testes, outro Holm explícito. Todos os testes efetivos têm quatro grupos e usam Kruskal–Wallis. ε²=H/(n−1), conforme professor. O suporte Mann–Whitney/delta de Cliff está implementado e testado, sem inventar sua aplicação empírica. Cortes, n, medianas e IQR de cada grupo estão em factor_cutpoints.csv e factor_groups.csv. Não se identificam pares específicos pelo teste global.
 
 ## 7. RQ07 — definições distintas e coleta complementar
 
-C1=estáveis/LT release/CFR(a); C2=estáveis+pré/LT commit/CFR(b); C3=tags/LT commit/CFR(a). Recuperação de CI é comum. Eventos:27.152/29.007/37.051. C3 usa data autoral do commit da tag. Coleta própria, APIs oficiais/cache/Git, sem PyGithub; somente contextos faltantes foram consultados. SHAs coincidentes permitem reutilizar um intervalo, nunca uma mediana de outra definição.
+C1=estáveis/LT release/CFR(a); C2=estáveis+pré/LT commit/CFR(b); C3=tags/LT commit/CFR(a). Recuperação de CI é comum. Eventos: 27.152/29.007/37.051. C3 usa data autoral do commit da tag. Coleta própria, APIs oficiais/cache/Git, sem PyGithub; somente contextos faltantes foram consultados. SHAs coincidentes permitem reutilizar um intervalo, nunca uma mediana de outra definição.
 
-9.980 pares no plano complementar inicial, mais31 pares de fronteira. 622 verificações de primeira entrega (duas variantes×311):12 predecessoras de pré-release e240 de tags verificadas; cinco primeiras comparações de tags permaneceram indisponíveis por404. A ausência de predecessora observada não afirma ser a primeira entrega histórica. Planos/evidências anteriores estão preservados em data/raw/s03; snapshot offline versionado contém33.154 pares:20.084 exports exatos,3.059 SHAs idênticos,10.011 complementares. Estes têm7.399 completos,2.572 erros/ancestralidade inválida e40 compare404. Há um HTTP422 entre os erros.
+9.980 pares no plano complementar inicial, mais 31 pares de fronteira. 622 verificações de primeira entrega (duas variantes×311):12 predecessoras de pré-release e240 de tags verificadas; cinco primeiras comparações de tags permaneceram indisponíveis por404. A ausência de predecessora observada não afirma ser a primeira entrega histórica. Planos/evidências anteriores estão preservados em data/raw/s03; snapshot offline versionado contém 33.154 pares: 20.084 exports exatos, 3.059 SHAs idênticos, 10.011 complementares. Estes têm 7.399 completos, 2.572 erros/ancestralidade inválida e 40 compare 404. Há um HTTP 422 entre os erros.
 
-LT C2:255 válidos/56 ausentes; C3:267/44. Entre os ausentes, C2 tem30 repos com duração negativa e35 com erro de comparação (nove em ambas as causas); C3 tem30/23, também com nove em ambas. C2/C3 não substituem resultados S02. C2 CFR:21.531 falhos,6.657 não falhos,784 censurados,35 não avaliáveis;193 classificações de contexto indisponível entre29.007 eventos.
+LT C2: 255 válidos/56 ausentes; C3: 267/44. Entre os ausentes, C2 tem 30 repos com duração negativa e 35 com erro de comparação (nove em ambas as causas); C3 tem 30/23, também com nove em ambas. C2/C3 não substituem resultados S02. C2 CFR: 21.531 falhos, 6.657 não falhos, 784 censurados, 35 não avaliáveis; 193 classificações de contexto indisponível entre 29.007 eventos.
 
 | left | right | metric | n | changed | percent_changed | kappa_linear | status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -129,7 +129,7 @@ LT C2:255 válidos/56 ausentes; C3:267/44. Entre os ausentes, C2 tem30 repos com
 | C2 | C3 | recovery | 286 | 0 | 0 | 1 | calculated |
 | C2 | C3 | general | 210 | 68 | 32.380952 | 0.55345912 | calculated |
 
-Geral C2:233 válidos; C3:243. Os pares gerais usam233/213/210 casos. sensitivity_exclusions.csv enumera excluídos por par. As métricas iguais por construção (CFR(a) C1/C3 e recuperação) não comprovam validade das proxies.
+Geral C2: 233 válidos; C3: 243. Os pares gerais usam 233/213/210 casos. sensitivity_exclusions.csv enumera excluídos por par. As métricas iguais por construção (CFR(a) C1/C3 e recuperação) não comprovam validade das proxies.
 
 ### Interseção comum das três categorias gerais
 
@@ -149,7 +149,7 @@ Geral C2:233 válidos; C3:243. Os pares gerais usam233/213/210 casos. sensitivit
 | rho_df_cfr_a | 311 | 0.063406025 | -0.051497743 | 0.179665 | 2000 | 2000 | 42 | repository_percentile_95 | calculated |
 | rho_df_cfr_b | 311 | 0.65137361 | 0.57761815 | 0.71626471 | 2000 | 2000 | 42 | repository_percentile_95 | calculated |
 
-2.000 réplicas, seed42; IC percentil95%; pares preservados nas correlações. Todas as cinco estimativas tiveram2.000 réplicas válidas. Precisão condicional às proxies/amostra, sem corrigir vieses de seleção ou da heurística.
+2.000 réplicas, seed 42; IC percentil 95%; pares preservados nas correlações. Todas as cinco estimativas tiveram 2.000 réplicas válidas. Precisão condicional às proxies/amostra, sem corrigir vieses de seleção ou da heurística.
 
 ## 9. RQ08 — retrabalho
 
@@ -157,15 +157,15 @@ Geral C2:233 válidos; C3:243. Os pares gerais usam233/213/210 casos. sensitivit
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | rework_rate | fraction | 274 | 37 | 0.42105263 | 0.2375817 | 0.6 | 0.3624183 | 0 | 1 |
 
-274 taxas completas e37 ausentes; nestes37 casos reportam-se limites identificáveis, não ICs. As180 classificações desconhecidas não viram negativas. A razão conta corretivas, diferente dos originais de CFR(b).
+274 taxas completas e 37 ausentes; nestes 37 casos reportam-se limites identificáveis, não ICs. As 180 classificações desconhecidas não viram negativas. A razão conta corretivas, diferente dos originais de CFR(b).
 
 ## 10. Engenharia, execução e artefatos
 
-Comando offline: `python -m src.s03`. Os scripts foram executados em dados reais;18 tabelas e27 arquivos de figura (nove figuras em PNG/SVG/PDF) foram reproduzidos byte a byte em duas pastas. Nenhuma credencial é necessária para reanalisar. `reproducibility.json` e `manifest.json` preservam a evidência, seeds, versões e hashes. A inspeção visual incluiu distribuições, dispersões, boxplots, ICs e transições; CFR(a/b) têm eixos de fração lineares comuns.
+Comando offline: `python -m src.s03`. Os scripts foram executados em dados reais; 18 tabelas e 27 arquivos de figura (nove figuras em PNG/SVG/PDF) foram reproduzidos byte a byte em duas pastas. A exportação limpa do Git também executou o pipeline completo, sem .env, cache bruto ou CSVs expandidos: as mesmas 18 tabelas e 27 imagens ficaram idênticas. Nenhuma credencial é necessária para reanalisar. `reproducibility.json` e `manifest.json` preservam a evidência, seeds, versões e hashes. A inspeção visual incluiu distribuições, dispersões, boxplots, ICs e transições; CFR(a/b) têm eixos de fração lineares comuns.
 
-Artigo: article/metodologia_s03.md, resultados_s03.md, discussao_s03.md e ameacas_validade_s03.md. Os fragmentos S02 e introducao.md foram preservados. O material está organizado para integração futura ao SBC≤10p; não se declara paginação final de um artigo ainda não consolidado. README e docs/s03_analysis.md documentam execução, contratos e ausentes.
+Artigo: article/metodologia_s03.md, resultados_s03.md, discussao_s03.md e ameacas_validade_s03.md. Os fragmentos S02 e introducao.md foram preservados. O material está organizado para integração futura ao SBC, até dez páginas; não se declara paginação final de um artigo ainda não consolidado. README e docs/s03_analysis.md documentam execução, contratos e ausentes.
 
-Suíte local: 583 testes, zero falhas/erros/skips; cobertura 96.96474434% (4153/4283 linhas), mínimo96% preservado. Ver test_summary.json; CI remoto em ci_s03.json. A organização posterior dos testes em arquivos de auditoria/sistema manteve as mesmas funções e passou no rerun focalizado.
+Suíte local: 584 testes, zero falhas/erros/skips; cobertura 96.96545285% (4154/4284 linhas), mínimo 96% preservado. Ver test_summary.json; CI remoto em ci_s03.json. A regressão de proveniência confirma o uso dos gzip versionados; nove testes de integridade/auditoria também passaram na exportação limpa.
 
 ## 11. Issues, commits, Projects e autoria
 
@@ -174,6 +174,8 @@ Issues reais #61–#73, com objetivos, critérios, dependências e artefatos. O 
 Commits de implementação auditados:
 
 ```text
+7aa3620 Usa somente fontes gzip versionadas no manifesto (refs #61 #72)
+ff661bc Documenta resultados, discussao e limites da S03 (refs #70 #71 #72 #73)
 da3b417 Integra analises offline e figuras reproduziveis (refs #69 #72)
 375b38a Coleta intervalos e predecessoras reais da RQ07 (refs #66)
 5dcd484 Implementa estatisticas DORA, inferencia e bootstrap (refs #62 #63 #64 #65 #67 #68)
@@ -183,5 +185,13 @@ bd4fcf1 Audita integridade S02 e registra processo da S03 (refs #61 #73)
 Não foi criado outro Projects. A consulta retornou FORBIDDEN para a credencial; o board, WIP e seus estados não foram inventados. A atualização manual exata está em process.md/#73. A execução assistida centralizada não comprova contribuição individual de três integrantes; faltam divisão/revisões/commits de código efetivamente realizados por cada pessoa. Nenhuma autoria foi fabricada.
 
 ## 12. Conclusão sobre os requisitos
+
+Publicação técnica confirmada em `7aa3620fb819fd5e2abb3d98718678685abdc922`:
+[CI remoto 39486894538](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/actions/runs/39486894538)
+concluído com sucesso, 584 testes e cobertura 96,97% em Python 3.12.15.
+A falha inicial de proveniência de cópias locais foi corrigida na origem,
+com regressão automatizada; não houve alteração numérica ou dos dados
+homologados. #61–#72 fechadas tecnicamente; #73 aberta. `ci_s03.json`
+preserva o SHA e a evidência imutável do código validado.
 
 RQ01–RQ07, DORA, testes, artefatos reais, inovação e RQ08 estão implementados e executados, com faltantes e limitações rastreáveis. Permanecem pendências de processo: Projects e comprovação individual de código. A integração editorial final deve preservar hipóteses e contribuições e conferir paginação SBC. As limitações científicas remanescentes não foram escondidas: proxies, baixa concordância sobre entrega, validação interna v5, censuras, ausentes e comparação por conjuntos válidos. O CI/push são confirmados por SHA na evidência de publicação; a conclusão administrativa da sprint depende das ações humanas da #73.

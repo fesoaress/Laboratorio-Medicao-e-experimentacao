@@ -54,5 +54,14 @@
   "bootstrap_iterations": 2000,
   "permutations": 9999,
   "network_required": false,
-  "figure_review": "CFR panels kept on common linear fraction axis; latest figure code rerendered twice after full statistical reruns."
+  "figure_review": "CFR panels kept on common linear fraction axis; latest figure code rerendered twice after full statistical reruns.",
+  "clean_versioned_export": {
+    "sha": "7aa3620fb819fd5e2abb3d98718678685abdc922",
+    "full_pipeline_executed": true,
+    "env_file_absent": true,
+    "raw_cache_absent": true,
+    "expanded_csv_copies_absent": true,
+    "all_18_tables_identical": true,
+    "all_27_figure_files_identical": true
+  }
 }

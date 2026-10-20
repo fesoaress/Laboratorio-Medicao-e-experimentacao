@@ -1,0 +1,19 @@
+{
+  "branch": "Laboratorio-3",
+  "sha": "7aa3620fb819fd5e2abb3d98718678685abdc922",
+  "run_id": 39486894538,
+  "url": "https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/actions/runs/39486894538",
+  "status": "completed",
+  "conclusion": "success",
+  "job_id": 118849522043,
+  "tests": 584,
+  "coverage_percent": 96.97,
+  "coverage_threshold": 96,
+  "python": "3.12.15",
+  "verified_at": "2026-10-20 19:52:41 UTC",
+  "previous_failure": {
+    "run_id": 39486040414,
+    "sha": "ff661bcf132c8a1225ed5898d2e36513f801f87d",
+    "cause": "Manifest included ignored expanded CSV copies. Fixed provenance to canonical versioned gzip inputs and added regression test; no metric or figure changed."
+  }
+}
