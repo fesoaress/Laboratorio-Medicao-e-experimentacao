@@ -3,10 +3,38 @@
 Implementação das [#53](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/53),
 [#54](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/54) e
 [#57](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/issues/57).
+Estado em 20/10/2026, após atualizar `Laboratorio-3` para `a8428d2`: **os três
+avaliadores estão completos e válidos**, cada um com 60/60 repositórios,
+300/300 releases e zero erros. Os contextos e IDs coincidem com a amostra
+canônica. Nenhum CSV humano foi alterado pela análise. Os SHA-256 anteriores
+à análise estão registrados em `data/validation/analysis_status.json`.
+
+Fleiss Kappa sobre os votos originais: `project_type` = **0,8628963153**
+(quase perfeita); `releases_represent_real_delivery` = **0,1540130152**
+(leve); `corrective_release` = **0,7352941176** (substancial).
+São 350 unanimidades, 69 maiorias e **um caso sem maioria**, entre 420 decisões
+distintas. As 70 divergências estão em `data/gold_sample/disagreements.csv`.
+
+O empate em `armbian/build`, dimensão `releases_represent_real_delivery`, foi
+resolvido pelo humano Islayder como `no`, com a justificativa integral em
+`data/gold_sample/manual_resolutions.csv`. Os votos originais são `no`,
+`uncertain`, `yes`. **O consenso está completo**, sem alterar nenhum deles;
+`gold_sample_consensus.csv` valida 60×5 com zero erros. A primeira execução
+está preservada em `data/validation/pre_manual/` e `data/gold_sample/pre_manual/`.
+Kappa é byte a byte idêntico antes/depois dessa resolução.
+
+A validação empírica aceitou a heurística **v5**, F1=0,7248908297. Todas as
+cinco versões/avaliações foram preservadas em `data/validation/corrective/`.
+O grupo confirmou a definição de CFR(b) após a consulta: qualquer corretiva
+posterior em até sete dias e censura incondicional dos originais a partir de
+24/09/2026. Os 311 valores estão calculados e integrados ao dataset final.
+Consulte `docs/s02_corrective_validation.md` e `docs/cfr_delivery_policy.md`.
+
+## Estado inicial preservado — importação de Islayder
+
 A rotulagem independente de Islayder (#54) foi importada e validada em
-10/10/2026: 60/60 repositórios e 300/300 releases, sem erros. A #57 aguarda os
-arquivos completos de Fernanda e Vinicius; concordância e consenso não foram
-calculados nesta importação.
+10/10/2026: 60/60 repositórios e 300/300 releases, sem erros. Naquele momento
+as outras avaliações ainda não estavam disponíveis; isso não descreve o estado atual.
 
 Fonte humana: `C:\Users\Islayder\Downloads\rotulacao_independente_60_repos.xlsx`,
 aba `300 Releases`, conferida também contra o resumo `60 Repositórios`.
@@ -61,8 +89,9 @@ sorteio, informe outro `--output-dir` e outro `--report`.
 - `reports/lab03_s02_islayder_review_selected_releases.txt`: lista completa,
   com repositórios, tags/nomes, datas e URLs para copiar.
 
-Os três CSVs começam com o mesmo contexto e **todos os campos humanos vazios**,
-mas são arquivos independentes. Não consulte os rótulos de outro avaliador nem
+Na geração inicial, os três CSVs tinham o mesmo contexto e **todos os campos
+humanos vazios**. Atualmente estão preenchidos e permanecem independentes.
+Durante uma avaliação independente, não consulte os rótulos de outro avaliador nem
 a previsão da heurística. Somente humanos preenchem `project_type`,
 `releases_represent_real_delivery`, `corrective_release` e `notes`.
 
@@ -111,9 +140,12 @@ e válido; 1 significa pendências/erros. Notes vazias não impedem conclusão.
 No estado inicial, são 0/60 repositórios, 0/300 releases e 900 campos obrigatórios
 vazios por avaliador. Isso é esperado e não equivale a respostas negativas.
 
-## Concordância e consenso posteriores
+## Concordância calculada e conclusão do consenso
 
-Depois das três rotulagens completas:
+O comando abaixo foi executado primeiro sem resolução e retornou 2. Essa
+execução foi preservada em `pre_manual/`; a segunda usou `--resolutions
+data/gold_sample/manual_resolutions.csv` e retornou 0. As saídas já existem;
+uma nova execução deve usar pastas distintas, conforme o exemplo adiante:
 
 ```powershell
 .\.venv\Scripts\python.exe -m src.s02 analyze

@@ -1,5 +1,11 @@
 # Metodologia S02 — contribuição de Fernanda (#55, #58)
 
+**Atualização de 20/10/2026:** o fragmento abaixo é o registro histórico de
+12/10/2026, preservado com sua autoria. Atualmente as três rotulagens estão
+completas, o Kappa foi calculado e o empate triplo em `armbian/build` foi
+resolvido por Islayder. O consenso está completo e v5 tem F1=0,7249. A
+[metodologia consolidada](metodologia_s02.md) registra os resultados atuais.
+
 Este fragmento descreve a contribuição local em 12/10/2026. O arquivo individual
 foi preenchido e validado. Concordância, consenso e validação empírica da
 heurística ainda estão pendentes; atualizar essas etapas após sua execução.
