@@ -176,7 +176,7 @@ da amostra-ouro; não representa o dataset completo dos 311 repositórios.
 - `previous_tag`: tag da release estável imediatamente anterior no histórico
   completo; vazio quando não há predecessor disponível.
 - `consensus`: rótulo corretivo humano consolidado (`yes`/`no`).
-- `version`: versão explícita da política (`v1`/`v2`).
+- `version`: versão explícita da política (`v1` a `v5`); v5 foi aceita.
 - `corrective_release`: **previsão automática** `yes`/`no`, distinta do campo
   humano de mesmo nome no CSV individual. Consulte o caminho do arquivo.
 - `reason`: texto, regra que determinou a decisão; descrita em `corrective.py`.
@@ -288,9 +288,15 @@ Variante (a) — CI:
 
 Variante (b) — entrega:
 
-- `cfr_delivery`: real/ausente, `releases corretivas / release_count` conforme
-  `gold_sample_consensus.csv`. Vazio enquanto o consenso não for consolidado.
-- `cfr_delivery_source`: texto/ausente, caminho do consenso usado.
+- `cfr_delivery`: real/ausente, `failed_releases/evaluable_releases`, com a
+  política `any_corrective_7d_v1` e a heurística v5 validada. Há 311 válidos e
+  zero ausentes. O numerador conta originais seguidos por qualquer corretiva
+  em até sete dias, não o número de corretivas. Releases intermediárias não
+  impedem evidência. A antiga razão direta do consenso amostral era provisória
+  e não foi usada no cálculo final.
+- `cfr_delivery_source`: texto, caminho do manifesto, política, versão e SHA-256
+  da avaliação usada. Presente nos 311 repositórios. Denominador nulo seria
+  ausência, nunca zero imputado.
 
 ### Recovery Time — RQ04 (origem: workflow_metrics_s02.csv)
 
@@ -302,7 +308,8 @@ Variante (b) — entrega:
   ausente quando não há episódios.
 
 Episódios individuais ficam em `recovery_episodes_s02.csv` (uma linha por
-`workflow_id`), com `failure_started_at`, `recovered_at` e `hours`.
+episódio, identificado também por `workflow_id`), com `failure_started_at`,
+`recovered_at` e `hours`.
 
 ### Convenções
 
@@ -310,3 +317,49 @@ Episódios individuais ficam em `recovery_episodes_s02.csv` (uma linha por
 - Frações (`cfr_*`, `censored_proportion`) em [0,1].
 - Durações em horas decimais.
 - `full_name` é a chave de merge entre todas as fontes desta seção.
+
+## S02 — auditoria e consenso em 20/10/2026
+
+`data/validation/dataset_metrics_audit.json` registra população, número de
+colunas, duplicatas, perfil `valid/missing/invalid` por campo numérico,
+motivos dos ausentes, erros de consistência e caminhos/SHA-256 das fontes.
+Audita fontes, tipos, domínios, frequências, CFR(a/b), quartis/IQR e denominadores
+de censura. Estado final: `valid`. A auditoria anterior à inclusão de CFR(b)
+está preservada em `pre_manual/dataset_metrics_audit_before_cfr.json`.
+
+`data/validation/fleiss_kappa.csv` contém as três dimensões sobre votos
+originais (60/60/300 itens). `analysis_status.json` registra a completude e os
+hashes dos três avaliadores e zero casos pendentes. `consensus_votes.csv`
+contém 420 decisões distintas, com `needs_manual_review=False`;
+`disagreements.csv` preserva 70 divergências originais. O template manual tem
+uma linha original vazia, preservada para auditoria; a decisão humana está
+em `manual_resolutions.csv`. `gold_sample_consensus.csv` está completo, com
+60 repositórios e 300 releases. Os diretórios `pre_manual/` preservam a
+primeira análise antes da decisão humana.
+
+## S02 — população corretiva e CFR(b)
+
+- `corrective_v5/release_predictions.csv`: 27.152 previsões factuais do
+  classificador validado, uma por release. `classification_usable=False` em
+  180 casos indica contexto insuficiente; a previsão binária bruta não deve
+  ser tratada como evidência negativa nesses casos. `manifest.json` registra
+  hashes, fontes e a avaliação aceita.
+- `cfr_delivery_releases_s02.csv`: `status` é `failed` (20.038), `not_failed`
+  (6.406), `right_censored` (677) ou `unassessable_context` (31). `failed`
+  fica vazio nos dois últimos estados. `evidence_release_id/evidence_tag`
+  identifica a primeira corretiva posterior utilizável até R+7d, quando existe.
+  `unavailable_posterior_classifications` conta classificações insuficientes
+  nesse intervalo; uma positiva conhecida basta para demonstrar existência.
+- `cfr_delivery_s02.csv`: agregação por repo; `failed_releases`,
+  `evaluable_releases`, `right_censored`, `unassessable_context`, razão,
+  `status` e `source`. Denominador global: 26.444 originais avaliáveis.
+- `cfr_delivery_manifest_s02.json`: definição confirmada pelo grupo,
+  cutoff `2026-09-24T00:00:00+00:00`, versão, hashes da avaliação/população,
+  totais e hashes das duas saídas.
+
+Originais nos últimos sete dias são excluídos incondicionalmente, mesmo com
+corretiva observada; ainda podem ser evidência para anteriores. Não ter
+predecessora não exclui o original. Sem positiva conhecida, classificação
+posterior indisponível torna o original não calculável e fora do denominador.
+Somente eventos estáveis dentro da janela entram no cálculo. As regras
+completas e os casos de borda estão em `cfr_delivery_policy.md`.

@@ -82,7 +82,15 @@ def read_csv(path: Path) -> list[dict[str, str]]:
 
 
 def index_by_full_name(rows: list[dict[str, str]]) -> dict[str, dict[str, str]]:
-    return {row["full_name"]: row for row in rows}
+    indexed = {}
+    for row in rows:
+        name = row["full_name"]
+        if not name.strip():
+            raise ValueError("full_name vazio na fonte de métricas.")
+        if name in indexed:
+            raise ValueError(f"Duplicata na fonte de métricas: {name}")
+        indexed[name] = row
+    return indexed
 
 
 def main() -> int:
@@ -172,9 +180,9 @@ def main() -> int:
     if len(seen) != len(repos):
         raise ValueError("Duplicatas detectadas no merge.")
 
-    # Validação de tipos (contagens conhecidas)
+    # Cobertura do left join; tipos e consistência são auditados separadamente.
     if len(missing_df) == 0 and len(missing_lt) == 0 and len(missing_wf) == 0:
-        print("\nMERGE COMPLETO: todas as fontes cobrem os 311 repos")
+        print(f"\nMERGE COMPLETO: todas as fontes cobrem os {len(repos)} repos")
 
     return 0
 

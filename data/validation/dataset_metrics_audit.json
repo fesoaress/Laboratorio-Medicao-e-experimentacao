@@ -1,0 +1,186 @@
+{
+  "status": "valid",
+  "repositories": 311,
+  "columns": 48,
+  "duplicate_keys": 0,
+  "metrics": {
+    "cfr_ci": {
+      "valid": 311,
+      "missing": 0,
+      "invalid": 0
+    },
+    "cfr_ci_failures": {
+      "valid": 311,
+      "missing": 0,
+      "invalid": 0
+    },
+    "cfr_ci_ignored": {
+      "valid": 311,
+      "missing": 0,
+      "invalid": 0
+    },
+    "cfr_ci_successes": {
+      "valid": 311,
+      "missing": 0,
+      "invalid": 0
+    },
+    "cfr_delivery": {
+      "valid": 311,
+      "missing": 0,
+      "invalid": 0
+    },
+    "deployment_frequency_per_month": {
+      "valid": 311,
+      "missing": 0,
+      "invalid": 0
+    },
+    "deployment_frequency_per_week": {
+      "valid": 311,
+      "missing": 0,
+      "invalid": 0
+    },
+    "deployment_frequency_releases": {
+      "valid": 311,
+      "missing": 0,
+      "invalid": 0
+    },
+    "deployment_frequency_window_days": {
+      "valid": 311,
+      "missing": 0,
+      "invalid": 0
+    },
+    "lead_time_commit_count": {
+      "valid": 261,
+      "missing": 50,
+      "invalid": 0
+    },
+    "lead_time_commit_iqr_hours": {
+      "valid": 261,
+      "missing": 50,
+      "invalid": 0
+    },
+    "lead_time_commit_median_hours": {
+      "valid": 261,
+      "missing": 50,
+      "invalid": 0
+    },
+    "lead_time_commit_q1_hours": {
+      "valid": 261,
+      "missing": 50,
+      "invalid": 0
+    },
+    "lead_time_commit_q3_hours": {
+      "valid": 261,
+      "missing": 50,
+      "invalid": 0
+    },
+    "lead_time_release_count": {
+      "valid": 261,
+      "missing": 50,
+      "invalid": 0
+    },
+    "lead_time_release_iqr_hours": {
+      "valid": 261,
+      "missing": 50,
+      "invalid": 0
+    },
+    "lead_time_release_median_hours": {
+      "valid": 261,
+      "missing": 50,
+      "invalid": 0
+    },
+    "lead_time_release_q1_hours": {
+      "valid": 261,
+      "missing": 50,
+      "invalid": 0
+    },
+    "lead_time_release_q3_hours": {
+      "valid": 261,
+      "missing": 50,
+      "invalid": 0
+    },
+    "lead_time_releases_ignored_compare_404": {
+      "valid": 311,
+      "missing": 0,
+      "invalid": 0
+    },
+    "lead_time_releases_without_new_commits": {
+      "valid": 261,
+      "missing": 50,
+      "invalid": 0
+    },
+    "lead_time_releases_without_predecessor": {
+      "valid": 261,
+      "missing": 50,
+      "invalid": 0
+    },
+    "recovery_time_censored_proportion": {
+      "valid": 288,
+      "missing": 23,
+      "invalid": 0
+    },
+    "recovery_time_median_hours": {
+      "valid": 286,
+      "missing": 25,
+      "invalid": 0
+    },
+    "recovery_time_n_censored": {
+      "valid": 311,
+      "missing": 0,
+      "invalid": 0
+    },
+    "recovery_time_n_episodes": {
+      "valid": 311,
+      "missing": 0,
+      "invalid": 0
+    }
+  },
+  "missing_reasons": {
+    "recovery:no_episodes": 23,
+    "lead_time:comparison_error": 29,
+    "lead_time:metric_error": 21,
+    "recovery:all_censored": 2
+  },
+  "errors": [],
+  "sources": [
+    {
+      "path": "data/processed/s02/dataset_final_s02.csv",
+      "sha256": "58905a614f6d94bf791dd7887b0f07768e426cb6a14a2c19354a512ab1fbe076"
+    },
+    {
+      "path": "data/processed/s02/repositories_final_s02.csv",
+      "sha256": "f8dfd49154868f18555100e5712f340f837d07d4bbb485c450b379a5aa299930"
+    },
+    {
+      "path": "data/processed/s02/deployment_frequency_s02.csv",
+      "sha256": "c47ca4943a10c4616c017b359827ed70bc17779970bae4bfb5ca84af4de3bc2a"
+    },
+    {
+      "path": "data/processed/s02/lead_time_s01.csv",
+      "sha256": "2213f63d068ab03cce92eee16fd450e6858d37832aaaf48194308a6feb8de090"
+    },
+    {
+      "path": "data/processed/s02/workflow_metrics_s02.csv",
+      "sha256": "be22c853520dfe7274c5beccd154c8a3e771d2e01371f234dba9754a5b78aff4"
+    },
+    {
+      "path": "data/processed/s02/cfr_delivery_s02.csv",
+      "sha256": "7c0bd28858c5634756b32ca0782ee269c3c5670193915d70920a39a23a4f8b78"
+    },
+    {
+      "path": "data/processed/s02/cfr_delivery_releases_s02.csv",
+      "sha256": "7507b59195c481415b4acc5e37f9c1ffab41a33f943f71c975512ed8df7e70b2"
+    },
+    {
+      "path": "data/processed/s02/cfr_delivery_manifest_s02.json",
+      "sha256": "6a645af4650a6c5c27308246ed05c03bb37dc9ac2ef340b53c57a7861e3fdac9"
+    }
+  ],
+  "cfr_delivery_release_statuses": {
+    "not_failed": 6406,
+    "failed": 20038,
+    "right_censored": 677,
+    "unassessable_context": 31
+  },
+  "scope": "Consolidation, types, formulas and missingness; no new collection or inferred human decisions."
+}
