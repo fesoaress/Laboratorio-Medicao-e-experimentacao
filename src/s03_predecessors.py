@@ -120,11 +120,17 @@ def run(raw=Path("data/raw/s03"), old=Path("data/raw/s02"), workers=4):
                             commits = collect_commits_between(client, name, pair["base"], pair["head"])
                             value = dict(status="complete", transport="rest_complete", commits=[asdict(c) for c in commits])
                     except (APIError, ValueError) as error:
-                        value = dict(status="ignored_compare_404" if getattr(error, "status", None) == 404 else "error",
-                                     commits=[], error=str(error), error_status=getattr(error, "status", None))
+                        status = getattr(error, "status", None)
+                        value = dict(status="ignored_compare_404" if status == 404 else "error",
+                                     commits=[], error=str(error), error_status=status)
                     save(path, {**pair, **value, "url": f"https://api.github.com/repos/{name}/compare/{pair['base']}...{pair['head']}"})
             return updated, (key, pair), entry
         except (APIError, ValueError) as error:
+            # --- ALTERAÇÃO: Não salva erros transientes (5xx) no patch, permitindo retentativa ---
+            status = getattr(error, "status", None)
+            if status is not None and status >= 500:
+                return None, None, {**entry, "status": "transient_error", "error": str(error)}
+            
             # Não usar uma predecessora estável possivelmente errada no C2.
             updated = {**event, "pair_key": "", "previous_identifier": "", "predecessor_unavailable": True}
             return updated, None, {**entry, "status": "predecessor_unavailable_first_interval_excluded", "error": str(error)}
@@ -137,6 +143,11 @@ def run(raw=Path("data/raw/s03"), old=Path("data/raw/s02"), workers=4):
             if pair:
                 pairs[pair[0]] = pair[1]
             audit.append(entry)
+            
+    # --- ALTERAÇÃO: Aborta a gravação do patch se houve erro transiente de API ---
+    if any(e.get("status") == "transient_error" for e in audit):
+        raise RuntimeError("Transient API errors during predecessor collection: " + str([e.get("error") for e in audit if e.get("status") == "transient_error"]))
+
     patch = dict(events=events, pairs=pairs, audit=audit)
     save(patch_path, patch)
     print(f"PREDECESSORS checked={len(audit)} updated={len(events)} new_pairs={len(pairs)}", flush=True)

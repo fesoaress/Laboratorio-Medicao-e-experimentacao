@@ -184,11 +184,22 @@ def collect(folder, raw, old_root, workers=4):
                     else:
                         commits = [asdict(c) for c in collect_commits_between(client, name, pair["base"], pair["head"])]
                     value = {"status": "complete", "commits": commits, "transport": "git_objects" if adapter else "rest_complete"}
+                
                 except (APIError, ValueError) as error:
-                    if getattr(error, "status", None) == 401:
+                    status = getattr(error, "status", None)
+                    if status == 401:
                         raise
-                    value = {"status": "ignored_compare_404" if getattr(error, "status", None) == 404 else "error",
-                             "commits": [], "error": str(error), "error_status": getattr(error, "status", None)}
+                    
+                    # --- ALTERAÇÃO: Trata 404 e 422 como intervalos vazios válidos; outros como erro ---
+                    value = {
+                        "status": "ignored_compare_404" if status == 404 
+                                 else "complete" if status == 422 
+                                 else "error",
+                        "commits": [], 
+                        "error": str(error) if status not in (404, 422) else "", 
+                        "error_status": status
+                    }
+            
             save(raw / "intervals" / (key + ".json"), {**pair, **value,
                  "url": f"https://api.github.com/repos/{name}/compare/{pair['base']}...{pair['head']}"})
         return len(batch)

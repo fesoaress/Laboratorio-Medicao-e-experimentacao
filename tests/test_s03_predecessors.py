@@ -29,12 +29,22 @@ def test_choose_filters_ancestry_and_resolves_commit():
         if "/commits/" in path:
             return APIResponse(dict(sha="x", commit=dict(author=dict(date="2025-09-01T00:00:00Z"), committer=dict(date="2025-09-01T00:00:00Z"), message="fix")), {})
         return APIResponse(dict(status="ahead"), {})
+    
     repo = dict(full_name="o/r", default_branch_sha="head")
     assert m.choose(SimpleNamespace(get=get), repo, [candidate])["sha"] == "x"
     assert m.choose(None, repo, [{**candidate, "sha": "x"}], SimpleNamespace(ancestors=set())) is None
     assert m.choose(None, repo, [{**candidate, "sha": "x"}], SimpleNamespace(ancestors={"x"}))["sha"] == "x"
+    
     with pytest.raises(APIError):
         m.choose(SimpleNamespace(get=lambda *a: APIResponse(dict(status="bad"), {})), repo, [{**candidate, "sha": "x"}])
+        
+    # --- NOVO TESTE: Diverged status skips candidate ---
+    def get_diverged(path, params=None):
+        if "/commits/" in path:
+            return APIResponse(dict(sha="x", commit=dict(author=dict(date="2025-09-01T00:00:00Z"), committer=dict(date="2025-09-01T00:00:00Z"), message="fix")), {})
+        return APIResponse(dict(status="diverged"), {})
+        
+    assert m.choose(SimpleNamespace(get=get_diverged), repo, [{**candidate, "sha": "x"}]) is None
 
 
 def test_boundary_patch_preserves_initial_plan_and_resumes(tmp_path, monkeypatch):
@@ -68,3 +78,17 @@ def test_boundary_failure_does_not_keep_wrong_stable_predecessor(tmp_path, monke
     patch = m.run(raw, old, workers=1)
     assert patch["events"][0]["pair_key"] == ""
     assert patch["audit"][0]["status"] == "predecessor_unavailable_first_interval_excluded"
+
+
+# --- NOVO TESTE: Não cacheia falhas temporárias (5xx) ---
+def test_transient_error_does_not_cache_patch(tmp_path, monkeypatch):
+    raw, old = tmp_path / "new", tmp_path / "old"
+    event = dict(full_name="o/r", variant="C2", identifier="2", pair_key="stable", previous_identifier="0")
+    save(raw / "plan.json", dict(window=dict(start_date="2025-10-01"), repositories=[dict(full_name="o/r", repository_id="1")], events=[event], pairs={"stable": dict(base_date="2025-09-01T00:00:00Z")}))
+    save(old / "checkpoints/1.json", dict(raw_releases=[]))
+    def fail(*a):
+        raise APIError("Service Unavailable", status=503)
+    monkeypatch.setattr(m, "choose", fail)
+    with pytest.raises(RuntimeError, match="Transient API errors"):
+        m.run(raw, old, workers=1)
+    assert not (raw / "predecessors/patch.json").exists()

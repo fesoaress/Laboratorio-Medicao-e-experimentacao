@@ -96,7 +96,7 @@ def test_collection_resume_and_plan_guard(tmp_path, monkeypatch):
         m.collect(tmp_path, tmp_path / "raw", tmp_path / "old", 1)
 
 
-@pytest.mark.parametrize("status,expected", [(404, "ignored_compare_404"), (500, "error"), (401, "raises")])
+@pytest.mark.parametrize("status,expected", [(404, "ignored_compare_404"), (422, "complete"), (500, "error"), (401, "raises")])
 def test_collection_rest_failure_is_explicit(tmp_path, monkeypatch, status, expected):
     monkeypatch.setattr(m, "plan", lambda *a: specification())
     def fail(*a):
@@ -110,7 +110,10 @@ def test_collection_rest_failure_is_explicit(tmp_path, monkeypatch, status, expe
         m.collect(tmp_path, tmp_path / "raw", tmp_path / "old", 1)
         row = json.loads((tmp_path / "raw/intervals/k.json").read_text())
         assert row["status"] == expected and not row["commits"]
-
+        if expected == "error":
+            assert "HTTP error" in row["error"]
+        else:
+            assert row["error"] == ""
 
 def test_export_reuses_exact_s02_pair_and_counts(tmp_path):
     from src.pipeline import write_csv

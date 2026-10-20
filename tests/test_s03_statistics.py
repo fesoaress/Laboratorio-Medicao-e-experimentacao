@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 import pytest
+import gzip
+import json
 from scipy import stats
 
 from src import s03_bootstrap as b, s03_descriptive as d, s03_inference as inf
@@ -115,6 +117,20 @@ def test_paired_kappa_uses_order_and_valid_pairs():
 def event(key="k", date="2026-01-02T00:00:00Z"):
     return dict(pair_key=key, identifier="1", date=date, full_name="o/r", tag_name="v1", body="fix: crash", previous_identifier="", prerelease="False")
 
+def test_sensitivity_rejects_incomplete_context(tmp_path):
+    folder = tmp_path
+    specification = {"window": {"start_date": "2025-01-01", "end_date": "2026-01-01"}, "repositories": [], "events": [], "pairs": {"key1": {}}}
+    with gzip.open(folder / "variant_plan.json.gz", "wt", encoding="utf-8") as f:
+        json.dump(specification, f)
+    (folder / "variant_context").mkdir()
+    with gzip.open(folder / "variant_context/part-000.jsonl.gz", "wt", encoding="utf-8") as f:
+        f.write(json.dumps({"pair_key": "key2"}) + "\n")
+    
+    data = pd.DataFrame({"full_name": ["o/r"]})
+    base_classes = pd.DataFrame({"df": [1], "lt_release": [1], "cfr_a": [1], "recovery": [1], "general": ["Low"]})
+    
+    with pytest.raises(ValueError, match="Snapshot de comparações incompleto."):
+        sens.run(data, base_classes, folder)
 
 def test_variant_lead_time_not_stable_substitution():
     context = {"k": {"status": "complete", "commits": [dict(sha="a", author_date="2026-01-01T00:00:00Z", message="fix: crash")]}}
