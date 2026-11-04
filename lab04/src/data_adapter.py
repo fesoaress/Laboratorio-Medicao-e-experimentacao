@@ -1,8 +1,8 @@
 """Carrega os dados reais de CI (Issue #77) com fallback para CSV provisório.
 
 Ordem de busca:
-1. ``lab04/data/ci_runs.csv`` (arquivo real entregue pela Fernanda). Se existir o módulo
-   ``lab04.src.ci_data`` com ``load_ci_runs``, ele é usado; senão, lê-se o CSV direto.
+1. ``lab04/data/ci_runs.csv`` (arquivo real entregue pela Fernanda), validado por
+   ``lab04.src.real_data.load_ci_runs`` antes de chegar ao dashboard.
 2. ``lab04/data/provisional_ci_runs.csv`` — SOMENTE PARA DESENVOLVIMENTO. O dashboard
    exibe um aviso enquanto este arquivo estiver em uso.
 
@@ -32,15 +32,9 @@ def _to_binary(df: pd.DataFrame) -> np.ndarray:
 
 
 def _load_real(path: Path) -> np.ndarray:
-    try:  # integração com a Issue #77, se o módulo já existir
-        from lab04.src.ci_data import load_ci_runs  # type: ignore
+    from lab04.src.real_data import load_ci_runs
 
-        loaded = load_ci_runs(path)
-        if isinstance(loaded, pd.DataFrame):
-            return _to_binary(loaded)
-        return np.asarray(loaded, dtype=np.int8)
-    except ImportError:
-        return _to_binary(pd.read_csv(path))
+    return _to_binary(load_ci_runs(path))
 
 
 def get_real_outcomes() -> tuple[np.ndarray, bool, str]:
