@@ -1,13 +1,9 @@
-"""Carrega os dados reais de CI (Issue #77) com fallback para CSV provisório.
+"""Carrega os dados reais de CI (Issue #77) para o dashboard.
 
-Ordem de busca:
-1. ``lab04/data/ci_runs.csv`` (arquivo real entregue pela Fernanda), validado por
-   ``lab04.src.real_data.load_ci_runs`` antes de chegar ao dashboard.
-2. ``lab04/data/provisional_ci_runs.csv`` — SOMENTE PARA DESENVOLVIMENTO. O dashboard
-   exibe um aviso enquanto este arquivo estiver em uso.
-
-Formato esperado: coluna ``outcome`` (0 = sucesso, 1 = falha). Também aceita
-``failed``/``failure``/``is_failure`` (booleano) ou ``conclusion`` (success/failure).
+Lê ``lab04/data/ci_runs.csv`` por meio de ``lab04.src.real_data.load_ci_runs``, que valida
+o arquivo (uma única workflow, sem duplicatas, só success/failure). Não há mais fallback
+provisório: se o arquivo não existir, o erro é explícito. Para gerar o arquivo:
+``python -m lab04.src.collect_ci_runs``.
 """
 
 from __future__ import annotations
@@ -19,28 +15,20 @@ import pandas as pd
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 REAL_CSV = DATA_DIR / "ci_runs.csv"
-PROVISIONAL_CSV = DATA_DIR / "provisional_ci_runs.csv"
 
 
-def _to_binary(df: pd.DataFrame) -> np.ndarray:
-    for col in ("outcome", "failed", "failure", "is_failure"):
-        if col in df.columns:
-            return df[col].astype(int).to_numpy(dtype=np.int8)
-    if "conclusion" in df.columns:
-        return (df["conclusion"].astype(str).str.lower() == "failure").astype(np.int8).to_numpy()
-    raise ValueError("CSV precisa de uma coluna 'outcome' (0=sucesso, 1=falha)")
-
-
-def _load_real(path: Path) -> np.ndarray:
+def get_real_dataset() -> tuple[pd.DataFrame, str]:
+    """Retorna (DataFrame validado, descrição da fonte)."""
     from lab04.src.real_data import load_ci_runs
 
-    return _to_binary(load_ci_runs(path))
+    if not REAL_CSV.exists():
+        raise FileNotFoundError(
+            f"{REAL_CSV} não encontrado. Gere com: python -m lab04.src.collect_ci_runs"
+        )
+    return load_ci_runs(REAL_CSV), f"{REAL_CSV.name} (coleta da Issue #77, API pública do GitHub)"
 
 
 def get_real_outcomes() -> tuple[np.ndarray, bool, str]:
-    """Retorna (outcomes 0/1, é_provisório, descrição da fonte)."""
-    if REAL_CSV.exists():
-        data = _load_real(REAL_CSV)
-        return data, False, f"{REAL_CSV.name} (coleta da Issue #77)"
-    data = _to_binary(pd.read_csv(PROVISIONAL_CSV))
-    return data, True, f"{PROVISIONAL_CSV.name} (PROVISÓRIO — remover antes da entrega)"
+    """Retorna (outcomes 0/1, é_provisório, fonte). ``é_provisório`` é sempre False."""
+    df, source = get_real_dataset()
+    return df["failed"].to_numpy(dtype=np.int8), False, source

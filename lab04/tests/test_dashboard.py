@@ -32,7 +32,7 @@ def test_critical_k_none_when_impossible():
 def test_real_data_is_binary():
     data, provisional, source = get_real_outcomes()
     assert set(np.unique(data)).issubset({0, 1})
-    assert isinstance(provisional, bool) and source
+    assert provisional is False and source
 
 
 @pytest.mark.parametrize("n,p", [(30, 0.10), (30, 0.0), (30, 1.0), (200, 0.05)])
@@ -42,7 +42,7 @@ def test_g1_g2_build_without_error(n, p):
     real, _, _ = get_real_outcomes()
     assert len(plot_g1(real, sim).axes) >= 2
     assert len(plot_g2(res).axes) == 2
-    assert g1_caption(len(real), int(real.sum()), n, int(sim.sum()), 0.05, True)
+    assert g1_caption(len(real), int(real.sum()), n, int(sim.sum()), 0.05)
     assert "probabilidade de H0 ser verdadeira" in g2_caption(res)
 
 

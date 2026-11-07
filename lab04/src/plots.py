@@ -147,3 +147,77 @@ def plot_g2(results: dict) -> Figure:
 
     fig.suptitle(f"G2 — Distribuição sob H0 (p ≤ {p0:g}), amostra de n = {n} execuções com {k} falhas", fontsize=12)
     return fig
+
+
+# ----------------------------------------------------------------------------- S02 (G3 e G4)
+STATUS_SHORT = {"liberal": "liberal", "conservador": "conservador", "compatível com α": "≈ α"}
+CONDITION_STYLES = [("-", "o"), ("--", "s"), (":", "^"), ("-.", "D")]
+
+
+def _thousands(n: int) -> str:
+    return f"{n:,}".replace(",", ".")
+
+
+def plot_g3(t1) -> Figure:
+    """G3: erro tipo I de Z e binomial exato em cada condição simulada.
+
+    ``t1`` é a saída de ``s02_results.type1_table``. As barras mostram a proporção de
+    rejeições sob H0; as barras de erro são ±1,96 erro-padrão de Monte Carlo; a linha
+    horizontal marca α. O rótulo (liberal / conservador / ≈ α) vem da própria tabela.
+    """
+    conditions = list(t1["condition"])
+    alpha = float(t1["alpha"].iloc[0])
+    reps = int(t1["repetitions"].iloc[0])
+    fig = Figure(figsize=(max(7.5, 3.6 * len(conditions) + 2), 4.8), constrained_layout=True)
+    ax = fig.subplots()
+    width = 0.36
+    xs = np.arange(len(conditions))
+    top = alpha
+    for offset, key, color, name in ((-width / 2, "z", COLOR_Z, "Z para proporção"),
+                                     (width / 2, "binomial", COLOR_BINOMIAL, "Binomial exato")):
+        rates = t1[f"{key}_rate"].to_numpy()
+        ses = t1[f"{key}_se"].to_numpy()
+        ax.bar(xs + offset, rates, width, color=color, edgecolor="black", alpha=0.9, label=name)
+        ax.errorbar(xs + offset, rates, yerr=1.96 * ses, fmt="none", ecolor="black", capsize=4, linewidth=1.2)
+        for x, r, se, status in zip(xs + offset, rates, ses, t1[f"{key}_status"]):
+            ax.text(x, r + 1.96 * se + alpha * 0.04,
+                    f"{100 * r:.2f}%".replace(".", ",") + f"\n{STATUS_SHORT[status]}",
+                    ha="center", va="bottom", fontsize=8)
+            top = max(top, r + 1.96 * se)
+    ax.axhline(alpha, color="black", linestyle="--", linewidth=1.4, label=f"α = {alpha:.0%}")
+    ax.set_ylim(0, top * 1.35)
+    ax.set_xticks(xs, [c.replace(" (", "\n(") for c in conditions])
+    ax.set_xlabel("Condição simulada (n = tamanho da amostra; n·p0 = falhas esperadas sob H0)")
+    ax.set_ylabel(f"Proporção de rejeições sob H0 (de {_thousands(reps)} repetições)")
+    ax.set_title("G3 — Erro tipo I de cada teste por condição (simulação Monte Carlo; barras = ±1,96 EP)")
+    ax.legend(loc="upper left", fontsize=9)
+    return fig
+
+
+def plot_g4(pw) -> Figure:
+    """G4: curvas de poder de Z e binomial exato no mesmo gráfico.
+
+    ``pw`` é a saída de ``s02_results.power_table``. Cor = teste (igual ao G3);
+    estilo da linha/marcador = condição simulada. O efeito 0 é o erro tipo I.
+    """
+    alpha = float(pw["alpha"].iloc[0])
+    reps = int(pw["repetitions"].iloc[0])
+    fig = Figure(figsize=(10, 5.2), constrained_layout=True)
+    ax = fig.subplots()
+    ax.axhline(alpha, color="gray", linestyle=":", linewidth=1.2, label=f"α = {alpha:.0%}")
+    for i, (cond, g) in enumerate(pw.groupby("condition", sort=False)):
+        ls, mk = CONDITION_STYLES[i % len(CONDITION_STYLES)]
+        g = g.sort_values("effect_pp")
+        # Z mais grosso e translúcido, binomial fino por cima: se as curvas coincidirem,
+        # as duas continuam visíveis (uma não esconde a outra).
+        ax.plot(g["effect_pp"], g["z_rate"], color=COLOR_Z, linestyle=ls, marker=mk, linewidth=5,
+                markersize=11, alpha=0.6, label=f"Z — {cond}", zorder=2)
+        ax.plot(g["effect_pp"], g["binomial_rate"], color=COLOR_BINOMIAL, linestyle=ls, marker=mk,
+                linewidth=1.8, markersize=5, label=f"Binomial exato — {cond}", zorder=3)
+    ax.set_xlim(left=0)
+    ax.set_ylim(-0.02, 1.02)
+    ax.set_xlabel("Tamanho do efeito (p real − p0, em pontos percentuais)")
+    ax.set_ylabel(f"Proporção de rejeições (de {_thousands(reps)} repetições)")
+    ax.set_title("G4 — Curvas de poder: Z × binomial exato (efeito 0 = erro tipo I)")
+    ax.legend(loc="lower right", fontsize=8)
+    return fig

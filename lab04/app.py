@@ -1,10 +1,9 @@
-"""Dashboard Lab04 (P4: Z para proporção × binomial exato) — versão S01 (G1 e G2).
+"""Dashboard Lab04 (P4: Z para proporção × binomial exato) — S01 (G1, G2) e S02 (G3, G4).
 
 Executar a partir da raiz do repositório:  streamlit run lab04/app.py
 
-Estrutura para a S02: cada seção é uma função ``section_*(ctx)`` registrada em SECTIONS.
-Para adicionar G3/G4, basta escrever ``section_erro_tipo_i`` e ``section_poder`` e
-inseri-las na lista (os placeholders atuais já ocupam o lugar delas).
+Cada seção é uma função ``section_*(ctx)`` registrada em SECTIONS. G3/G4 leem as tabelas
+agregadas de ``lab04/results`` (ou de $LAB04_RESULTS_DIR); sem hardcode de valores.
 """
 
 import sys
@@ -17,9 +16,11 @@ if str(ROOT) not in sys.path:  # permite `streamlit run lab04/app.py` da raiz
 import pandas as pd
 import streamlit as st
 
-from lab04.src.captions import g1_caption, g2_caption
-from lab04.src.data_adapter import get_real_outcomes
-from lab04.src.plots import plot_g1, plot_g2
+from lab04.src.captions import g1_caption, g2_caption, g3_caption, g4_caption
+from lab04.src.data_adapter import get_real_dataset
+from lab04.src.plots import plot_g1, plot_g2, plot_g3, plot_g4
+from lab04.src.real_data import summarize_ci_runs
+from lab04.src.s02_results import combine_conditions, load_s02_tables, power_table, results_dir, type1_table
 from lab04.src.simulation import simulate_runs
 from lab04.src.stat_tests import evaluate_tests
 
@@ -28,13 +29,26 @@ REPO_URL = "<preencher: link do repositório / GitHub Projects>"
 
 
 # ---------------------------------------------------------------- contexto
+def load_s02_context() -> dict:
+    """Tabelas de Q1/Q2/Q3 (se existirem). Nunca levanta: erros viram mensagem no dashboard."""
+    try:
+        tables = load_s02_tables()
+        available = [t for t in (tables["q1_q2"], tables["q3"]) if t is not None]
+        cond = combine_conditions(available) if available else None
+        return {"s02": cond, "s02_missing": [k for k, v in tables.items() if v is None], "s02_error": None}
+    except (ValueError, OSError) as exc:
+        return {"s02": None, "s02_missing": [], "s02_error": str(exc)}
+
+
 def build_context(n: int, true_p: float, seed: int, p0: float, alpha: float) -> dict:
-    real, provisional, source = get_real_outcomes()
+    real_df, source = get_real_dataset()
+    real = real_df["failed"].to_numpy(dtype="int8")
     simulated = simulate_runs(n=n, p=true_p, seed=seed)
     return {
         "n": n, "true_p": true_p, "seed": seed, "p0": p0, "alpha": alpha,
-        "real": real, "provisional": provisional, "source": source,
+        "real_df": real_df, "real": real, "source": source,
         "simulated": simulated,
+        **load_s02_context(),
         "sim_results": evaluate_tests(simulated, p0=p0, alpha=alpha),
         "real_results": evaluate_tests(real, p0=p0, alpha=alpha),
     }
@@ -51,10 +65,17 @@ def section_cenario(ctx: dict) -> None:
         f"- **Testes comparados:** Z para proporção × binomial exato, com α = {ctx['alpha']:g}\n"
         f"- **Codificação:** 0 = sucesso, 1 = falha"
     )
-    r = ctx["real"]
-    st.markdown(f"**Dados reais:** {len(r)} execuções de CI — fonte: `{ctx['source']}`.")
-    if ctx["provisional"]:
-        st.warning("Dados reais PROVISÓRIOS em uso (a coleta real da Issue #77 ainda não foi integrada).")
+    df = ctx["real_df"]
+    summ = summarize_ci_runs(df)
+    first = df.iloc[0]
+    st.markdown(
+        f"**Dados reais:** {summ['n']} execuções de CI concluídas (success/failure) de "
+        f"`{first['repository']}`, workflow `{first['workflow_name']}` (id {first['workflow_id']}), "
+        f"branch `{first['branch']}`, de {df['created_at'].min()[:10]} a {df['created_at'].max()[:10]} (UTC); "
+        f"{summ['k']} falhas (p̂ = {summ['p_hat']:.2%}). Fonte: `{ctx['source']}`."
+    )
+    st.caption("Execuções de CI podem ser correlacionadas e a taxa de falha pode variar no tempo; "
+               "o modelo Bernoulli i.i.d. é uma simplificação.")
 
 
 def section_dados(ctx: dict) -> None:
@@ -63,7 +84,7 @@ def section_dados(ctx: dict) -> None:
     fig = plot_g1(real, sim, p0=ctx["p0"],
                   sim_label=f"Simulados (p real = {ctx['true_p']:g}, seed = {ctx['seed']})")
     st.pyplot(fig)
-    st.caption(g1_caption(len(real), int(real.sum()), len(sim), int(sim.sum()), ctx["p0"], ctx["provisional"]))
+    st.caption(g1_caption(len(real), int(real.sum()), len(sim), int(sim.sum()), ctx["p0"]))
 
 
 def section_testes(ctx: dict) -> None:
@@ -90,14 +111,41 @@ def section_testes(ctx: dict) -> None:
                    "Um p-valor alto não prova que H0 é verdadeira.")
 
 
+def _s02_unavailable(ctx: dict) -> bool:
+    """Mostra aviso e devolve True quando G3/G4 não podem ser desenhados."""
+    if ctx["s02_error"]:
+        st.error(f"Não foi possível ler as tabelas de simulação: {ctx['s02_error']}")
+        return True
+    if ctx["s02"] is None:
+        st.info(f"Tabelas de Q1/Q2/Q3 não encontradas em `{results_dir()}`. "
+                "Gere com `python -m lab04.src.s02_experiments` (Issue #81) e o equivalente de Q3 (Issue #82).")
+        return True
+    if ctx["s02_missing"]:
+        st.warning("Tabela(s) ausente(s): " + ", ".join(ctx["s02_missing"]) +
+                   ". Os gráficos mostram apenas as condições disponíveis.")
+    return False
+
+
 def section_erro_tipo_i(ctx: dict) -> None:
     st.header("4. Erro tipo I (G3)")
-    st.info("Será implementado na Sprint S02 (Q1 e Q3, 10.000 simulações por situação).")
+    if _s02_unavailable(ctx):
+        return
+    t1 = type1_table(ctx["s02"])
+    st.pyplot(plot_g3(t1))
+    st.caption(g3_caption(t1))
+    with st.expander("Tabela agregada usada no G3 (dados simulados)"):
+        st.dataframe(t1, hide_index=True)
 
 
 def section_poder(ctx: dict) -> None:
     st.header("5. Poder (G4)")
-    st.info("Será implementado na Sprint S02 (Q2 e Q3, curvas de poder).")
+    if _s02_unavailable(ctx):
+        return
+    pw = power_table(ctx["s02"])
+    st.pyplot(plot_g4(pw))
+    st.caption(g4_caption(pw, float(pw["alpha"].iloc[0])))
+    with st.expander("Tabela agregada usada no G4 (dados simulados)"):
+        st.dataframe(pw, hide_index=True)
 
 
 SECTIONS = [section_cenario, section_dados, section_testes, section_erro_tipo_i, section_poder]
