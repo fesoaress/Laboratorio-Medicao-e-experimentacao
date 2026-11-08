@@ -2,7 +2,7 @@
 
 P0 = 0.05
 ALPHA = 0.05
-DASHBOARD_URL: str | None = None
+DASHBOARD_URL: str | None = "https://lab04-medicao-pucminas.streamlit.app/"
 REPO_URL = "https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao"
 
 # Expectativa metodológica registrada na S01 e retomada no roteiro de Fernanda.

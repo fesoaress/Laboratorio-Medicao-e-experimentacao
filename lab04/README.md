@@ -1,5 +1,7 @@
 # Lab04 — A taxa de falhas do CI ultrapassa 5%?
 
+**Dashboard público** · [Abrir o Lab04 no Streamlit](https://lab04-medicao-pucminas.streamlit.app/)
+
 Laboratório de Medição e Experimentação de Software da PUC Minas. No cenário
 P4, comparamos o teste Z para uma proporção e o teste binomial exato sobre as
 mesmas observações. A hipótese nula é **H₀: p ≤ 0,05** e a alternativa é
@@ -111,13 +113,15 @@ G3/G4 são estimativas de Monte Carlo para os cenários definidos.
 
 ## Publicação no Streamlit Community Cloud
 
-1. Entre no [Streamlit Community Cloud](https://share.streamlit.io/) com a conta
-   da Fernanda e conecte o GitHub, se solicitado.
+A aplicação está publicada a partir da branch oficial `Laboratorio-4`.
+Para reproduzir a publicação em um novo app, siga estes passos.
+
+1. Entre no [Streamlit Community Cloud](https://share.streamlit.io/) com uma
+   conta GitHub com acesso ao repositório.
 2. Selecione **Create app** e **Yup, I have an app**.
 3. Preencha **Repository** com `fesoaress/Laboratorio-Medicao-e-experimentacao`,
    **Branch** com `Laboratorio-4` e **Main file path** com `lab04/app.py`.
-   Em **App URL**, informe o subdomínio desejado `lab04-medicao-pucminas`.
-   Se estiver ocupado, escolha um subdomínio disponível na tela.
+   Em **App URL**, escolha um subdomínio disponível para o novo app.
 4. Em **Advanced settings**, selecione **Python 3.13** e clique em **Save**. O app lê arquivos
    versionados e dispensa segredos. O Cloud encontra `lab04/requirements.txt`
    no diretório do entry point. Confira a [organização de arquivos do Streamlit](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/file-organization).
@@ -125,5 +129,6 @@ G3/G4 são estimativas de Monte Carlo para os cenários definidos.
    uma janela sem sessão, confira as sete seções e os quatro gráficos
    em desktop e celular e compartilhe o endereço verificado com o grupo.
 
-O deploy funciona com a configuração versionada. Depois da verificação
-pública, um PR pode registrar o endereço no README e em `src/delivery_config.py`.
+O deploy funciona com a configuração versionada. Se o endereço oficial mudar,
+verifique o acesso público antes de atualizar os links no README e em
+`src/delivery_config.py`.

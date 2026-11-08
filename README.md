@@ -6,7 +6,7 @@ documentação e artefatos finais separados por estudo.
 - [Lab01 — Características de repositórios populares](lab01/README.md)
 - [Lab02 — Assistentes de IA versus codificação manual](lab02/README.md)
 - [Lab03 — Mineração de métricas DORA](lab03/README.md)
-- [Lab04 — Teste Z para proporção e binomial exato](lab04/README.md) · branch `Laboratorio-4`
+- [Lab04 — Teste Z para proporção e binomial exato](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/blob/Laboratorio-4/lab04/README.md) · [Dashboard público](https://lab04-medicao-pucminas.streamlit.app/)
 
 ## Estrutura
 
