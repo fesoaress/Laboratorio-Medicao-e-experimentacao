@@ -2,6 +2,7 @@
 
 from lab04.src.conclusion import power_sentence
 from lab04.src.formatting import num as _num, pct as _pct, thousands as _thousands
+from lab04.src.formatting import p_value
 from lab04.src.plots import critical_k
 
 
@@ -24,10 +25,11 @@ def g2_caption(res: dict) -> str:
                if res["z_normal_approximation_caution"] else "")
     return (
         f"Os dois testes são unilaterais à direita: só valores altos de falhas contrariam H0 (p ≤ {_num(p0)}). "
-        f"A área sombreada é o p-valor — Z: {_num(res['z_p_value'], 4)}; binomial exato: {_num(res['binomial_p_value'], 4)} — "
-        f"e a hachura é a região de rejeição (binomial: {reg}). Com α = {_num(alpha)}, os testes {decisao} H0. "
-        f"O p-valor é a probabilidade de ver resultado igual ou mais extremo supondo H0 verdadeira; "
-        f"não é a probabilidade de H0 ser verdadeira.{caution}"
+        f"O sombreado mostra a cauda do p-valor (Z {p_value(res['z_p_value'])}, binomial exato "
+        f"{p_value(res['binomial_p_value'])}) e a hachura marca a região de rejeição (binomial {reg}). "
+        f"Com α = {_num(alpha)}, os testes {decisao} H0. "
+        f"Calculamos o p-valor na fronteira p = p₀ como a probabilidade de observar um resultado "
+        f"igual ou mais extremo à direita, usando a aproximação normal no Z.{caution}"
     )
 
 
@@ -42,11 +44,11 @@ def g3_caption(t1) -> str:
         )
     se_max = max(t1["z_se"].max(), t1["binomial_se"].max())
     return (
-        f"Taxa observada de rejeição quando H0 é verdadeira (p real = p0), em {reps} repetições simuladas por "
-        f"condição, contra a linha de α = {_pct(alpha)}. "
-        + "; ".join(parts) + ". "
-        f"Classificamos como liberal ou conservador apenas quando a diferença para α excede 1,96 erros-padrão "
-        f"de Monte Carlo (até {_pct(se_max)} aqui); os dados são simulados, não observações reais de CI."
+        f"Nos dados simulados, comparamos as taxas de rejeição sob H₀ (p = p₀) com α = {_pct(alpha)}, "
+        f"usando {reps} repetições por condição. "
+        + ". ".join(parts) + ". "
+        f"As barras mostram ±1,96 erros-padrão estimados de Monte Carlo (EP de até {_pct(se_max)}). "
+        "A classificação compara a diferença para α com 1,96 erros-padrão calculados sob α."
     )
 
 
@@ -58,6 +60,6 @@ def g4_caption(pw, alpha: float) -> str:
         f"Proporção de rejeições de cada teste conforme o tamanho do efeito (p real − p0, em pontos percentuais), "
         f"com {reps} repetições simuladas por ponto; no efeito 0 a curva é o erro tipo I. "
         + (lambda t: t[0].upper() + t[1:])("; ".join(bits)) + ". "
-        "Quando um teste rejeita mais que α sob H0 (liberal), parte do seu poder aparente vem desse excesso, então "
-        "as curvas só são diretamente comparáveis onde os erros tipo I são parecidos."
+        "Em condições com diferentes taxas de erro tipo I, uma regra mais liberal pode elevar o poder "
+        "à custa de mais falsos alarmes."
     )

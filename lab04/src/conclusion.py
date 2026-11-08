@@ -36,11 +36,13 @@ def power_sentence(g) -> str:
     """Frase curta sobre uma condição (sem o nome da condição)."""
     code, z_more, b_more = power_direction(g)
     pos = g[g["effect_pp"] > 1e-8]
+    if pos.empty:
+        return "a tabela contém apenas o efeito zero, que estima o erro tipo I"
+    if code == "identical":
+        return "as taxas dos dois testes foram idênticas em todos os efeitos positivos"
     maxdiff = (pos["z_rate"] - pos["binomial_rate"]).abs()
     i = maxdiff.idxmax()
     at = f"{pp(100 * maxdiff[i])} no efeito de {num(pos.loc[i, 'effect_pp'], 1)} pp"
-    if code == "identical":
-        return "as taxas dos dois testes foram idênticas em todos os efeitos (as curvas se sobrepõem)"
     if code == "z":
         return f"o Z rejeitou mais que o binomial exato em todos os efeitos em que diferiram (até {at})"
     if code == "binomial":

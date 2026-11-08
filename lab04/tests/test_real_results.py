@@ -73,7 +73,7 @@ def test_final_dashboard_sections_use_the_real_results(monkeypatch):
         def __init__(self):
             self.headers, self.tables, self.texts, self.warnings = [], [], [], []
 
-        def header(self, value):
+        def header(self, value, **_kwargs):
             self.headers.append(value)
 
         def dataframe(self, value, **_kwargs):
@@ -103,5 +103,5 @@ def test_final_dashboard_sections_use_the_real_results(monkeypatch):
     table = recorder.tables[0]
     assert len(table) == 2
     assert list(table["Conclusão"]) == ["Não rejeita H₀", "Não rejeita H₀"]
-    assert list(table["Efeito p̂−p₀ (p.p.)"]) == ["-0.86", "-0.86"]
+    assert list(table["Efeito p̂−p₀ (p.p.)"]) == ["-0,86", "-0,86"]
     assert not recorder.warnings

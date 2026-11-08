@@ -86,7 +86,24 @@ def test_power_direction_cases():
     assert "muda de lado" in power_sentence(_curve([.3, .4], [.2, .5]))
 
 
-def test_conclusion_warns_until_group_fills_text(results_dir):
+def test_exploration_changes_g2_and_preserves_official_results(results_dir):
     at = run_app()
-    warnings = " ".join(w.value for w in at.warning)
-    assert "EXPECTATIVA_PREVIA" in warnings and "RECOMENDACAO" in warnings
+    official_tables = [table.value.copy() for table in at.dataframe]
+    initial_p = at.metric[0].value
+    at.sidebar.number_input[0].set_value(40)
+    at.sidebar.slider[0].set_value(0.15)
+    at.sidebar.number_input[1].set_value(21)
+    at.sidebar.slider[1].set_value(0.10)
+    at.sidebar.select_slider[0].set_value(0.01)
+    at.run()
+    assert not at.exception and not at.error and not at.warning
+    assert at.metric[0].value != initial_p
+    assert any("p₀ = 10% e α = 1%" in c.value for c in at.caption)
+    assert any("Hipóteses e α do cenário oficial (p₀ = 0,05, α = 0,05)" in c.value for c in at.caption)
+    assert len(at.dataframe) == len(official_tables) == 3
+    for table, original in zip(at.dataframe, official_tables):
+        pd.testing.assert_frame_equal(table.value, original)
+    conclusion = " ".join(m.value for m in at.markdown)
+    for expected in ("Expectativa inicial", "Q1 · Erro tipo I", "Q2 · Poder", "Q3 · Aproximação normal",
+                     "prefira o binomial exato"):
+        assert expected in conclusion

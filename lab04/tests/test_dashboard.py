@@ -43,7 +43,7 @@ def test_g1_g2_build_without_error(n, p):
     assert len(plot_g1(real, sim).axes) >= 2
     assert len(plot_g2(res).axes) == 2
     assert g1_caption(len(real), int(real.sum()), n, int(sim.sum()), 0.05)
-    assert "probabilidade de H0 ser verdadeira" in g2_caption(res)
+    assert "fronteira p = p₀" in g2_caption(res)
 
 
 def test_streamlit_app_runs_without_exception():
