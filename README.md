@@ -6,6 +6,7 @@ documentação e artefatos finais separados por estudo.
 - [Lab01 — Características de repositórios populares](lab01/README.md)
 - [Lab02 — Assistentes de IA versus codificação manual](lab02/README.md)
 - [Lab03 — Mineração de métricas DORA](lab03/README.md)
+- [Lab04 — Teste Z para proporção e binomial exato](lab04/README.md) · branch `Laboratorio-4`
 
 ## Estrutura
 
@@ -17,7 +18,8 @@ documentação e artefatos finais separados por estudo.
 ├── .github/consolidation/  # auditoria global da consolidação
 ├── lab01/                 # coleta, análise, dados, snapshots e relatórios
 ├── lab02/                 # katas, trials, métricas, análises e relatórios
-└── lab03/                 # seleção, metadados, funil e hipóteses iniciais
+├── lab03/                 # seleção, metadados, funil e hipóteses iniciais
+└── lab04/                 # testes de proporção, simulações e dashboard
 ```
 
 Cada laboratório possui suas próprias dependências e instruções de execução.
