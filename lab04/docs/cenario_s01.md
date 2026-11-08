@@ -67,8 +67,10 @@ loader por meio de `lab04/src/data_adapter.py`.
 Cada execução pode ser representada por uma variável **Bernoulli(p)**: 1
 para falha e 0 para sucesso. Se as execuções fossem independentes e tivessem
 a mesma probabilidade p, o total de falhas em n execuções seguiria uma
-**Binomial(n, p)**. Para comparar os testes no tamanho observado, usamos
-**n = 169**; para erro tipo I sob a fronteira nula, **p = p₀ = 0,05**.
+**Binomial(n, p)**. Nos dados reais, os dois testes usam **n = 169**.
+Na S02, a referência simulada é **n = 200** e a condição crítica é
+**n = 30**. Para estimar o erro tipo I, simulamos na fronteira nula
+**p = p₀ = 0,05**.
 A taxa **p̂ = 0,0414201** descreve esta amostra e pode ser usada como um
 cenário empírico exploratório, mas **não substitui p₀**. Para estudar poder
 contra H₁, é preciso escolher valores **maiores** que 0,05 (por exemplo,

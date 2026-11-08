@@ -58,7 +58,7 @@ as simulações de G3/G4 usam p₀ e α de 5%.
 | `src/s02_experiments.py`, `src/robustness.py` | Simulações de Q1/Q2 e Q3 |
 | `src/plots.py`, `src/captions.py`, `src/s02_results.py` | Gráficos, legendas e preparação das tabelas |
 | `data/`, `results/` | Snapshot real e saídas simuladas, em diretórios separados |
-| `tests/`, `docs/` | Testes automatizados, metodologia e preparação da apresentação |
+| `tests/`, `docs/` | Testes automatizados, metodologia e [roteiro de apresentação e defesa](docs/apresentacao_final.md) |
 
 ## Reprodução e validação
 
@@ -111,14 +111,19 @@ G3/G4 são estimativas de Monte Carlo para os cenários definidos.
 
 ## Publicação no Streamlit Community Cloud
 
-1. Após revisão e integração do PR, entre no [Streamlit Community Cloud](https://share.streamlit.io/)
-   com a conta GitHub com acesso ao repositório.
-2. Selecione **Create app** e indique que deseja publicar um app do GitHub.
+1. Entre no [Streamlit Community Cloud](https://share.streamlit.io/) com a conta
+   da Fernanda e conecte o GitHub, se solicitado.
+2. Selecione **Create app** e **Yup, I have an app**.
 3. Preencha **Repository** com `fesoaress/Laboratorio-Medicao-e-experimentacao`,
    **Branch** com `Laboratorio-4` e **Main file path** com `lab04/app.py`.
-4. Em **Advanced settings**, selecione **Python 3.13**. O app lê arquivos
+   Em **App URL**, informe o subdomínio desejado `lab04-medicao-pucminas`.
+   Se estiver ocupado, escolha um subdomínio disponível na tela.
+4. Em **Advanced settings**, selecione **Python 3.13** e clique em **Save**. O app lê arquivos
    versionados e dispensa segredos. O Cloud encontra `lab04/requirements.txt`
    no diretório do entry point. Confira a [organização de arquivos do Streamlit](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/file-organization).
-5. Clique em **Deploy**, aguarde a instalação e abra a URL gerada. Confira
-   as sete seções e os quatro gráficos. Depois registre a URL verificada em
-   `src/delivery_config.py` para exibir o link no topo do app.
+5. Clique em **Deploy** e aguarde a instalação. Abra a URL gerada em
+   uma janela sem sessão, confira as sete seções e os quatro gráficos
+   em desktop e celular e compartilhe o endereço verificado com o grupo.
+
+O deploy funciona com a configuração versionada. Depois da verificação
+pública, um PR pode registrar o endereço no README e em `src/delivery_config.py`.

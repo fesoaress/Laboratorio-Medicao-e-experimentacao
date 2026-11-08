@@ -2,7 +2,7 @@
 
 ## Reprodução dos experimentos
 
-O código em \`lab04/src/final_audit.py\` verifica que os resultados de Q1/Q2 incluem:
+O código em `lab04/src/final_audit.py` verifica os seguintes critérios em Q1/Q2 e Q3.
 - pelo menos cinco tamanhos de efeito e um cenário de **efeito zero**;
 - as mesmas condições experimentais (n, p₀, α, seed e 10.000 repetições por cenário);
 - proporções de rejeição compatíveis com as contagens;
@@ -15,6 +15,7 @@ Execute na raiz, após instalar `lab04/requirements.txt`.
 
 ```bash
 python -m pytest -q lab04/tests
+python -m pytest -q
 python -m lab04.src.final_audit --replay
 python -m lab04.src.final_audit --replay --csv lab04/results/s02_q3.csv
 ```
@@ -33,14 +34,16 @@ controles de G2 e compara as tabelas oficiais antes e depois.
 
 ## Rastreabilidade
 
-Os quatro PRs históricos já têm seus commits em `Laboratorio-4`.
+Os quatro PRs históricos têm seus commits preservados em `Laboratorio-4`.
+O [PR #90](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/pull/90)
+integrou a versão final do dashboard no merge `620d1ac`.
 
-| PR | Base no GitHub | Commit | Situação para o Lab04 |
+| PR | Base original | Commit | Situação para o Lab04 |
 |---|---|---|---|
 | [#80](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/pull/80) | `main` | `150c1fe` | Fechado sem merge; código preservado na branch oficial |
-| [#87](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/pull/87) | `main` | `150c1fe` | Aberto; redundante para a branch oficial |
-| [#88](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/pull/88) | `lab04-s01-recovered` | `007847e` | Aberto; redundante para a branch oficial |
-| [#89](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/pull/89) | `lab04-s02-islayder` | `c75fcd5` | Aberto; redundante para a branch oficial |
+| [#87](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/pull/87) | `main` | `150c1fe` | Fechado após integração do commit à branch oficial |
+| [#88](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/pull/88) | `lab04-s01-recovered` | `007847e` | Fechado após integração do commit à branch oficial |
+| [#89](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/pull/89) | `lab04-s02-islayder` | `c75fcd5` | Fechado após integração do commit à branch oficial |
 
 | Issue | Evidência e aceite técnico |
 |---|---|
@@ -54,8 +57,16 @@ Os quatro PRs históricos já têm seus commits em `Laboratorio-4`.
 | #85 | `bde91b5` e PR final · tabela real conferida, conclusão e [roteiro de Fernanda](apresentacao_fernanda.md) |
 | #86 | `38c1012` e PR final · sete seções, legendas, navegação, revisão visual local e [instruções de deploy](../README.md#publicação-no-streamlit-community-cloud) |
 
-O aceite em revisão, a publicação e o ensaio da apresentação de até sete
-minutos dependem do grupo. As Issues e os PRs históricos foram consultados.
+## Conferência para Fernanda encerrar as Issues
+
+- **#82** · Q3 está integrado e reproduzido. Conferir se o grupo aceita o
+  commit direto `d2ccd19` como evidência em lugar do PR separado previsto.
+- **#84 e #85** · Auditoria e resultados reais passaram nos testes.
+  Confirmar que os integrantes estão preparados para as 15 perguntas.
+- **#86** · Conferir a URL pública após o deploy, os gráficos e as sete
+  seções. Cronometrar a apresentação e confirmar o limite de sete minutos.
+
+O [roteiro consolidado](apresentacao_final.md) reúne as 15 respostas.
 
 ## Respostas de Islayder — perguntas 2, 5, 7, 8 e 12
 
