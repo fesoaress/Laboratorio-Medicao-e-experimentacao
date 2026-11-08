@@ -28,6 +28,11 @@ COLOR_REF = "#444444"
 OUTCOME_LABELS = ["0 = sucesso", "1 = falha"]
 
 
+def _pt(text: str) -> str:
+    """Vírgula decimal nos textos dos gráficos (rótulos, legendas, títulos)."""
+    return text.replace(".", ",")
+
+
 def critical_k(n: int, p0: float, alpha: float) -> int | None:
     """Menor k tal que P(K >= k | n, p0) < alpha (região de rejeição do binomial exato).
 
@@ -62,12 +67,14 @@ def plot_g1(real, simulated, p0: float = 0.05, sim_label: str = "Simulados") -> 
     for ax, data, color, title in groups:
         n, ok, fail = _counts(data)
         bars = ax.bar([0, 1], [ok, fail], width=0.6, color=color, edgecolor="black", alpha=0.85)
-        for x, v in zip([0, 1], [ok, fail]):
-            ax.text(x, v, f"{v}\n({v / n:.1%})", ha="center", va="bottom", fontsize=10)
-        for x, exp in zip([0, 1], [n * (1 - p0), n * p0]):
+        expected = [n * (1 - p0), n * p0]
+        top = max(ok, fail, *expected, 1)
+        for x, v, exp in zip([0, 1], [ok, fail], expected):
+            ax.text(x, max(v, exp) + top * 0.02, _pt(f"{v}\n({v / n:.1%})"), ha="center", va="bottom", fontsize=10)
+        for x, exp in zip([0, 1], expected):
             ax.hlines(exp, x - 0.33, x + 0.33, colors=COLOR_REF, linestyles="--", linewidth=1.6)
         ax.set_xticks([0, 1], OUTCOME_LABELS)
-        ax.set_ylim(0, max(ok, fail, 1) * 1.28)
+        ax.set_ylim(0, top * 1.35)
         ax.set_xlabel("Resultado da execução de CI (variável binária)")
         ax.set_ylabel("Número de execuções (contagem)")
         ax.set_title(f"{title} — n = {n}")
@@ -110,18 +117,19 @@ def plot_g2(results: dict) -> Figure:
     ax_b.bar(ks[mask_p], pmf[mask_p], color=COLOR_BINOMIAL, edgecolor="black", alpha=0.85, width=0.85)
     ax_b.axvline(k, color="black", linewidth=1.6)
     size_b = binom.sf(k_crit - 1, n, p0) if k_crit is not None else 0.0
-    rej_txt = (f"Região de rejeição: K ≥ {k_crit} (prob. sob H0 = {size_b:.3f})"
+    rej_txt = (_pt(f"Região de rejeição: K ≥ {k_crit} (prob. sob H0 = {size_b:.3f})")
                if k_crit is not None else "Região de rejeição vazia (n pequeno demais)")
     ax_b.legend(handles=[
         Patch(facecolor=light, edgecolor="gray", label="P(K = k) sob H0"),
         Patch(facecolor=light, edgecolor=COLOR_BINOMIAL, hatch="///", label=rej_txt),
         Patch(facecolor=COLOR_BINOMIAL, edgecolor="black", alpha=0.85,
-              label=f"Área do p-valor: P(K ≥ {k}) = {p_b:.4f}"),
+              label=_pt(f"Área do p-valor: P(K ≥ {k}) = {p_b:.4f}")),
         Line2D([0], [0], color="black", linewidth=1.6, label=f"Observado: k = {k} de n = {n}"),
     ], fontsize=8, loc="upper right")
+    ax_b.set_ylim(0, ax_b.get_ylim()[1] * 1.3)
     ax_b.set_xlabel("Número de falhas K na amostra (contagem)")
     ax_b.set_ylabel("Probabilidade sob H0 (p = p0)")
-    ax_b.set_title(f"Binomial exato: K ~ Bin(n={n}, p0={p0:g}), cauda direita")
+    ax_b.set_title(_pt(f"Binomial exato: K ~ Bin(n={n}, p0={p0:g}), cauda direita"))
 
     # ---- Z (aproximação normal) ----
     lo, hi = -4.0, max(4.0, z_obs + 1, z_crit + 1)
@@ -137,15 +145,16 @@ def plot_g2(results: dict) -> Figure:
     ax_z.legend(handles=[
         Line2D([0], [0], color=COLOR_Z, linewidth=2, label="Z ~ N(0, 1) sob H0"),
         Patch(facecolor="none", edgecolor=COLOR_Z, hatch="///",
-              label=f"Região de rejeição: Z > {z_crit:.3f} (α = {alpha:g})"),
-        Patch(facecolor=COLOR_Z, alpha=0.55, label=f"Área do p-valor: P(Z ≥ {z_obs:.2f}) = {p_z:.4f}"),
-        Line2D([0], [0], color="black", linewidth=1.6, label=f"Observado: z = {z_obs:.2f}"),
+              label=_pt(f"Região de rejeição: Z > {z_crit:.3f} (α = {alpha:g})")),
+        Patch(facecolor=COLOR_Z, alpha=0.55, label=_pt(f"Área do p-valor: P(Z ≥ {z_obs:.2f}) = {p_z:.4f}")),
+        Line2D([0], [0], color="black", linewidth=1.6, label=_pt(f"Observado: z = {z_obs:.2f}")),
     ], fontsize=8, loc="upper left")
+    ax_z.set_ylim(0, 0.62)
     ax_z.set_xlabel("Estatística Z (desvios-padrão sob H0)")
     ax_z.set_ylabel("Densidade sob H0")
     ax_z.set_title("Teste Z: Z ~ N(0, 1), cauda direita")
 
-    fig.suptitle(f"G2 — Distribuição sob H0 (p ≤ {p0:g}), amostra de n = {n} execuções com {k} falhas", fontsize=12)
+    fig.suptitle(_pt(f"G2 — Distribuição sob H0 (p ≤ {p0:g}), amostra de n = {n} execuções com {k} falhas"), fontsize=12)
     return fig
 
 
