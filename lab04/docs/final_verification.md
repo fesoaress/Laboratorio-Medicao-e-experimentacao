@@ -1,6 +1,6 @@
 # Lab04 Final — Auditoria estatística e apresentação (Issue #84)
 
-## O que conseguimos fazer sem esperar o dashboard
+## Reprodução dos experimentos
 
 O código em \`lab04/src/final_audit.py\` verifica que os resultados de Q1/Q2 incluem:
 - pelo menos cinco tamanhos de efeito e um cenário de **efeito zero**;
@@ -11,26 +11,51 @@ O código em \`lab04/src/final_audit.py\` verifica que os resultados de Q1/Q2 in
 - ausência de duplicação de efeitos;
 - reprodução opcional exata do CSV pela seed e pelos parâmetros.
 
-Executar na raiz, após instalar as dependências de NumPy, SciPy e pytest:
+Execute na raiz, após instalar `lab04/requirements.txt`.
 
-\`\`\`bash
-python -m pytest -q lab04/tests/test_dashboard_integration.py
+```bash
+python -m pytest -q lab04/tests
 python -m lab04.src.final_audit --replay
-\`\`\`
+python -m lab04.src.final_audit --replay --csv lab04/results/s02_q3.csv
+```
 
-Esta auditoria cobre **a camada estatística, não a renderização final**. O teste não pode garantir que os gráficos G2/G3/G4 estejam corretos antes de os módulos de visualização estarem presentes.
+Os dois replays reproduzem seis efeitos cada, com 10.000 repetições por
+efeito e semente 42. Para a checagem independente da amostra real,
+conte `failure` na coluna `conclusion` e confira o indicador `failed`.
+São 169 IDs distintos e sete falhas. Com n e k, o p-valor exato é a
+soma das massas binomiais de k a n em p₀ = 0,05. A cauda normal no Z
+resulta em 0,6956 e a soma binomial em 0,7452.
 
-## Checagem de integração quando o dashboard estiver disponível
+Em Python 3.13.15, passaram **116 testes do Lab04** e **249 testes** na
+suíte global com as dependências de métricas do Lab02 instaladas. O smoke
+test confirma a ordem das sete seções. O teste de interação altera os
+controles de G2 e compara as tabelas oficiais antes e depois.
 
-- [ ] S01 (#77): dados reais novos, URL de origem, período, n, k, p̂ e exclusões documentadas.
-- [ ] S01 (#79): G1 e G2 exibem legendas, unidades, cores consistentes e interpretações.
-- [ ] S02 (#82): Q3 executado com n pequeno e 10.000 amostras por efeito, incluindo p_real=p₀.
-- [ ] S02 (#83): G3 mostra erro tipo I e referência 5%; G4 mostra pelo menos cinco efeitos começando em zero; as curvas refletem as contagens.
-- [ ] Tabela final: estatística, p-valor, tamanho do efeito e conclusão **para cada teste em dados reais**.
-- [ ] Seções do dashboard na ordem: cenário; dados/G1; testes/G2; erro tipo I/G3; poder/G4; dados reais; conclusão.
-- [ ] Quatro gráficos com 2–4 frases explicativas, links do dashboard e repo/Projects no topo; dashboard executa com comando único ou URL publicada.
-- [ ] Nenhum resultado simulado é apresentado como observado; não afirmar que p-valor é probabilidade de H₀ ser verdadeira.
-- [ ] Revisar README, CI, Issues/Projects, PRs e duração da apresentação (máximo 7 min).
+## Rastreabilidade
+
+Os quatro PRs históricos já têm seus commits em `Laboratorio-4`.
+
+| PR | Base no GitHub | Commit | Situação para o Lab04 |
+|---|---|---|---|
+| [#80](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/pull/80) | `main` | `150c1fe` | Fechado sem merge; código preservado na branch oficial |
+| [#87](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/pull/87) | `main` | `150c1fe` | Aberto; redundante para a branch oficial |
+| [#88](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/pull/88) | `lab04-s01-recovered` | `007847e` | Aberto; redundante para a branch oficial |
+| [#89](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/pull/89) | `lab04-s02-islayder` | `c75fcd5` | Aberto; redundante para a branch oficial |
+
+| Issue | Evidência e aceite técnico |
+|---|---|
+| #77 | `ddc8a89` · origem, exclusões, IDs e contagem conferidos no snapshot e nos testes |
+| #78 | `150c1fe` · testes unitários, mesma amostra e exemplo S01 reproduzido |
+| #79 | `df8c048`, `cab3840` · G1/G2 renderizados e separados por fonte |
+| #81 | `007847e` · seis efeitos, 10.000 repetições e replay de Q1/Q2 |
+| #82 | `d2ccd19` · Q3 compara erro tipo I e poder com a referência, com replay e limiares teóricos |
+| #83 | `68aeaee` · G3/G4 renderizados, testados contra as tabelas e comparados a 5% |
+| #84 | `c75fcd5` e PR final · auditoria, testes de integração e roteiro oral abaixo |
+| #85 | `bde91b5` e PR final · tabela real conferida, conclusão e [roteiro de Fernanda](apresentacao_fernanda.md) |
+| #86 | `38c1012` e PR final · sete seções, legendas, navegação, revisão visual local e [instruções de deploy](../README.md#publicação-no-streamlit-community-cloud) |
+
+O aceite em revisão, a publicação e o ensaio da apresentação de até sete
+minutos dependem do grupo. As Issues e os PRs históricos foram consultados.
 
 ## Respostas de Islayder — perguntas 2, 5, 7, 8 e 12
 
@@ -45,7 +70,3 @@ Esta auditoria cobre **a camada estatística, não a renderização final**. O t
 **12. Se α baixar de 0,05 para 0,01?** A região de rejeição fica mais exigente. Em geral, **erro tipo I cai e poder também cai**, se tamanho amostral e efeito permanecerem iguais; o risco de tipo II cresce. É preciso reexecutar/avaliar os dois testes com α=0,01, não reaproveitar as mesmas taxas de rejeição.
 
 Todos devem conhecer as 15 perguntas: a divisão é para organização, não limita a arguição do professor.
-
-## Dependências e status
-
-A S01 foi recuperada no PR #87; Q1/Q2 estão no PR #88. Esta Issue (#84) fica **parcialmente implementada** até existirem o dashboard e a análise Q3, com integração e validação finais. Nenhuma conclusão sobre os testes em dados reais deve ser inventada.

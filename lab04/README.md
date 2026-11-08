@@ -1,76 +1,124 @@
-# Lab04 — Testes de hipótese por dentro (P4: Z para proporção × binomial exato)
+# Lab04 — A taxa de falhas do CI ultrapassa 5%?
 
-Cenário: a taxa de falha de execuções de CI (GitHub Actions) ultrapassa a meta de 5%?
-H0: p ≤ 0,05 · H1: p > 0,05 (unilateral à direita) · α = 0,05 · 0 = sucesso, 1 = falha.
+Laboratório de Medição e Experimentação de Software da PUC Minas. No cenário
+P4, comparamos o teste Z para uma proporção e o teste binomial exato sobre as
+mesmas observações. A hipótese nula é **H₀: p ≤ 0,05** e a alternativa é
+**H₁: p > 0,05**. Ambos são unilaterais à direita, com **α = 0,05** e
+p-valores calculados na fronteira **p₀ = 0,05**. A regra adotada é rejeitar
+H₀ quando o p-valor é estritamente menor que α.
 
-## Instalação
+## Integrantes
+
+| Integrante | Contribuições |
+|---|---|
+| Islayder Jackson | Simulador, testes Z/binomial, Q1/Q2, auditoria estatística e testes |
+| Fernanda Soares | Coleta e validação dos dados reais, Q3, resultados reais e interpretação |
+| Vinicius Gomes | Dashboard Streamlit, gráficos Matplotlib G1–G4 e integração da interface |
+
+## Dados reais
+
+O snapshot [ci_runs.csv](data/ci_runs.csv) contém **169 execuções**, com
+**162 sucessos e sete falhas**. A unidade é uma execução do workflow
+**Test** (ID 1929523), na branch `master` do repositório `fastapi/fastapi`.
+A coleta usou a API pública do GitHub Actions para execuções de `push`
+concluídas de 1º de julho a 30 de setembro de 2026 (UTC). Incluímos
+`success` (0) e `failure` (1) e excluímos oito execuções canceladas do
+denominador. A regra de seleção, os links das execuções e a verificação do
+snapshot estão descritos no [cenário da S01](docs/cenario_s01.md).
+
+## Instalação e execução
+
+Na raiz do repositório, crie um ambiente virtual com Python 3.13.
 
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
+python -m venv .venv
+```
+
+Ative com `source .venv/bin/activate` em Linux/macOS ou com
+`.\.venv\Scripts\Activate.ps1` no PowerShell. Depois execute:
+
+```bash
 python -m pip install -r lab04/requirements.txt
+python -m streamlit run lab04/app.py
 ```
 
-## Executar o dashboard (um comando, a partir da raiz do repositório)
+O dashboard abre em `http://localhost:8501` por padrão. A barra lateral
+oferece navegação pelas sete seções. Os controles de tamanho, probabilidade
+e semente alteram a amostra ilustrativa de G1/G2. A meta e o α ajustáveis
+valem para a exploração de G2. O cenário oficial, os resultados reais e
+as simulações de G3/G4 usam p₀ e α de 5%.
 
-```bash
-streamlit run lab04/app.py
-```
+## Estrutura
 
-## Testes automatizados
+| Caminho | Conteúdo |
+|---|---|
+| `app.py` | Cenário, dados (G1), testes (G2), erro tipo I (G3), poder (G4), resultados reais e conclusão |
+| `src/simulation.py`, `src/stat_tests.py` | Gerador Bernoulli e testes aplicados à mesma amostra |
+| `src/real_data.py`, `src/real_results.py`, `src/real_summary.py` | Validação dos dados, resultados, efeito e intervalo de confiança |
+| `src/s02_experiments.py`, `src/robustness.py` | Simulações de Q1/Q2 e Q3 |
+| `src/plots.py`, `src/captions.py`, `src/s02_results.py` | Gráficos, legendas e preparação das tabelas |
+| `data/`, `results/` | Snapshot real e saídas simuladas, em diretórios separados |
+| `tests/`, `docs/` | Testes automatizados, metodologia e preparação da apresentação |
+
+## Reprodução e validação
 
 ```bash
 python -m pytest -q lab04/tests
+python -m lab04.src.final_audit --replay
+python -m lab04.src.final_audit --replay --csv lab04/results/s02_q3.csv
 ```
 
-## Reproduzir os dados e as simulações
+O replay verifica e reproduz os valores armazenados, incluindo contagens,
+taxas de rejeição e erros-padrão. Para gerar novamente as saídas versionadas:
 
 | Etapa | Comando | Saída |
 |---|---|---|
-| Coleta dos dados reais (Issue #77) | `python -m lab04.src.collect_ci_runs` | `lab04/data/ci_runs.csv` |
-| Q1/Q2 (Issue #81) | `python -m lab04.src.s02_experiments` | `lab04/results/s02_q1_q2.csv` |
-| Q3 (Issue #82) | ver `lab04/src/robustness.py` | `lab04/results/s02_q3.csv` |
+| Exemplo simulado S01 | `python -m lab04.src.example_s01` | JSON no terminal, versionado em `results/s01_example.json` |
+| Q1/Q2, n = 200 | `python -m lab04.src.s02_experiments` | `results/s02_q1_q2.csv` |
+| Q3, n = 30 | `python -m lab04.src.robustness` | `results/s02_q3.csv` |
 
-O dashboard lê essas tabelas; G3/G4 aparecem conforme os arquivos existirem. Para apontar para
-outra pasta de resultados: `LAB04_RESULTS_DIR=/caminho streamlit run lab04/app.py`.
+Q1 usa p = p₀ para estimar o erro tipo I. Q2 usa seis efeitos de 0 a 15
+pontos percentuais, com p = 5%, 7,5%, 10%, 12,5%, 15% e 20%. O ponto de
+efeito zero corresponde a Q1. Q3 repete o desenho com n = 30. Em cada
+condição, a semente é **42** e há **10.000 repetições por cenário**.
+A mesma contagem de falhas em cada repetição alimenta os dois testes.
+Para ler tabelas de outro diretório, defina `LAB04_RESULTS_DIR` antes de
+executar o app. Para refazer a coleta real, execute
+`python -m lab04.src.collect_ci_runs`. Esse comando grava o CSV novamente
+com as conclusões disponíveis na API no momento da consulta.
 
-## Itens que o grupo precisa preencher antes da entrega
+## Interpretação
 
-Em `lab04/src/delivery_config.py`: `DASHBOARD_URL`, `REPO_URL`, `EXPECTATIVA_PREVIA` e
-`RECOMENDACAO`. Enquanto estiverem vazios, o dashboard mostra uma caixa de pendências no topo
-e avisos na seção 7. Quando todos estiverem preenchidos, os avisos desaparecem.
+- **Amostra real.** A taxa observada foi 4,14%, efeito de −0,86 ponto
+  percentual em relação à meta. O Z foi −0,512 (p = 0,6956) e o binomial
+  exato observou K = 7 (p = 0,7452). A amostra fornece evidência
+  insuficiente de que a taxa excede 5%. A seção 6 mostra também o h de Cohen
+  e o intervalo bilateral exato de 95% para a proporção.
+- **Q1 e Q2.** Em n = 200, ambos rejeitaram 4,48% sob H₀ e tiveram o mesmo
+  poder em todos os cenários. As duas regras rejeitam a partir de 16
+  falhas nesse desenho.
+- **Q3.** Em n = 30, o Z foi liberal (6,05%) e o binomial exato,
+  conservador (1,69%). As taxas teóricas sob p₀ são cerca de 6,08% e 1,56%.
+  Com apenas 1,5 falha esperada, o Z rejeita a partir de quatro falhas e o
+  exato a partir de cinco. A regra menos exigente do Z eleva o poder e
+  também a frequência de falsos alarmes. Para falhas raras, prefira o
+  binomial exato para respeitar o nível nominal sob o modelo.
 
-## Smoke test da entrega
+A inferência supõe execuções independentes e probabilidade constante.
+Execuções próximas podem compartilhar causas de falha e a taxa pode variar
+no tempo. A amostra cobre um único workflow, branch e período. As taxas de
+G3/G4 são estimativas de Monte Carlo para os cenários definidos.
 
-```bash
-python -m pytest -q lab04/tests/test_final_dashboard.py
-```
+## Publicação no Streamlit Community Cloud
 
-Confere a ordem das sete seções, a presença das legendas, a tabela dos dados reais e a ausência de
-`provisional_ci_runs.csv`.
-
-## Seções do dashboard (ordem do enunciado)
-
-1. Cenário · 2. Os dados (G1) · 3. Como os testes funcionam (G2) · 4. Erro tipo I (G3) ·
-5. Poder (G4) · 6. Dados reais (tabela) · 7. Conclusão
-
-## Estrutura do dashboard
-
-| Arquivo | Conteúdo |
-|---|---|
-| `lab04/app.py` | Dashboard Streamlit; seções registradas em `SECTIONS` |
-| `lab04/src/plots.py` | `plot_g1`, `plot_g2`, `plot_g3`, `plot_g4`; cor fixa por teste (Z azul, binomial laranja) |
-| `lab04/src/captions.py` | Textos de 2–4 frases por gráfico (G3/G4 calculados a partir das tabelas) |
-| `lab04/src/s02_results.py` | Validação e preparo das tabelas de Q1/Q2/Q3 |
-| `lab04/src/real_results.py` | Tabela e decisão da seção 6 (testes sobre os dados reais, Issue #85) |
-| `lab04/src/real_summary.py` | Tamanho do efeito na seção 6 (h de Cohen e IC exato de 95%) |
-| `lab04/src/conclusion.py` | Achados de G3/G4 calculados das tabelas e ressalvas da seção 7 |
-| `lab04/src/delivery_config.py` | Links e textos que só o grupo pode preencher |
-| `lab04/src/formatting.py` | Formatação em português (vírgula decimal) |
-| `lab04/src/data_adapter.py` | Carrega `lab04/data/ci_runs.csv` via `real_data.load_ci_runs` |
-
-Dados **reais** (G1, seção 1 e 6) e dados **simulados** (G1 à direita, G2, G3, G4) são sempre
-rotulados; os resultados de Monte Carlo não usam observações reais.
-
-## Reprodutibilidade
-
-Semente fixa (padrão 42); a mesma entrada gera os mesmos gráficos.
+1. Após revisão e integração do PR, entre no [Streamlit Community Cloud](https://share.streamlit.io/)
+   com a conta GitHub com acesso ao repositório.
+2. Selecione **Create app** e indique que deseja publicar um app do GitHub.
+3. Preencha **Repository** com `fesoaress/Laboratorio-Medicao-e-experimentacao`,
+   **Branch** com `Laboratorio-4` e **Main file path** com `lab04/app.py`.
+4. Em **Advanced settings**, selecione **Python 3.13**. O app lê arquivos
+   versionados e dispensa segredos. O Cloud encontra `lab04/requirements.txt`
+   no diretório do entry point. Confira a [organização de arquivos do Streamlit](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/file-organization).
+5. Clique em **Deploy**, aguarde a instalação e abra a URL gerada. Confira
+   as sete seções e os quatro gráficos. Depois registre a URL verificada em
+   `src/delivery_config.py` para exibir o link no topo do app.
