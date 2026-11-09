@@ -98,7 +98,16 @@ def test_g3_bars_match_aggregated_table(cond):
     assert b_bars[0].get_facecolor()[:3] == pytest.approx(matplotlib.colors.to_rgb(COLOR_BINOMIAL))
     hlines = [ln.get_ydata()[0] for ln in ax.lines]
     assert 0.05 in hlines
-    assert ax.get_xlabel() and ax.get_ylabel() and ax.get_title()
+    assert ax.get_xlabel() and ax.get_ylabel() == "Taxa de erro tipo I (%)"
+    assert fig.texts[0].get_text().startswith("G3")
+    for bars, key in ((z_bars, "z"), (b_bars, "binomial")):
+        errors = next(c for c in ax.containers
+                      if isinstance(c, matplotlib.container.ErrorbarContainer)
+                      and np.allclose(c.lines[2][0].get_segments()[0][0][0],
+                                      bars[0].get_x() + bars[0].get_width() / 2))
+        limits = np.array(errors.lines[2][0].get_segments())[:, :, 1]
+        assert limits[:, 0] == pytest.approx(t1[f"{key}_rate"] - 1.96 * t1[f"{key}_se"])
+        assert limits[:, 1] == pytest.approx(t1[f"{key}_rate"] + 1.96 * t1[f"{key}_se"])
 
 
 def test_g3_values_come_from_zero_effect_rows(cond, ref):
@@ -114,25 +123,27 @@ def test_g3_values_come_from_zero_effect_rows(cond, ref):
 def test_g4_lines_match_aggregated_table_and_start_at_zero(cond):
     pw = power_table(cond)
     fig = plot_g4(pw)
-    ax = fig.axes[0]
-    curves = [ln for ln in ax.lines if len(ln.get_xdata()) == len(P_VALUES)]
-    assert len(curves) == 4  # 2 testes × 2 condições
-    for ln in curves:
-        assert ln.get_xdata()[0] == 0
-        color = matplotlib.colors.to_hex(ln.get_color())
-        assert color in (COLOR_Z, COLOR_BINOMIAL)
-        for cname, g in pw.groupby("condition", sort=False):
-            col = "z_rate" if color == COLOR_Z else "binomial_rate"
-            if np.allclose(ln.get_ydata(), g[col].to_numpy()):
-                break
-        else:
-            pytest.fail("curva sem correspondência nos dados agregados")
-    assert ax.get_xlim()[0] == 0
+    assert len(fig.axes) == 2
+    small, reference = fig.axes
+    assert small.get_xlim() == reference.get_xlim()
+    assert small.get_shared_x_axes().joined(small, reference)
+    for ax, n in zip(fig.axes, (30, 200)):
+        group = pw[pw["n"] == n]
+        assert ax.get_title(loc="left") == group["condition"].iloc[0]
+        assert ax.get_xlim()[0] == 0
+        assert ax.get_ylim() == (0, 1)
+        z, exact = ax.lines
+        for line, col, color in ((z, "z_rate", COLOR_Z), (exact, "binomial_rate", COLOR_BINOMIAL)):
+            assert list(line.get_xdata()) == list(group["effect_pp"])
+            assert list(line.get_ydata()) == pytest.approx(list(group[col]))
+            assert line.get_color() == color
+        assert z.get_marker() != exact.get_marker()
+        assert z.get_linestyle() != exact.get_linestyle()
 
 
 def test_captions_are_neutral_and_mention_simulation(cond):
     t1, pw = type1_table(cond), power_table(cond)
-    c3, c4 = g3_caption(t1), g4_caption(pw, 0.05)
+    c3, c4 = g3_caption(t1), g4_caption(pw)
     assert "simulados" in c3 and "5,00%" in c3 and "10.000" in c3
     assert "10.000" in c4 and "venc" not in (c3 + c4).lower() and "melhor" not in (c3 + c4).lower()
 

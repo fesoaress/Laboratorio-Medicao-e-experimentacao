@@ -40,10 +40,48 @@ def test_g1_g2_build_without_error(n, p):
     sim = simulate_runs(n, p, seed=42)
     res = evaluate_tests(sim)
     real, _, _ = get_real_outcomes()
-    assert len(plot_g1(real, sim).axes) >= 2
+    g1 = plot_g1(real, sim)
+    assert len(g1.axes) == 2
+    assert g1.axes[0].get_subplotspec().get_gridspec().get_geometry() == (1, 2)
+    for ax, outcomes in zip(g1.axes, (real, sim)):
+        n, k = len(outcomes), outcomes.sum()
+        assert ax.get_ylim() == (0, 1)
+        assert [bar.get_height() for bar in ax.patches] == pytest.approx([(n - k) / n, k / n])
+        assert [line.get_segments()[0][0, 1] for line in ax.collections] == pytest.approx([0.95, 0.05])
+        assert f"{k}/{n}" in ax.texts[1].get_text()
     assert len(plot_g2(res).axes) == 2
     assert g1_caption(len(real), int(real.sum()), n, int(sim.sum()), 0.05)
     assert "fronteira p = p₀" in g2_caption(res)
+
+
+def test_g2_extreme_exploration_preserves_scale_and_marks_off_axis_observation():
+    results = evaluate_tests(np.ones(1000), p0=0.01)
+    binomial, normal = plot_g2(results).axes
+    assert binomial.get_xlim()[1] < results["k"]
+    assert normal.get_xlim() == (-4.0, 4.0)
+    for ax in (binomial, normal):
+        assert any(text.get_text() == "Observado →" for text in ax.texts)
+
+
+def test_g2_legend_matches_the_two_tail_fills_and_the_rejection_markers():
+    simulated = simulate_runs(30, 0.10, seed=42)
+    fig = plot_g2(evaluate_tests(simulated))
+    binomial, normal = fig.axes
+    legend = fig.legends[0]
+    orange, blue, rejection, observed, threshold = legend.legend_handles
+    assert [entry.get_text() for entry in legend.get_texts()[:2]] == [
+        "Cauda do p-valor · binomial", "Cauda do p-valor · Z"
+    ]
+    assert orange.get_facecolor() == pytest.approx(binomial.containers[1].patches[0].get_facecolor())
+    assert blue.get_facecolor() == pytest.approx(normal.collections[0].get_facecolor()[0])
+    assert rejection.get_hatch() == binomial.containers[2].patches[0].get_hatch()
+    assert rejection.get_hatch() == normal.collections[1].get_hatch()
+    assert observed.get_linestyle() == "-"
+    assert threshold.get_linestyle() == "--"
+    for ax in fig.axes:
+        for key in (observed, threshold):
+            assert any(line.get_color() == key.get_color() and line.get_linestyle() == key.get_linestyle()
+                       for line in ax.lines)
 
 
 def test_streamlit_app_runs_without_exception():

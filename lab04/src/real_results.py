@@ -64,8 +64,9 @@ def interpret_real_results(result: dict) -> str:
         decision = f"Ambos os testes encontraram evidência de taxa de falha acima de {target} (α={level})."
     elif not z and not exact:
         decision = (
-            f"Nenhum dos testes encontrou evidência de taxa de falha acima de {target} "
-            f"(α={level}); isso não comprova que a taxa verdadeira seja menor ou igual à meta."
+            f"Ambos os testes deixam de rejeitar H₀ (α = {level}). "
+            f"A evidência de que a taxa de falha ultrapassa {target} é insuficiente. "
+            "Isso não comprova que a taxa verdadeira seja menor ou igual à meta."
         )
     else:
         decision = (

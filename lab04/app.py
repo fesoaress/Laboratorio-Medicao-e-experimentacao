@@ -19,15 +19,19 @@ import streamlit as st
 from lab04.src import delivery_config as cfg
 from lab04.src.captions import g1_caption, g2_caption, g3_caption, g4_caption
 from lab04.src.data_adapter import get_real_dataset
-from lab04.src.plots import plot_g1, plot_g2, plot_g3, plot_g4
-from lab04.src.conclusion import limitations, power_findings, type1_findings
-from lab04.src.formatting import num, p_value, pct, thousands
+from lab04.src.plots import critical_k, plot_g1, plot_g2, plot_g3, plot_g4
+from lab04.src.conclusion import limitations, power_sentence
+from lab04.src.formatting import num, p_value, pct, pp, thousands
 from lab04.src.real_results import calculate_real_results, interpret_real_results
 from lab04.src.real_summary import effect_summary, effect_text
-from lab04.src.robustness import null_rejection_regions
 from lab04.src.s02_results import combine_conditions, load_s02_tables, power_table, results_dir, type1_table
 from lab04.src.simulation import simulate_runs
 from lab04.src.stat_tests import evaluate_tests
+
+
+def decision_text(rejected: bool) -> str:
+    return "Rejeita H₀" if rejected else "Não rejeita H₀"
+
 
 # ---------------------------------------------------------------- contexto
 def load_s02_context() -> dict:
@@ -74,15 +78,14 @@ def section_cenario(ctx: dict) -> None:
         f"São incluídas apenas execuções com conclusão `success` (0) ou `failure` (1). "
         f"Snapshot: `{ctx['source']}`."
     )
-    st.caption("Execuções de CI podem ser correlacionadas e a taxa de falha pode variar no tempo; "
-               "o modelo Bernoulli i.i.d. é uma simplificação.")
 
 
 def simulation_params_text(ctx: dict) -> str:
     """Parâmetros das simulações e de onde vieram, lidos das tabelas de G3/G4 (nunca fixos no código)."""
     real_n = len(ctx["real"])
-    text = (f"**Amostra ilustrativa (G1/G2)** · n = {ctx['n']}, "
-            f"probabilidade de falha = {pct(ctx['true_p'], 0)}, semente {ctx['seed']}.")
+    text = (f"**Cenário hipotético (G1/G2)** · n = {ctx['n']}, "
+            f"probabilidade escolhida de falha = {pct(ctx['true_p'], 0)}, semente {ctx['seed']}. "
+            "A taxa estimada nos dados reais aparece no painel de observações.")
     cond = ctx.get("s02")
     if cond is None:
         return text
@@ -106,7 +109,8 @@ def section_dados(ctx: dict) -> None:
     fig = plot_g1(real, sim, p0=cfg.P0)
     st.pyplot(fig)
     st.caption(g1_caption(len(real), int(real.sum()), len(sim), int(sim.sum()), cfg.P0))
-    st.markdown(simulation_params_text(ctx))
+    with st.expander("Parâmetros e justificativa das simulações", expanded=True):
+        st.markdown(simulation_params_text(ctx))
 
 
 def section_testes(ctx: dict) -> None:
@@ -115,11 +119,17 @@ def section_testes(ctx: dict) -> None:
     st.caption(f"Exploração da mesma amostra simulada do G1 · p₀ = {pct(res['p0'], 0)} e α = {pct(res['alpha'], 0)}.")
     st.pyplot(plot_g2(res))
     st.caption(g2_caption(res))
-    c1, c2 = st.columns(2)
-    c1.metric("Teste Z — p-valor", p_value(res["z_p_value"]))
-    c1.caption("Rejeita H0" if res["reject_z"] else "Não rejeita H0")
-    c2.metric("Binomial exato — p-valor", p_value(res["binomial_p_value"]))
-    c2.caption("Rejeita H0" if res["reject_binomial"] else "Não rejeita H0")
+    z, exact = st.columns(2)
+    z.metric("Teste Z · p-valor", p_value(res["z_p_value"]))
+    z.markdown(f"**Observado** · Z = {num(res['z_statistic'], 3)}  \n"
+               f"**Rejeição** · Z > {num(res['z_critical'], 3)}  \n"
+               f"**Decisão** · {decision_text(res['reject_z'])}")
+    exact.metric("Binomial exato · p-valor", p_value(res["binomial_p_value"]))
+    k_crit = critical_k(res["n"], res["p0"], res["alpha"])
+    region = f"K ≥ {k_crit}" if k_crit is not None else "região vazia neste cenário"
+    exact.markdown(f"**Observado** · K = {res['k']} falhas  \n"
+                   f"**Rejeição** · {region}  \n"
+                   f"**Decisão** · {decision_text(res['reject_binomial'])}")
     with st.expander("Detalhes numéricos da amostra simulada"):
         st.json(res)
 
@@ -144,6 +154,7 @@ def section_erro_tipo_i(ctx: dict) -> None:
     if _s02_unavailable(ctx):
         return
     t1 = type1_table(ctx["s02"])
+    st.caption("Q1 · Simulação oficial sob H₀")
     st.pyplot(plot_g3(t1))
     st.caption(g3_caption(t1))
     with st.expander("Tabela agregada usada no G3 (dados simulados)"):
@@ -155,8 +166,9 @@ def section_poder(ctx: dict) -> None:
     if _s02_unavailable(ctx):
         return
     pw = power_table(ctx["s02"])
+    st.caption("Q2 e Q3 · Simulação oficial por tamanho do efeito")
     st.pyplot(plot_g4(pw))
-    st.caption(g4_caption(pw, float(pw["alpha"].iloc[0])))
+    st.caption(g4_caption(pw))
     with st.expander("Tabela agregada usada no G4 (dados simulados)"):
         st.dataframe(pw, hide_index=True)
 
@@ -166,54 +178,79 @@ def section_dados_reais(ctx: dict) -> None:
     res = ctx["real_results"]
     st.markdown(f"**{res['n']} execuções** · **{res['k']} falhas** · **{pct(res['p_hat'])} de falhas observadas**")
     rows = res["table_rows"]
-    verdict = lambda rejected: "Rejeita H₀" if rejected else "Não rejeita H₀"  # noqa: E731
     table = pd.DataFrame({
         "Teste": [r["test"] for r in rows],
         "Estatística": [f"{r['statistic_name']} = " + (num(r["statistic"], 3) if r["statistic_name"] == "Z"
                                                        else str(int(r["statistic"]))) for r in rows],
-        "p-valor (unilateral à direita)": [p_value(r["p_value"]) for r in rows],
+        "p-valor": [p_value(r["p_value"]) for r in rows],
         "Efeito p̂−p₀ (p.p.)": [num(r["effect_pp"]) for r in rows],
-        "Conclusão": [verdict(r["reject_h0"]) for r in rows],
+        "Conclusão": [decision_text(r["reject_h0"]) for r in rows],
     })
     st.dataframe(table, hide_index=True)
-    st.caption(interpret_real_results(res))
+    st.caption("Em telas estreitas, deslize a tabela para ver as demais colunas.")
     st.caption(effect_text(effect_summary(res["k"], res["n"], res["p0"])))
-    st.caption(f"Hipóteses e α do cenário oficial (p₀ = {num(res['p0'])}, α = {num(res['alpha'])}).")
+    st.caption(f"Hipóteses e α do cenário oficial (p₀ = {num(res['p0'])}, α = {num(res['alpha'])}). "
+               "Os p-valores são unilaterais à direita e o efeito é a diferença em pontos percentuais.")
 
 
 def section_conclusao(ctx: dict) -> None:
     st.header("7. Conclusão", anchor="conclusao")
-    st.markdown("#### Expectativa inicial")
+    real = ctx["real_results"]
+    st.markdown(
+        f"Das {real['n']} execuções observadas, {real['k']} falharam ({pct(real['p_hat'])}). "
+        + interpret_real_results(real)
+    )
+    st.markdown("### Expectativa inicial")
     st.markdown(cfg.EXPECTATIVA_PREVIA)
-    st.markdown("#### O que a simulação encontrou")
+    st.markdown("### O que a simulação encontrou")
     cond = ctx["s02"]
     if cond is None:
         st.markdown("⚠️ **Achados indisponíveis:** faltam as tabelas de simulação (seções 4 e 5).")
     else:
-        t1, pw = type1_table(cond), power_table(cond)
-        st.markdown("**Q1 · Erro tipo I**\n\n" + "\n".join(f"- {t}" for t in type1_findings(t1)))
-        st.markdown("**Q2 · Poder**\n\n" + "\n".join(f"- {t}" for t in power_findings(pw)))
-        critical = cond.loc[~cond["normal_ok"], ["n", "p0", "alpha"]].drop_duplicates()
-        for n, p0, alpha in critical.itertuples(index=False, name=None):
-            region = null_rejection_regions(int(n), p0, alpha)
-            z_size = pct(region["z_actual_null_rejection"])
-            exact_size = pct(region["binomial_actual_null_rejection"])
+        type1 = type1_table(cond)
+        for row in type1.loc[type1["normal_ok"]].itertuples(index=False):
+            gap = max(abs(row.z_rate - row.alpha), abs(row.binomial_rate - row.alpha))
             st.markdown(
-                f"**Q3 · Aproximação normal com n = {int(n)}**. As contagens esperadas sob H₀ são "
-                f"{num(n * p0, 1)} falhas e {num(n * (1 - p0), 1)} sucessos. A aproximação Z é "
-                f"imprecisa quando uma delas é pequena. Pelas regiões de rejeição, as taxas teóricas "
-                f"sob p = p₀ são {z_size} para o Z e {exact_size} para o binomial exato."
+                f"**Q1 · Erro tipo I (n = {row.n})** · Z {pct(row.z_rate)} e binomial exato "
+                f"{pct(row.binomial_rate)}. A maior distância ao nível nominal de {pct(row.alpha, 0)} "
+                f"foi de {pp(100 * gap, 2)}."
             )
+
+        power = []
+        for _, group in power_table(cond).sort_values("effect_pp").groupby("condition", sort=False):
+            positive = group[group["effect_pp"] > 0]
+            comparison = power_sentence(group)
+            if not positive.empty:
+                if group["z_rate"].equals(group["binomial_rate"]):
+                    comparison = "as curvas coincidiram em todos os efeitos estudados"
+                else:
+                    example = positive.iloc[0]
+                    comparison += (f". A {pp(example['effect_pp'])} de efeito, o poder foi de "
+                                   f"{pct(example['z_rate'])} no Z e {pct(example['binomial_rate'])} "
+                                   "no binomial exato")
+            power.append(f"Em n = {int(group['n'].iloc[0])}, {comparison}.")
         st.markdown(
-            "A contagem de falhas só muda em saltos inteiros, o que pode deixar o binomial exato "
-            "abaixo de α. Compare o poder junto com o erro tipo I. Uma regra de rejeição menos exigente "
-            "pode aumentar ambos. Para um mesmo efeito, aumentar n tende a elevar o poder."
+            "**Q2 · Poder** · " + " ".join(power)
+            + " Uma taxa de rejeição maior sob H₁ indica mais poder e deve ser avaliada junto "
+            "ao erro tipo I sob H₀."
         )
-    st.markdown("#### Recomendação")
-    st.markdown(cfg.RECOMENDACAO)
-    st.markdown("#### Ressalvas")
-    conds = [] if ctx["s02"] is None else list(ctx["s02"]["condition"].cat.categories)
-    st.markdown("\n".join(f"- {t}" for t in limitations(ctx["real_df"], len(ctx["real"]), conds)))
+        critical = cond.loc[~cond["normal_ok"], ["condition", "p0"]].drop_duplicates()
+        for row in type1.merge(critical, on="condition").itertuples(index=False):
+            st.markdown(
+                f"**Q3 · Aproximação normal com n = {row.n}** · Sob H₀, são esperadas "
+                f"{num(row.n * row.p0, 1)} falhas e {num(row.n * (1 - row.p0), 1)} sucessos. "
+                "A menor contagem compromete a aproximação normal. Na simulação, o erro tipo I "
+                f"foi de {pct(row.z_rate)} para o Z ({row.z_status}) e "
+                f"{pct(row.binomial_rate)} para o binomial exato ({row.binomial_status}). "
+                "A cauda binomial muda em saltos a cada falha adicional. Por isso, o menor "
+                "número de falhas que permite rejeitar H₀ pode deixar o erro tipo I teórico abaixo de α."
+            )
+    st.markdown("### Recomendação")
+    st.markdown(
+        cfg.RECOMENDACAO + " Em amostras pequenas, esse controle pode vir acompanhado de menor poder."
+    )
+    st.markdown("### Limitações")
+    st.markdown("\n".join(f"- {item}" for item in limitations(len(ctx["real"]))))
 
 
 SECTIONS = [section_cenario, section_dados, section_testes, section_erro_tipo_i, section_poder,
@@ -229,6 +266,8 @@ def main() -> None:
     links = [f"[Repositório]({cfg.REPO_URL}/tree/Laboratorio-4/lab04)"]
     if cfg.DASHBOARD_URL:
         links.append(f"[Dashboard publicado]({cfg.DASHBOARD_URL})")
+    if cfg.PROJECTS_URL:
+        links.append(f"[GitHub Projects]({cfg.PROJECTS_URL})")
     st.markdown(" · ".join(links))
 
     with st.sidebar:
@@ -243,20 +282,21 @@ def main() -> None:
             "7. [Conclusão](#conclusao)"
         )
         st.divider()
-        st.header("Amostra simulada")
+        st.subheader("Amostra simulada")
         st.caption("Ajuste a amostra de G1 e G2.")
         n = st.number_input("n (execuções de CI)", min_value=5, max_value=1000, value=30, step=5)
         true_p = st.slider("Probabilidade de falha na simulação", 0.0, 0.5, 0.10, 0.01)
         seed = st.number_input("Semente", min_value=0, value=42, step=1)
-        st.header("Hipóteses do G2")
+        st.subheader("Hipóteses do G2")
         st.caption("Explore outra meta ou outro α no G2. O cenário oficial permanece em 5%.")
         p0 = st.slider("Meta p₀", 0.01, 0.20, cfg.P0, 0.01)
         alpha = st.select_slider("α", options=[0.01, 0.05, 0.10], value=cfg.ALPHA)
 
     ctx = build_context(int(n), float(true_p), int(seed), float(p0), float(alpha))
-    for section in SECTIONS:
+    for index, section in enumerate(SECTIONS):
+        if index:
+            st.divider()
         section(ctx)
-        st.divider()
 
 
 if __name__ == "__main__":  # `streamlit run` e AppTest executam o script como __main__
