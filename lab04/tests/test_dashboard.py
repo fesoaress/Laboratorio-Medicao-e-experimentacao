@@ -62,6 +62,27 @@ def test_g2_extreme_exploration_preserves_scale_and_marks_off_axis_observation()
         assert any(text.get_text() == "Observado →" for text in ax.texts)
 
 
+def test_g2_legend_matches_the_two_tail_fills_and_the_rejection_markers():
+    simulated = simulate_runs(30, 0.10, seed=42)
+    fig = plot_g2(evaluate_tests(simulated))
+    binomial, normal = fig.axes
+    legend = fig.legends[0]
+    orange, blue, rejection, observed, threshold = legend.legend_handles
+    assert [entry.get_text() for entry in legend.get_texts()[:2]] == [
+        "Cauda do p-valor · binomial", "Cauda do p-valor · Z"
+    ]
+    assert orange.get_facecolor() == pytest.approx(binomial.containers[1].patches[0].get_facecolor())
+    assert blue.get_facecolor() == pytest.approx(normal.collections[0].get_facecolor()[0])
+    assert rejection.get_hatch() == binomial.containers[2].patches[0].get_hatch()
+    assert rejection.get_hatch() == normal.collections[1].get_hatch()
+    assert observed.get_linestyle() == "-"
+    assert threshold.get_linestyle() == "--"
+    for ax in fig.axes:
+        for key in (observed, threshold):
+            assert any(line.get_color() == key.get_color() and line.get_linestyle() == key.get_linestyle()
+                       for line in ax.lines)
+
+
 def test_streamlit_app_runs_without_exception():
     testing = pytest.importorskip("streamlit.testing.v1")
     at = testing.AppTest.from_file(str(APP), default_timeout=60).run()

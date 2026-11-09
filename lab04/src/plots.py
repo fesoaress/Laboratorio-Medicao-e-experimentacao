@@ -130,7 +130,8 @@ def plot_g2(results: dict) -> Figure:
     ax_z.plot(xs, norm.pdf(xs), color=COLOR_Z, linewidth=2.0)
     tail_x = xs[xs >= z_obs]
     rejection_x = xs[xs >= z_crit]
-    ax_z.fill_between(tail_x, norm.pdf(tail_x), color=COLOR_Z, alpha=0.46)
+    z_tail_alpha = 0.46
+    ax_z.fill_between(tail_x, norm.pdf(tail_x), color=COLOR_Z, alpha=z_tail_alpha)
     ax_z.fill_between(rejection_x, norm.pdf(rejection_x), facecolor="none",
                       edgecolor=COLOR_OBS, hatch="///", linewidth=0)
     _observed_line(ax_z, z_obs, lo, hi)
@@ -140,8 +141,9 @@ def plot_g2(results: dict) -> Figure:
     ax_z.set_title("Teste Z · aproximação normal N(0, 1)", loc="left", fontsize=12)
 
     fig.legend(handles=[
-        Patch(facecolor="#9dabb7", label="Cauda do p-valor"),
-        Patch(facecolor="white", edgecolor=COLOR_OBS, hatch="///", label="Rejeição"),
+        Patch(facecolor=COLOR_BINOMIAL, label="Cauda do p-valor · binomial"),
+        Patch(facecolor=COLOR_Z, alpha=z_tail_alpha, label="Cauda do p-valor · Z"),
+        Patch(facecolor="white", edgecolor=COLOR_OBS, hatch="///", label="Região de rejeição"),
         Line2D([], [], color=COLOR_OBS, linewidth=2.3, label="Valor observado"),
         Line2D([], [], color=COLOR_CRIT, linestyle="--", label="Limiar crítico"),
     ], loc="outside lower center", ncols=2, frameon=False, fontsize=11)

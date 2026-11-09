@@ -40,6 +40,13 @@ def run_app():
     return testing.AppTest.from_file(str(APP), default_timeout=90).run()
 
 
+def conclusion_text(at):
+    elements = list(at.main)
+    start = next(i for i, element in enumerate(elements)
+                 if element.type == "header" and element.value == "7. Conclusão")
+    return "\n".join(element.value for element in elements[start:] if element.type == "markdown")
+
+
 def test_sections_follow_assignment_order(results_dir):
     at = run_app()
     assert not at.exception
@@ -86,9 +93,29 @@ def test_power_direction_cases():
     assert "muda de lado" in power_sentence(_curve([.3, .4], [.2, .5]))
 
 
+def test_conclusion_uses_versioned_results(monkeypatch):
+    monkeypatch.delenv("LAB04_RESULTS_DIR", raising=False)
+    at = run_app()
+    assert not at.exception
+    conclusion = conclusion_text(at)
+    q1 = next(line for line in conclusion.splitlines() if "Q1 · Erro tipo I" in line)
+    assert q1.count("4,48%") == 2 and "0,52 pp" in q1
+    for expected in ("169 execuções", "7 falharam (4,14%)", "-0,86 p.p.", "rejeitar H₀",
+                     "evidência", "não comprova", "n = 200, as curvas coincidiram",
+                     "A 2,5 pp de efeito, o poder foi de 18,56% no Z e 7,10% no binomial exato",
+                     "1,5 falhas", "6,05% para o Z (liberal)",
+                     "1,69% para o binomial exato (conservador)"):
+        assert expected in conclusion
+
+
 def test_exploration_changes_g2_and_preserves_official_results(results_dir):
     at = run_app()
     official_tables = [table.value.copy() for table in at.dataframe]
+    initial_conclusion = conclusion_text(at)
+    for expected in ("Z 5,20% e binomial exato 3,80%",
+                     "A 2,5 pp de efeito, o poder foi de 9,00% no Z e 12,00% no binomial exato",
+                     "0,60% para o Z (conservador)", "2,50% para o binomial exato (conservador)"):
+        assert expected in initial_conclusion
     initial_p = at.metric[0].value
     at.sidebar.number_input[0].set_value(40)
     at.sidebar.slider[0].set_value(0.15)
@@ -103,7 +130,8 @@ def test_exploration_changes_g2_and_preserves_official_results(results_dir):
     assert len(at.dataframe) == len(official_tables) == 3
     for table, original in zip(at.dataframe, official_tables):
         pd.testing.assert_frame_equal(table.value, original)
-    conclusion = " ".join(m.value for m in at.markdown)
+    conclusion = conclusion_text(at)
+    assert conclusion == initial_conclusion
     for expected in ("Expectativa inicial", "Q1 · Erro tipo I", "Q2 · Poder", "Q3 · Aproximação normal",
                      "prefira o binomial exato"):
         assert expected in conclusion

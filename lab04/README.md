@@ -55,9 +55,9 @@ nos rótulos. G2 separa o p-valor observado da região crítica. G3 apresenta as
 taxas de erro tipo I e a incerteza de Monte Carlo, e G4 compara o poder em
 painéis com escalas compartilhadas.
 
-O link do GitHub Projects fica pendente de confirmação do quadro associado
-ao Lab04. Quando confirmado, ele pode ser registrado em `PROJECTS_URL`
-em `src/delivery_config.py`.
+O grupo precisa fornecer ou confirmar a URL do quadro GitHub Projects
+associado ao Lab04. Depois de verificado, o endereço pode ser registrado
+em `PROJECTS_URL` no arquivo `src/delivery_config.py`.
 
 ## Estrutura
 

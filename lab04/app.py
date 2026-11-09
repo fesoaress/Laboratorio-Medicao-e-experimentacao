@@ -20,11 +20,10 @@ from lab04.src import delivery_config as cfg
 from lab04.src.captions import g1_caption, g2_caption, g3_caption, g4_caption
 from lab04.src.data_adapter import get_real_dataset
 from lab04.src.plots import critical_k, plot_g1, plot_g2, plot_g3, plot_g4
-from lab04.src.conclusion import limitations, power_direction
-from lab04.src.formatting import num, p_value, pct, thousands
+from lab04.src.conclusion import limitations, power_sentence
+from lab04.src.formatting import num, p_value, pct, pp, thousands
 from lab04.src.real_results import calculate_real_results, interpret_real_results
 from lab04.src.real_summary import effect_summary, effect_text
-from lab04.src.robustness import null_rejection_regions
 from lab04.src.s02_results import combine_conditions, load_s02_tables, power_table, results_dir, type1_table
 from lab04.src.simulation import simulate_runs
 from lab04.src.stat_tests import evaluate_tests
@@ -196,7 +195,11 @@ def section_dados_reais(ctx: dict) -> None:
 
 def section_conclusao(ctx: dict) -> None:
     st.header("7. Conclusão", anchor="conclusao")
-    st.markdown(interpret_real_results(ctx["real_results"]))
+    real = ctx["real_results"]
+    st.markdown(
+        f"Das {real['n']} execuções observadas, {real['k']} falharam ({pct(real['p_hat'])}). "
+        + interpret_real_results(real)
+    )
     st.markdown("### Expectativa inicial")
     st.markdown(cfg.EXPECTATIVA_PREVIA)
     st.markdown("### O que a simulação encontrou")
@@ -204,33 +207,46 @@ def section_conclusao(ctx: dict) -> None:
     if cond is None:
         st.markdown("⚠️ **Achados indisponíveis:** faltam as tabelas de simulação (seções 4 e 5).")
     else:
-        identical = [
-            f"n = {int(group['n'].iloc[0])}"
-            for _, group in power_table(cond).groupby("condition", sort=False)
-            if power_direction(group)[0] == "identical" and (group["effect_pp"] > 0).any()
-        ]
-        agreement = (
-            f" Em {', '.join(identical)}, as curvas coincidiram nos efeitos positivos."
-            if identical else ""
-        )
-        st.markdown(
-            "**Q1 · Erro tipo I** · A linha de α no G3 situa a frequência de falsos alarmes.\n\n"
-            "**Q2 · Poder** · Uma regra menos exigente pode detectar mais efeitos à custa de "
-            f"mais falsos alarmes.{agreement}"
-        )
-        critical = cond.loc[~cond["normal_ok"], ["n", "p0", "alpha"]].drop_duplicates()
-        for n, p0, alpha in critical.itertuples(index=False, name=None):
-            region = null_rejection_regions(int(n), p0, alpha)
-            z_size = pct(region["z_actual_null_rejection"])
-            exact_size = pct(region["binomial_actual_null_rejection"])
+        type1 = type1_table(cond)
+        for row in type1.loc[type1["normal_ok"]].itertuples(index=False):
+            gap = max(abs(row.z_rate - row.alpha), abs(row.binomial_rate - row.alpha))
             st.markdown(
-                f"**Q3 · Aproximação normal com n = {int(n)}**. As contagens esperadas sob H₀ são "
-                f"{num(n * p0, 1)} falhas e {num(n * (1 - p0), 1)} sucessos. A aproximação Z é "
-                f"imprecisa quando uma delas é pequena. Pelas regiões de rejeição, as taxas teóricas "
-                f"sob p = p₀ são {z_size} para o Z e {exact_size} para o binomial exato."
+                f"**Q1 · Erro tipo I (n = {row.n})** · Z {pct(row.z_rate)} e binomial exato "
+                f"{pct(row.binomial_rate)}. A maior distância ao nível nominal de {pct(row.alpha, 0)} "
+                f"foi de {pp(100 * gap, 2)}."
+            )
+
+        power = []
+        for _, group in power_table(cond).sort_values("effect_pp").groupby("condition", sort=False):
+            positive = group[group["effect_pp"] > 0]
+            comparison = power_sentence(group)
+            if not positive.empty:
+                if group["z_rate"].equals(group["binomial_rate"]):
+                    comparison = "as curvas coincidiram em todos os efeitos estudados"
+                else:
+                    example = positive.iloc[0]
+                    comparison += (f". A {pp(example['effect_pp'])} de efeito, o poder foi de "
+                                   f"{pct(example['z_rate'])} no Z e {pct(example['binomial_rate'])} "
+                                   "no binomial exato")
+            power.append(f"Em n = {int(group['n'].iloc[0])}, {comparison}.")
+        st.markdown(
+            "**Q2 · Poder** · " + " ".join(power)
+            + " Uma taxa de rejeição maior sob H₁ indica mais poder e deve ser avaliada junto "
+            "ao erro tipo I sob H₀."
+        )
+        critical = cond.loc[~cond["normal_ok"], ["condition", "p0"]].drop_duplicates()
+        for row in type1.merge(critical, on="condition").itertuples(index=False):
+            st.markdown(
+                f"**Q3 · Aproximação normal com n = {row.n}** · Sob H₀, são esperadas "
+                f"{num(row.n * row.p0, 1)} falhas e {num(row.n * (1 - row.p0), 1)} sucessos. "
+                "A menor contagem compromete a aproximação normal. Na simulação, o erro tipo I "
+                f"foi de {pct(row.z_rate)} para o Z ({row.z_status}) e "
+                f"{pct(row.binomial_rate)} para o binomial exato ({row.binomial_status})."
             )
     st.markdown("### Recomendação")
-    st.markdown(cfg.RECOMENDACAO)
+    st.markdown(
+        cfg.RECOMENDACAO + " Em amostras pequenas, esse controle pode vir acompanhado de menor poder."
+    )
     st.markdown("### Limitações")
     st.markdown("\n".join(f"- {item}" for item in limitations(len(ctx["real"]))))
 
