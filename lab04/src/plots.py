@@ -1,13 +1,4 @@
-"""Gráficos G1 e G2 do dashboard Lab04 (P4: Z para proporção × binomial exato).
-
-Convenções de cor (usadas em TODOS os gráficos, inclusive G3/G4 na S02):
-  - teste Z para proporção ........ azul
-  - teste binomial exato .......... laranja
-  - dados reais ................... verde-azulado
-  - dados simulados ............... roxo
-Todas as funções devolvem um ``matplotlib.figure.Figure`` (sem usar pyplot global),
-prontas para ``st.pyplot(fig)``.
-"""
+"""Figuras G1–G4 do Lab04, com azul para Z e laranja para o binomial exato."""
 
 from __future__ import annotations
 
@@ -15,215 +6,199 @@ import math
 
 import numpy as np
 from matplotlib.figure import Figure
-from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
-from matplotlib.ticker import PercentFormatter
+from matplotlib.patches import Patch
+from matplotlib.ticker import MaxNLocator, PercentFormatter, StrMethodFormatter
 from scipy.stats import binom, norm
 
-from lab04.src.formatting import p_value
+from lab04.src.formatting import num, pct
 
 COLOR_Z = "#1f77b4"
 COLOR_BINOMIAL = "#d95f02"
-COLOR_REAL = "#2a9d8f"
-COLOR_SIM = "#7b5ea7"
-COLOR_REF = "#444444"
+COLOR_REAL = "#176c65"
+COLOR_SIM = "#6b4e90"
+COLOR_OBS = "#162432"
+COLOR_CRIT = "#586673"
+COLOR_GRID = "#dee5eb"
 
 OUTCOME_LABELS = ["0 = sucesso", "1 = falha"]
 
 
-def _pt(text: str) -> str:
-    """Vírgula decimal nos textos dos gráficos (rótulos, legendas, títulos)."""
-    return text.replace(".", ",")
+def _figure(title: str, height: float, width: float = 5.8) -> Figure:
+    fig = Figure(figsize=(width, height), layout="constrained", facecolor="#ffffff")
+    fig.suptitle(title, fontsize=15, fontweight="bold", color=COLOR_OBS)
+    return fig
+
+
+def _style(ax) -> None:
+    ax.spines[["top", "right"]].set_visible(False)
+    for side in ("left", "bottom"):
+        ax.spines[side].set_color(COLOR_CRIT)
+    ax.tick_params(labelsize=10, colors=COLOR_OBS)
+    ax.set_axisbelow(True)
+    ax.grid(axis="y", color=COLOR_GRID)
 
 
 def critical_k(n: int, p0: float, alpha: float) -> int | None:
-    """Menor k tal que P(K >= k | n, p0) < alpha (região de rejeição do binomial exato).
-
-    Retorna None se nem k = n atinge p-valor < alpha.
-    """
-    for k in range(0, n + 1):
+    """Menor k tal que P(K >= k | n, p0) < alpha, ou None."""
+    for k in range(n + 1):
         if binom.sf(k - 1, n, p0) < alpha:
             return k
     return None
 
 
-def _counts(outcomes) -> tuple[int, int, int]:
-    arr = np.asarray(outcomes)
-    n = int(arr.size)
-    k = int(np.count_nonzero(arr))
-    return n, n - k, k
-
-
-def plot_g1(real, simulated, p0: float = 0.05, sim_label: str = "Simulados") -> Figure:
-    """G1: histogramas de 0/1 dos dados reais e simulados, lado a lado.
-
-    As observações são binárias, então o "histograma" é uma contagem das duas
-    categorias (sucesso/falha). A linha tracejada marca a contagem esperada
-    se a taxa de falha fosse exatamente p0 (fronteira de H0).
-    """
-    fig = Figure(figsize=(8, 3.6), constrained_layout=True)
-    axes = fig.subplots(1, 2, sharey=False)
-    groups = [
-        (axes[0], real, COLOR_REAL, "Dados reais (CI)"),
-        (axes[1], simulated, COLOR_SIM, sim_label),
-    ]
-    for ax, data, color, title in groups:
-        n, ok, fail = _counts(data)
-        ax.bar([0, 1], [ok, fail], width=0.6, color=color, edgecolor="black", alpha=0.85)
-        expected = [n * (1 - p0), n * p0]
-        top = max(ok, fail, *expected, 1)
-        for x, v, exp in zip([0, 1], [ok, fail], expected):
-            ax.text(x, max(v, exp) + top * 0.02, _pt(f"{v}\n({v / n:.1%})"), ha="center", va="bottom", fontsize=10)
-        for x, exp in zip([0, 1], expected):
-            ax.hlines(exp, x - 0.33, x + 0.33, colors=COLOR_REF, linestyles="--", linewidth=1.6)
+def plot_g1(real, simulated, p0: float = 0.05, sim_label: str = "Amostra simulada") -> Figure:
+    """G1: frequências relativas de sucesso e falha, com contagens nos rótulos."""
+    fig = _figure("G1 · Resultados de CI", 5.7)
+    axes = fig.subplots(2, 1, sharey=True)
+    expected = [1 - p0, p0]
+    for ax, outcomes, color, label in zip(
+        axes, (real, simulated), (COLOR_REAL, COLOR_SIM), ("Dados reais", sim_label)
+    ):
+        n = len(outcomes)
+        failures = int(np.count_nonzero(outcomes))
+        counts = np.array([n - failures, failures])
+        rates = counts / n
+        _style(ax)
+        ax.bar([0, 1], rates, width=0.60, color=color)
+        for x, (count, rate, target) in enumerate(zip(counts, rates, expected)):
+            ax.hlines(target, x - 0.36, x + 0.36, colors=COLOR_OBS, linestyles="--", linewidth=1.4)
+            inside = rate > 0.68
+            y = rate - 0.22 if inside else rate + 0.04
+            if not inside and abs(y - target) < 0.09:
+                y = target + 0.04 if target < 0.9 else y - 0.09
+            ax.text(x, y, f"{pct(rate)}\n{count}/{n}", ha="center", va="bottom",
+                    color="white" if inside else COLOR_OBS, fontsize=11, fontweight="bold")
         ax.set_xticks([0, 1], OUTCOME_LABELS)
-        ax.set_ylim(0, top * 1.35)
-        ax.set_ylabel("Execuções")
-        ax.set_title(f"{title} — n = {n}")
-        handles = [
-            Patch(facecolor=color, edgecolor="black", alpha=0.85, label=title),
-            Line2D([0], [0], color=COLOR_REF, linestyle="--", label=f"Esperado se p = {p0:.0%}"),
-        ]
-        ax.legend(handles=handles, loc="upper right" if fail < ok else "upper left", fontsize=8)
-    fig.suptitle("G1 — Resultados reais e simulados de CI", fontsize=14)
+        ax.set_xlim(-0.55, 1.55)
+        ax.set_ylim(0, 1)
+        ax.set_yticks([0, 0.25, 0.50, 0.75, 1])
+        ax.yaxis.set_major_formatter(PercentFormatter(1, decimals=0))
+        ax.set_ylabel("Frequência (%)", fontsize=11)
+        ax.set_title(f"{label} · n = {n}", loc="left", fontsize=12, color=COLOR_OBS)
+    fig.legend(handles=[Line2D([], [], color=COLOR_OBS, linestyle="--",
+                               label=f"Esperado com taxa de falha de {pct(p0, 0)}")],
+               loc="outside lower center", frameon=False, fontsize=11)
     return fig
+
+
+def _observed_line(ax, observed: float, low: float, high: float) -> None:
+    if low <= observed <= high:
+        ax.axvline(observed, color=COLOR_OBS, linewidth=2.3, zorder=4)
+    else:
+        right = observed > high
+        ax.text(0.98 if right else 0.02, 0.94, "Observado →" if right else "← Observado",
+                transform=ax.transAxes, ha="right" if right else "left", va="top",
+                color=COLOR_OBS, fontsize=11)
 
 
 def plot_g2(results: dict) -> Figure:
-    """G2: distribuição sob H0 de cada teste (unilateral à direita).
-
-    Painéis: binomial discreta de K e normal padrão de Z sob H0.
-    Hachura = região de rejeição; preenchimento sólido = área do p-valor do
-    MESMO exemplo (P(estatística >= valor observado | H0)).
-    """
+    """G2: cauda observada sombreada e região de rejeição hachurada, sob H₀."""
     n, k, p0, alpha = results["n"], results["k"], results["p0"], results["alpha"]
     z_obs, z_crit = results["z_statistic"], results["z_critical"]
-    p_z, p_b = results["z_p_value"], results["binomial_p_value"]
     k_crit = critical_k(n, p0, alpha)
-
-    fig = Figure(figsize=(7, 6.4), constrained_layout=True)
+    fig = _figure("G2 · Distribuições sob H₀", 6.6)
     ax_b, ax_z = fig.subplots(2, 1)
+    for ax in (ax_b, ax_z):
+        _style(ax)
 
-    # ---- Binomial exato (discreto) ----
+    # Mantenha a massa visível quando uma amostra exploratória cai longe da fronteira.
+    mean = n * p0
     sd = math.sqrt(n * p0 * (1 - p0))
-    k_max = min(n, int(max(k, k_crit if k_crit is not None else 0, math.ceil(n * p0 + 5 * sd)) + 2))
-    ks = np.arange(0, k_max + 1)
+    k_min = max(0, math.floor(mean - 5 * sd))
+    k_max = min(n, max(math.ceil(mean + 5 * sd), (k_crit or 0) + 1))
+    ks = np.arange(k_min, k_max + 1)
     pmf = binom.pmf(ks, n, p0)
-    light = "#f2c9a8"
-    ax_b.bar(ks, pmf, color=light, edgecolor="gray", width=0.85)
-    mask_p = ks >= k
-    ax_b.bar(ks[mask_p], pmf[mask_p], color=COLOR_BINOMIAL, edgecolor="black", alpha=0.85, width=0.85)
+    ax_b.bar(ks, pmf, color="#f6d9c5", edgecolor=COLOR_BINOMIAL, width=0.82, linewidth=0.6)
+    tail = ks >= k
+    ax_b.bar(ks[tail], pmf[tail], color=COLOR_BINOMIAL, width=0.82)
     if k_crit is not None:
-        mask = ks >= k_crit
-        ax_b.bar(ks[mask], pmf[mask], facecolor="none", edgecolor="#733500", hatch="///", width=0.85)
-    ax_b.axvline(k, color="black", linewidth=1.6)
-    size_b = binom.sf(k_crit - 1, n, p0) if k_crit is not None else 0.0
-    rej_txt = (_pt(f"Região de rejeição: K ≥ {k_crit} (prob. sob H0 = {size_b:.3f})")
-               if k_crit is not None else "Região de rejeição vazia (n pequeno demais)")
-    ax_b.legend(handles=[
-        Patch(facecolor=light, edgecolor="gray", label="P(K = k) sob H0"),
-        Patch(facecolor="none", edgecolor="#733500", hatch="///", label=rej_txt),
-        Patch(facecolor=COLOR_BINOMIAL, edgecolor="black", alpha=0.85,
-              label=f"Cauda P(K ≥ {k}) · p-valor {p_value(p_b)}"),
-        Line2D([0], [0], color="black", linewidth=1.6, label=f"Observado: k = {k} de n = {n}"),
-    ], fontsize=8, loc="upper right")
-    ax_b.set_ylim(0, ax_b.get_ylim()[1] * 1.3)
-    ax_b.set_xlabel("Número de falhas K na amostra (contagem)")
-    ax_b.set_ylabel("Probabilidade sob H0 (p = p0)")
-    ax_b.set_title(_pt(f"Binomial exato: K ~ Bin(n={n}, p0={p0:g}), cauda direita"))
+        rejection = ks >= k_crit
+        ax_b.bar(ks[rejection], pmf[rejection], facecolor="none",
+                 edgecolor=COLOR_OBS, hatch="///", width=0.82)
+        ax_b.axvline(k_crit, color=COLOR_CRIT, linestyle="--", linewidth=1.6, zorder=5)
+    _observed_line(ax_b, k, k_min, k_max)
+    ax_b.set_xlim(k_min - 0.6, k_max + 0.6)
+    ax_b.set_ylim(0, max(pmf) * 1.24)
+    ax_b.xaxis.set_major_locator(MaxNLocator(nbins=7, integer=True))
+    ax_b.yaxis.set_major_formatter(PercentFormatter(1, decimals=1))
+    ax_b.set(xlabel="K · número de falhas", ylabel="Probabilidade (%)")
+    ax_b.set_title(f"Binomial exato · K ∼ Bin({n}, {num(p0)})", loc="left", fontsize=12)
 
-    # ---- Z (aproximação normal) ----
-    lo, hi = min(-4.0, z_obs - 0.5), max(4.0, z_obs + 1, z_crit + 1)
-    xs = np.unique(np.r_[np.linspace(lo, hi, 800), z_obs, z_crit])
-    ys = norm.pdf(xs)
-    ax_z.plot(xs, ys, color=COLOR_Z, linewidth=2)
-    xr = xs[xs >= z_crit]
-    xp = xs[xs >= z_obs]
-    ax_z.fill_between(xp, norm.pdf(xp), color=COLOR_Z, alpha=0.55)
-    ax_z.fill_between(xr, norm.pdf(xr), facecolor="none", edgecolor=COLOR_Z, hatch="///", linewidth=0)
-    ax_z.axvline(z_obs, color="black", linewidth=1.6)
-    ax_z.axvline(z_crit, color=COLOR_Z, linestyle=":", linewidth=1.6)
-    ax_z.legend(handles=[
-        Line2D([0], [0], color=COLOR_Z, linewidth=2, label="Z ~ N(0, 1) sob H0"),
-        Patch(facecolor="none", edgecolor=COLOR_Z, hatch="///",
-              label=_pt(f"Região de rejeição: Z > {z_crit:.3f} (α = {alpha:g})")),
-        Patch(facecolor=COLOR_Z, alpha=0.55, label=f"Cauda à direita de z · p-valor {p_value(p_z)}"),
-        Line2D([0], [0], color="black", linewidth=1.6, label=_pt(f"Observado: z = {z_obs:.2f}")),
-    ], fontsize=8, loc="upper left")
-    ax_z.set_ylim(0, 0.62)
-    ax_z.set_xlabel("Estatística Z (desvios-padrão sob H0)")
-    ax_z.set_ylabel("Densidade sob H0")
-    ax_z.set_title("Teste Z: Z ~ N(0, 1), cauda direita")
+    lo, hi = -4.0, 4.0
+    xs = np.unique(np.r_[np.linspace(lo, hi, 600), np.clip(z_obs, lo, hi), z_crit])
+    ax_z.plot(xs, norm.pdf(xs), color=COLOR_Z, linewidth=2.0)
+    tail_x = xs[xs >= z_obs]
+    rejection_x = xs[xs >= z_crit]
+    ax_z.fill_between(tail_x, norm.pdf(tail_x), color=COLOR_Z, alpha=0.46)
+    ax_z.fill_between(rejection_x, norm.pdf(rejection_x), facecolor="none",
+                      edgecolor=COLOR_OBS, hatch="///", linewidth=0)
+    _observed_line(ax_z, z_obs, lo, hi)
+    ax_z.axvline(z_crit, color=COLOR_CRIT, linestyle="--", linewidth=1.6, zorder=5)
+    ax_z.set(xlim=(lo, hi), ylim=(0, 0.48), xlabel="Z · desvios-padrão sob H₀", ylabel="Densidade")
+    ax_z.yaxis.set_major_formatter(StrMethodFormatter("{x:.1f}"))
+    ax_z.set_title("Teste Z · aproximação normal N(0, 1)", loc="left", fontsize=12)
 
-    fig.suptitle(_pt(f"G2 — Distribuições na fronteira p = {p0:g} de H₀"), fontsize=14)
+    fig.legend(handles=[
+        Patch(facecolor="#9dabb7", label="Cauda do p-valor"),
+        Patch(facecolor="white", edgecolor=COLOR_OBS, hatch="///", label="Rejeição"),
+        Line2D([], [], color=COLOR_OBS, linewidth=2.3, label="Valor observado"),
+        Line2D([], [], color=COLOR_CRIT, linestyle="--", label="Limiar crítico"),
+    ], loc="outside lower center", ncols=2, frameon=False, fontsize=11)
     return fig
 
 
-# ----------------------------------------------------------------------------- S02 (G3 e G4)
-STATUS_SHORT = {"liberal": "liberal", "conservador": "conservador", "compatível com α": "≈ α"}
-CONDITION_STYLES = [("-", "o"), ("--", "s"), (":", "^"), ("-.", "D")]
-
-
 def plot_g3(t1) -> Figure:
-    """G3: erro tipo I de Z e binomial exato em cada condição simulada.
-
-    ``t1`` é a saída de ``s02_results.type1_table``. As barras mostram a proporção de
-    rejeições sob H0; as barras de erro são ±1,96 erro-padrão de Monte Carlo; a linha
-    horizontal marca α. O rótulo (liberal / conservador / ≈ α) vem da própria tabela.
-    """
-    conditions = list(t1["condition"])
+    """G3: taxas de erro tipo I, com barras de Monte Carlo de ±1,96 EP."""
     alpha = float(t1["alpha"].iloc[0])
-    fig = Figure(figsize=(max(7, 2.5 * len(conditions) + 2), 4.2), constrained_layout=True)
+    fig = _figure("G3 · Erro tipo I por condição", 4.1, max(5.8, len(t1) * 2.1))
     ax = fig.subplots()
+    _style(ax)
     width = 0.36
-    xs = np.arange(len(conditions))
+    xs = np.arange(len(t1))
     top = alpha
-    for offset, key, color, name in ((-width / 2, "z", COLOR_Z, "Z para proporção"),
-                                     (width / 2, "binomial", COLOR_BINOMIAL, "Binomial exato")):
+    for offset, key, color, name in ((-0.20, "z", COLOR_Z, "Teste Z"),
+                                     (0.20, "binomial", COLOR_BINOMIAL, "Binomial exato")):
         rates = t1[f"{key}_rate"].to_numpy()
-        ses = t1[f"{key}_se"].to_numpy()
-        ax.bar(xs + offset, rates, width, color=color, edgecolor="black", alpha=0.9, label=name)
-        ax.errorbar(xs + offset, rates, yerr=1.96 * ses, fmt="none", ecolor="black", capsize=4, linewidth=1.2)
-        for x, r, se, status in zip(xs + offset, rates, ses, t1[f"{key}_status"]):
-            ax.text(x, r + 1.96 * se + alpha * 0.04,
-                    f"{100 * r:.2f}%".replace(".", ",") + f"\n{STATUS_SHORT[status]}",
-                    ha="center", va="bottom", fontsize=8)
-            top = max(top, r + 1.96 * se)
-    ax.axhline(alpha, color="black", linestyle="--", linewidth=1.4, label=f"α = {alpha:.0%}")
-    ax.set_ylim(0, top * 1.35)
-    ax.set_xticks(xs, [c.replace(" (", "\n(") for c in conditions])
-    ax.set_xlabel("Condição simulada")
-    ax.set_ylabel("Rejeições sob H₀")
-    ax.yaxis.set_major_formatter(PercentFormatter(1, decimals=0))
-    ax.set_title("G3 — Erro tipo I por condição", fontsize=14)
-    ax.legend(loc="upper left", fontsize=9)
+        errors = 1.96 * t1[f"{key}_se"].to_numpy()
+        ax.bar(xs + offset, rates, width, color=color, label=name)
+        ax.errorbar(xs + offset, rates, yerr=errors, fmt="none", ecolor=COLOR_OBS,
+                    capsize=4, linewidth=1.2, zorder=3)
+        for x, rate, error in zip(xs + offset, rates, errors):
+            ax.annotate(pct(rate), (x, rate + error), xytext=(0, 4), textcoords="offset points",
+                        ha="center", va="bottom", fontsize=11, color=COLOR_OBS)
+        top = max(top, max(rates + errors))
+    ax.axhline(alpha, color=COLOR_OBS, linestyle="--", linewidth=1.5, label=f"α = {pct(alpha, 0)}")
+    ax.set_ylim(0, top * 1.21)
+    ax.set_xticks(xs, [c.replace(" (", "\n(") for c in t1["condition"]])
+    ax.set(xlabel="Condição simulada", ylabel="Taxa de erro tipo I (%)")
+    ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+    ax.yaxis.set_major_formatter(PercentFormatter(1, decimals=None))
+    fig.legend(loc="outside lower center", ncols=3, frameon=False, fontsize=10)
     return fig
 
 
 def plot_g4(pw) -> Figure:
-    """G4: curvas de poder de Z e binomial exato no mesmo gráfico.
-
-    ``pw`` é a saída de ``s02_results.power_table``. Cor = teste (igual ao G3);
-    estilo da linha/marcador = condição simulada. O efeito 0 é o erro tipo I.
-    """
-    alpha = float(pw["alpha"].iloc[0])
-    fig = Figure(figsize=(7.5, 4.5), constrained_layout=True)
-    ax = fig.subplots()
-    ax.axhline(alpha, color="gray", linestyle=":", linewidth=1.2, label=f"α = {alpha:.0%}")
-    for i, (cond, g) in enumerate(pw.groupby("condition", sort=False)):
-        ls, mk = CONDITION_STYLES[i % len(CONDITION_STYLES)]
-        g = g.sort_values("effect_pp")
-        # Z mais grosso e translúcido, binomial fino por cima: se as curvas coincidirem,
-        # as duas continuam visíveis (uma não esconde a outra).
-        ax.plot(g["effect_pp"], g["z_rate"], color=COLOR_Z, linestyle=ls, marker=mk, linewidth=5,
-                markersize=11, alpha=0.6, label=f"Z — {cond}", zorder=2)
-        ax.plot(g["effect_pp"], g["binomial_rate"], color=COLOR_BINOMIAL, linestyle=ls, marker=mk,
-                linewidth=1.8, markersize=5, label=f"Binomial exato — {cond}", zorder=3)
-    ax.set_xlim(left=0)
-    ax.set_ylim(-0.02, 1.02)
-    ax.set_xlabel("Tamanho do efeito (p real − p0, em pontos percentuais)")
-    ax.set_ylabel("Rejeições")
-    ax.yaxis.set_major_formatter(PercentFormatter(1, decimals=0))
-    ax.set_title("G4 — Poder por tamanho de efeito", fontsize=14)
-    ax.legend(loc="lower right", fontsize=8)
+    """G4: uma figura com um painel por condição, em escalas compartilhadas."""
+    groups = list(pw.sort_values(["n", "effect_pp"]).groupby("condition", sort=False))
+    fig = _figure("G4 · Poder por tamanho de efeito", 2.4 * len(groups) + 0.7)
+    axes = fig.subplots(len(groups), 1, sharex=True, sharey=True, squeeze=False).ravel()
+    effects = sorted(pw["effect_pp"].unique())
+    for ax, (condition, group) in zip(axes, groups):
+        _style(ax)
+        ax.plot(group["effect_pp"], group["z_rate"], color=COLOR_Z, marker="o",
+                markersize=7, linewidth=3, clip_on=False, label="Teste Z")
+        ax.plot(group["effect_pp"], group["binomial_rate"], color=COLOR_BINOMIAL,
+                linestyle="--", marker="D", markersize=4, linewidth=1.6,
+                clip_on=False, label="Binomial exato")
+        ax.set_title(condition, loc="left", fontsize=12)
+        ax.set_ylabel("Rejeições (%)")
+        ax.set_yticks([0, .25, .50, .75, 1])
+        ax.yaxis.set_major_formatter(PercentFormatter(1, decimals=0))
+        ax.set_ylim(0, 1)
+    axes[-1].set_xticks(effects, [str(e).removesuffix(".0").replace(".", ",") for e in effects])
+    axes[-1].set_xlim(0, max(effects) * 1.03 or 1)
+    axes[-1].set_xlabel("Efeito p − p₀ (p.p.)")
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="outside lower center", ncols=2, frameon=False, fontsize=11)
     return fig

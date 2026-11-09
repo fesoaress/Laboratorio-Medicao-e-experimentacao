@@ -1,13 +1,8 @@
-"""Achados calculados das tabelas simuladas (G3/G4) para a seção 7 e para a legenda do G4.
-
-Nada aqui declara vencedor: descreve o que foi observado em cada condição.
-"""
+"""Comparações de poder e limitações do Lab04."""
 
 from __future__ import annotations
 
-import numpy as np
-
-from lab04.src.formatting import num, pct, pp
+from lab04.src.formatting import num, pp
 
 TOL = 1e-12
 
@@ -52,31 +47,11 @@ def power_sentence(g) -> str:
             f"e o binomial exato nos de {fmt(b_more)} pp (diferença máxima {at})")
 
 
-def type1_findings(t1) -> list[str]:
+def limitations(real_n: int) -> list[str]:
+    """Limites da inferência observacional e das estimativas de Monte Carlo."""
     return [
-        f"{r.condition}: Z rejeitou {pct(r.z_rate)} sob H0 ({r.z_status}); "
-        f"binomial exato {pct(r.binomial_rate)} ({r.binomial_status}); α = {pct(r.alpha, 0)}."
-        for r in t1.itertuples()
-    ]
-
-
-def power_findings(pw) -> list[str]:
-    return [f"{cond}: {power_sentence(g)}." for cond, g in pw.groupby("condition", sort=False)]
-
-
-def limitations(real_df, real_n: int, sim_conditions: list[str]) -> list[str]:
-    """Ressalvas verdadeiras por construção do estudo; números vêm dos dados."""
-    first = real_df.iloc[0]
-    return [
-        f"Os dados reais vêm de um único repositório ({first['repository']}), uma única workflow "
-        f"({first['workflow_name']}) e uma única branch ({first['branch']}), em "
-        f"{real_df['created_at'].min()[:10]} a {real_df['created_at'].max()[:10]}; "
-        f"não generalizam para outros projetos ou períodos.",
-        "O modelo assume execuções independentes com probabilidade de falha constante; falhas de CI "
-        "podem ser correlacionadas e variar no tempo.",
-        "Os resultados de G3 e G4 são estimativas de Monte Carlo (erro-padrão de até cerca de 0,5 pp com "
-        "10.000 repetições) e valem para as condições simuladas"
-        + (": " + "; ".join(sim_conditions) if sim_conditions else "") + ".",
-        f"Com n = {real_n} nos dados reais, um resultado não significativo não distingue ausência de efeito "
-        "de amostra pequena demais para detectá-lo.",
+        "A coleta abrange um workflow, uma branch e um período. Execuções próximas podem compartilhar "
+        "causas de falha, enquanto o modelo supõe independência e probabilidade constante.",
+        "As taxas de G3 e G4 são estimativas de Monte Carlo para as condições simuladas.",
+        f"Com n = {real_n}, diferenças pequenas em relação à meta podem passar despercebidas.",
     ]

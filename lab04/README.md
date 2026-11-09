@@ -50,6 +50,15 @@ e semente alteram a amostra ilustrativa de G1/G2. A meta e o α ajustáveis
 valem para a exploração de G2. O cenário oficial, os resultados reais e
 as simulações de G3/G4 usam p₀ e α de 5%.
 
+G1 compara as frequências percentuais na mesma escala e conserva as contagens
+nos rótulos. G2 separa o p-valor observado da região crítica. G3 apresenta as
+taxas de erro tipo I e a incerteza de Monte Carlo, e G4 compara o poder em
+painéis com escalas compartilhadas.
+
+O link do GitHub Projects fica pendente de confirmação do quadro associado
+ao Lab04. Quando confirmado, ele pode ser registrado em `PROJECTS_URL`
+em `src/delivery_config.py`.
+
 ## Estrutura
 
 | Caminho | Conteúdo |
