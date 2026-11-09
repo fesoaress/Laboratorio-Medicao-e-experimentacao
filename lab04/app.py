@@ -241,7 +241,9 @@ def section_conclusao(ctx: dict) -> None:
                 f"{num(row.n * row.p0, 1)} falhas e {num(row.n * (1 - row.p0), 1)} sucessos. "
                 "A menor contagem compromete a aproximação normal. Na simulação, o erro tipo I "
                 f"foi de {pct(row.z_rate)} para o Z ({row.z_status}) e "
-                f"{pct(row.binomial_rate)} para o binomial exato ({row.binomial_status})."
+                f"{pct(row.binomial_rate)} para o binomial exato ({row.binomial_status}). "
+                "A cauda binomial muda em saltos a cada falha adicional. Por isso, o menor "
+                "número de falhas que permite rejeitar H₀ pode deixar o erro tipo I teórico abaixo de α."
             )
     st.markdown("### Recomendação")
     st.markdown(

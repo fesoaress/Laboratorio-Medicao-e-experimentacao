@@ -49,8 +49,8 @@ def critical_k(n: int, p0: float, alpha: float) -> int | None:
 
 def plot_g1(real, simulated, p0: float = 0.05, sim_label: str = "Amostra simulada") -> Figure:
     """G1: frequências relativas de sucesso e falha, com contagens nos rótulos."""
-    fig = _figure("G1 · Resultados de CI", 5.7)
-    axes = fig.subplots(2, 1, sharey=True)
+    fig = _figure("G1 · Resultados de CI", 3.5)
+    axes = fig.subplots(1, 2, sharey=True)
     expected = [1 - p0, p0]
     for ax, outcomes, color, label in zip(
         axes, (real, simulated), (COLOR_REAL, COLOR_SIM), ("Dados reais", sim_label)
@@ -74,8 +74,8 @@ def plot_g1(real, simulated, p0: float = 0.05, sim_label: str = "Amostra simulad
         ax.set_ylim(0, 1)
         ax.set_yticks([0, 0.25, 0.50, 0.75, 1])
         ax.yaxis.set_major_formatter(PercentFormatter(1, decimals=0))
-        ax.set_ylabel("Frequência (%)", fontsize=11)
         ax.set_title(f"{label} · n = {n}", loc="left", fontsize=12, color=COLOR_OBS)
+    axes[0].set_ylabel("Frequência (%)", fontsize=11)
     fig.legend(handles=[Line2D([], [], color=COLOR_OBS, linestyle="--",
                                label=f"Esperado com taxa de falha de {pct(p0, 0)}")],
                loc="outside lower center", frameon=False, fontsize=11)

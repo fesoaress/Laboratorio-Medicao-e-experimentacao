@@ -42,6 +42,7 @@ def test_g1_g2_build_without_error(n, p):
     real, _, _ = get_real_outcomes()
     g1 = plot_g1(real, sim)
     assert len(g1.axes) == 2
+    assert g1.axes[0].get_subplotspec().get_gridspec().get_geometry() == (1, 2)
     for ax, outcomes in zip(g1.axes, (real, sim)):
         n, k = len(outcomes), outcomes.sum()
         assert ax.get_ylim() == (0, 1)
