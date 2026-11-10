@@ -47,14 +47,23 @@ def critical_k(n: int, p0: float, alpha: float) -> int | None:
     return None
 
 
-def plot_g1(real, simulated, p0: float = 0.05, sim_label: str = "Amostra simulada") -> Figure:
-    """G1: frequências relativas de sucesso e falha, com contagens nos rótulos."""
-    fig = _figure("G1 · Resultados de CI", 3.5)
-    axes = fig.subplots(1, 2, sharey=True)
+def plot_g1(real, simulated, reference, p0: float = 0.05,
+            sim_label: str = "Simulação ajustável") -> Figure:
+    """G1: dados reais e duas amostras simuladas, em escalas percentuais iguais.
+
+    As duas amostras de G1 são exemplos ilustrativos; G3/G4 usam as tabelas
+    oficiais de 10.000 repetições por cenário.
+    """
+    # Painéis empilhados preservam a leitura também em telas estreitas.
+    fig = _figure("G1 · Resultados de CI", 8.0)
+    axes = fig.subplots(3, 1, sharey=True)
     expected = [1 - p0, p0]
-    for ax, outcomes, color, label in zip(
-        axes, (real, simulated), (COLOR_REAL, COLOR_SIM), ("Dados reais", sim_label)
-    ):
+    groups = (
+        (real, COLOR_REAL, "Dados reais"),
+        (simulated, COLOR_SIM, sim_label),
+        (reference, COLOR_SIM, "Simulação de referência"),
+    )
+    for ax, (outcomes, color, label) in zip(axes, groups):
         n = len(outcomes)
         failures = int(np.count_nonzero(outcomes))
         counts = np.array([n - failures, failures])
@@ -62,23 +71,25 @@ def plot_g1(real, simulated, p0: float = 0.05, sim_label: str = "Amostra simulad
         _style(ax)
         ax.bar([0, 1], rates, width=0.60, color=color)
         for x, (count, rate, target) in enumerate(zip(counts, rates, expected)):
-            ax.hlines(target, x - 0.36, x + 0.36, colors=COLOR_OBS, linestyles="--", linewidth=1.4)
+            ax.hlines(target, x - 0.36, x + 0.36, colors=COLOR_OBS,
+                      linestyles="--", linewidth=1.4)
             inside = rate > 0.68
             y = rate - 0.22 if inside else rate + 0.04
             if not inside and abs(y - target) < 0.09:
                 y = target + 0.04 if target < 0.9 else y - 0.09
-            ax.text(x, y, f"{pct(rate)}\n{count}/{n}", ha="center", va="bottom",
-                    color="white" if inside else COLOR_OBS, fontsize=11, fontweight="bold")
+            ax.text(x, y, f"{pct(rate)}\\n{count}/{n}", ha="center", va="bottom",
+                    color="white" if inside else COLOR_OBS, fontsize=11,
+                    fontweight="bold")
         ax.set_xticks([0, 1], OUTCOME_LABELS)
         ax.set_xlim(-0.55, 1.55)
         ax.set_ylim(0, 1)
         ax.set_yticks([0, 0.25, 0.50, 0.75, 1])
         ax.yaxis.set_major_formatter(PercentFormatter(1, decimals=0))
+        ax.set_ylabel("Frequência (%)", fontsize=10)
         ax.set_title(f"{label} · n = {n}", loc="left", fontsize=12, color=COLOR_OBS)
-    axes[0].set_ylabel("Frequência (%)", fontsize=11)
     fig.legend(handles=[Line2D([], [], color=COLOR_OBS, linestyle="--",
                                label=f"Esperado com taxa de falha de {pct(p0, 0)}")],
-               loc="outside lower center", frameon=False, fontsize=11)
+               loc="outside lower center", frameon=False, fontsize=10)
     return fig
 
 
