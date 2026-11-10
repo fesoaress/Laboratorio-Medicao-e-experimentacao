@@ -77,7 +77,7 @@ def plot_g1(real, simulated, reference, p0: float = 0.05,
             y = rate - 0.22 if inside else rate + 0.04
             if not inside and abs(y - target) < 0.09:
                 y = target + 0.04 if target < 0.9 else y - 0.09
-            ax.text(x, y, f"{pct(rate)}\\n{count}/{n}", ha="center", va="bottom",
+            ax.text(x, y, f"{pct(rate)}\n{count}/{n}", ha="center", va="bottom",
                     color="white" if inside else COLOR_OBS, fontsize=11,
                     fontweight="bold")
         ax.set_xticks([0, 1], OUTCOME_LABELS)
