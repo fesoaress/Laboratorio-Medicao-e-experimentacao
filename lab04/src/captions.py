@@ -4,14 +4,18 @@ from lab04.src.conclusion import power_sentence
 from lab04.src.formatting import pct, thousands
 
 
-def g1_caption(real_n: int, real_k: int, sim_n: int, sim_k: int, p0: float) -> str:
+def g1_caption(real_n: int, real_k: int, sim_n: int, sim_k: int,
+               ref_n: int, ref_k: int, true_p: float, p0: float) -> str:
     return (
-        "Os histogramas mostram as frequências das duas categorias de uma variável binária, "
-        "para a qual a noção usual de outlier de uma distribuição contínua fica fora do modelo. "
-        f"Foram {real_k} falhas em {real_n} execuções reais ({pct(real_k / real_n)}) e "
-        f"{sim_k} em {sim_n} execuções simuladas ({pct(sim_k / sim_n)}). "
-        f"Os traços indicam {pct(1 - p0, 0)} de sucessos e {pct(p0, 0)} de falhas, as frequências "
-        "esperadas na fronteira de H₀."
+        "Os histogramas mostram os resultados binários de sucesso e falha; "
+        "não há outliers no sentido usual de uma variável contínua. "
+        f"Nos dados reais houve {real_k}/{real_n} falhas ({pct(real_k / real_n)}); "
+        f"na amostra simulada ajustável, {sim_k}/{sim_n} ({pct(sim_k / sim_n)}); "
+        f"e na referência, {ref_k}/{ref_n} ({pct(ref_k / ref_n)}). "
+        f"As duas amostras simuladas são exemplos com probabilidade hipotética de falha "
+        f"de {pct(true_p, 0)}, e não as 10.000 repetições oficiais de G3/G4. "
+        f"Os traços indicam {pct(1 - p0, 0)} de sucessos e {pct(p0, 0)} de falhas, "
+        "as frequências esperadas na fronteira de H₀."
     )
 
 
