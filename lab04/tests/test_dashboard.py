@@ -38,19 +38,25 @@ def test_real_data_is_binary():
 @pytest.mark.parametrize("n,p", [(30, 0.10), (30, 0.0), (30, 1.0), (200, 0.05)])
 def test_g1_g2_build_without_error(n, p):
     sim = simulate_runs(n, p, seed=42)
+    reference = simulate_runs(200, p, seed=42)
     res = evaluate_tests(sim)
     real, _, _ = get_real_outcomes()
-    g1 = plot_g1(real, sim)
-    assert len(g1.axes) == 2
-    assert g1.axes[0].get_subplotspec().get_gridspec().get_geometry() == (1, 2)
-    for ax, outcomes in zip(g1.axes, (real, sim)):
+    g1 = plot_g1(real, sim, reference)
+    assert len(g1.axes) == 3
+    assert g1.axes[0].get_subplotspec().get_gridspec().get_geometry() == (3, 1)
+    assert "n = 200" in g1.axes[2].get_title(loc="left")
+    for ax, outcomes in zip(g1.axes, (real, sim, reference)):
         n, k = len(outcomes), outcomes.sum()
         assert ax.get_ylim() == (0, 1)
         assert [bar.get_height() for bar in ax.patches] == pytest.approx([(n - k) / n, k / n])
         assert [line.get_segments()[0][0, 1] for line in ax.collections] == pytest.approx([0.95, 0.05])
         assert f"{k}/{n}" in ax.texts[1].get_text()
     assert len(plot_g2(res).axes) == 2
-    assert g1_caption(len(real), int(real.sum()), n, int(sim.sum()), 0.05)
+    caption = g1_caption(
+        len(real), int(real.sum()), n, int(sim.sum()),
+        len(reference), int(reference.sum()), p, 0.05,
+    )
+    assert "200" in caption and "10.000 repetições oficiais" in caption
     assert "fronteira p = p₀" in g2_caption(res)
 
 
@@ -88,3 +94,5 @@ def test_streamlit_app_runs_without_exception():
     testing = pytest.importorskip("streamlit.testing.v1")
     at = testing.AppTest.from_file(str(APP), default_timeout=60).run()
     assert not at.exception
+    text = " ".join(item.value for item in at.caption)
+    assert "simulada" in text.lower() and "200" in text
