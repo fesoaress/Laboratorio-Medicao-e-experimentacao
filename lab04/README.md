@@ -46,12 +46,18 @@ python -m streamlit run lab04/app.py
 
 O dashboard abre em `http://localhost:8501` por padrão. A barra lateral
 oferece navegação pelas sete seções. Os controles de tamanho, probabilidade
-e semente alteram a amostra ilustrativa de G1/G2. A meta e o α ajustáveis
-valem para a exploração de G2. O cenário oficial, os resultados reais e
+e semente alteram a amostra ilustrativa ajustável de G1/G2. O G1 também
+mostra uma amostra simulada de referência com n = 200, gerada com a mesma
+probabilidade e semente; apenas o tamanho desse terceiro painel é fixo.
+A meta e o α ajustáveis valem para a exploração de G2. O cenário oficial, os resultados reais e
 as simulações de G3/G4 usam p₀ e α de 5%.
 
-G1 compara as frequências percentuais na mesma escala e conserva as contagens
-nos rótulos. G2 separa o p-valor observado da região crítica. G3 apresenta as
+G1 apresenta três painéis na mesma escala percentual: 169 execuções reais,
+uma amostra simulada ajustável (n = 30 por padrão) e uma amostra simulada de
+referência com n = 200. As duas amostras simuladas do G1 são exemplos individuais,
+não as 10.000 repetições por cenário dos experimentos oficiais de G3/G4;
+as contagens e proporções são calculadas a partir das amostras geradas.
+G2 separa o p-valor observado da região crítica. G3 apresenta as
 taxas de erro tipo I e a incerteza de Monte Carlo, e G4 compara o poder em
 painéis com escalas compartilhadas.
 
