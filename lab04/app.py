@@ -29,6 +29,9 @@ from lab04.src.simulation import simulate_runs
 from lab04.src.stat_tests import evaluate_tests
 
 
+G1_REFERENCE_N = 200  # Exemplo ilustrativo próximo das 169 execuções reais; Q1/Q2 usam tabelas oficiais.
+
+
 def decision_text(rejected: bool) -> str:
     return "Rejeita H₀" if rejected else "Não rejeita H₀"
 
@@ -49,10 +52,12 @@ def build_context(n: int, true_p: float, seed: int, p0: float, alpha: float) -> 
     real_df, source = get_real_dataset()
     real = real_df["failed"].to_numpy(dtype="int8")
     simulated = simulate_runs(n=n, p=true_p, seed=seed)
+    simulated_reference = simulate_runs(n=G1_REFERENCE_N, p=true_p, seed=seed)
     return {
         "n": n, "true_p": true_p, "seed": seed,
         "real_df": real_df, "real": real, "source": source,
         "simulated": simulated,
+        "simulated_reference": simulated_reference,
         **load_s02_context(),
         "sim_results": evaluate_tests(simulated, p0=p0, alpha=alpha),
         "real_results": calculate_real_results(real_df, p0=cfg.P0, alpha=cfg.ALPHA),
@@ -83,9 +88,14 @@ def section_cenario(ctx: dict) -> None:
 def simulation_params_text(ctx: dict) -> str:
     """Parâmetros das simulações e de onde vieram, lidos das tabelas de G3/G4 (nunca fixos no código)."""
     real_n = len(ctx["real"])
-    text = (f"**Cenário hipotético (G1/G2)** · n = {ctx['n']}, "
-            f"probabilidade escolhida de falha = {pct(ctx['true_p'], 0)}, semente {ctx['seed']}. "
-            "A taxa estimada nos dados reais aparece no painel de observações.")
+    text = (
+        f"**G1 · exemplos ilustrativos** · uma amostra ajustável com n = {ctx['n']} e outra "
+        f"de referência com n = {len(ctx['simulated_reference'])}, próxima das {real_n} execuções reais. "
+        f"Ambas usam probabilidade hipotética de falha de {pct(ctx['true_p'], 0)} e semente {ctx['seed']}; "
+        "não representam as 10.000 repetições oficiais. "
+        f"**G2** utiliza somente a amostra ajustável de n = {ctx['n']}. "
+        "A taxa observada nos dados reais é apresentada separadamente."
+    )
     cond = ctx.get("s02")
     if cond is None:
         return text
@@ -105,10 +115,13 @@ def simulation_params_text(ctx: dict) -> str:
 
 def section_dados(ctx: dict) -> None:
     st.header("2. Os dados (G1)", anchor="dados")
-    sim, real = ctx["simulated"], ctx["real"]
-    fig = plot_g1(real, sim, p0=cfg.P0)
+    sim, reference, real = ctx["simulated"], ctx["simulated_reference"], ctx["real"]
+    fig = plot_g1(real, sim, reference, p0=cfg.P0)
     st.pyplot(fig)
-    st.caption(g1_caption(len(real), int(real.sum()), len(sim), int(sim.sum()), cfg.P0))
+    st.caption(g1_caption(
+        len(real), int(real.sum()), len(sim), int(sim.sum()),
+        len(reference), int(reference.sum()), ctx["true_p"], cfg.P0,
+    ))
     with st.expander("Parâmetros e justificativa das simulações", expanded=True):
         st.markdown(simulation_params_text(ctx))
 
@@ -116,7 +129,7 @@ def section_dados(ctx: dict) -> None:
 def section_testes(ctx: dict) -> None:
     st.header("3. Como os testes funcionam (G2)", anchor="testes")
     res = ctx["sim_results"]
-    st.caption(f"Exploração da mesma amostra simulada do G1 · p₀ = {pct(res['p0'], 0)} e α = {pct(res['alpha'], 0)}.")
+    st.caption(f"Exploração da amostra ajustável do G1 (não da referência de n = 200) · p₀ = {pct(res['p0'], 0)} e α = {pct(res['alpha'], 0)}.")
     st.pyplot(plot_g2(res))
     st.caption(g2_caption(res))
     z, exact = st.columns(2)
@@ -283,7 +296,7 @@ def main() -> None:
         )
         st.divider()
         st.subheader("Amostra simulada")
-        st.caption("Ajuste a amostra de G1 e G2.")
+        st.caption("n ajusta a amostra exploratória de G1/G2. G1 também mostra n = 200 fixo; probabilidade e semente afetam as duas simulações.")
         n = st.number_input("n (execuções de CI)", min_value=5, max_value=1000, value=30, step=5)
         true_p = st.slider("Probabilidade de falha na simulação", 0.0, 0.5, 0.10, 0.01)
         seed = st.number_input("Semente", min_value=0, value=42, step=1)
