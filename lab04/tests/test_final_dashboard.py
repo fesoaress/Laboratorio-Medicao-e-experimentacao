@@ -115,7 +115,7 @@ def test_default_dashboard_has_explainable_thresholds_and_power_example(results_
     assert "teste Z **K ≥ 4** · binomial exato **K ≥ 5**" in md
     assert "p verdadeiro = 10%" in md
     assert "Amostras menores" not in md
-    assert "erro tipo I" in md.lower() and "erro tipo II" in md.lower()
+    assert "erro tipo i" in md.lower() and "erro tipo ii" in md.lower()
 
 
 def test_exploration_changes_g2_and_preserves_official_results(results_dir):
