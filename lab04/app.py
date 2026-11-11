@@ -118,6 +118,11 @@ def simulation_params_text(ctx: dict) -> str:
 
 def section_dados(ctx: dict) -> None:
     st.header("2. Os dados (G1)", anchor="dados")
+    st.markdown(
+        "**Variável Bernoulli:** cada execução concluída gera um resultado binário "
+        "(0 = sucesso; 1 = falha). Os dados reais vêm do GitHub Actions; "
+        "os outros dois painéis são amostras simuladas ilustrativas."
+    )
     sim, reference, real = ctx["simulated"], ctx["simulated_reference"], ctx["real"]
     fig = plot_g1(real, sim, reference, p0=cfg.P0)
     st.pyplot(fig)
@@ -130,7 +135,9 @@ def section_dados(ctx: dict) -> None:
         f"**{num(100 / len(sim), 2)} p.p.** em n = {len(sim)} e "
         f"**{num(100 / len(reference), 2)} p.p.** em n = {len(reference)}. "
         "Em geral, quanto menor n, maior a variabilidade relativa; G3/G4 verificam "
-        "o comportamento dos testes em 10.000 repetições por cenário."
+        "o comportamento dos testes em 10.000 repetições por cenário. "
+        "Nos experimentos oficiais, n = 200 foi escolhido por ser próximo das "
+        "169 execuções reais; n = 30 representa o caso de amostra pequena."
     )
     with st.expander("Parâmetros e justificativa das simulações", expanded=False):
         st.markdown(simulation_params_text(ctx))
