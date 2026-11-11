@@ -204,11 +204,6 @@ def section_erro_tipo_i(ctx: dict) -> None:
             f"binomial exato: **{pct(row.binomial_rate)} ({row.binomial_status})** "
             f"· α = {pct(row.alpha, 0)}."
         )
-    st.caption(
-        "Se α fosse reduzido de 5% para 1%, a região de rejeição encolheria "
-        "(ou permaneceria igual), reduzindo ou mantendo erro tipo I e poder. "
-        "Isso não foi recalculado em G3/G4; ajuste α no G2 apenas para explorar o limiar."
-    )
     with st.expander("Tabela agregada usada no G3 (dados simulados)"):
         st.dataframe(t1, hide_index=True)
 
@@ -221,6 +216,11 @@ def section_poder(ctx: dict) -> None:
     st.caption("Q2 e Q3 · Simulação oficial por tamanho do efeito")
     st.pyplot(plot_g4(pw))
     st.caption(g4_caption(pw))
+    st.caption(
+        "Se α fosse reduzido de 5% para 1%, a região de rejeição encolheria "
+        "(ou permaneceria igual), reduzindo ou mantendo erro tipo I e poder. "
+        "Isso não foi recalculado em G3/G4; ajuste α no G2 apenas para explorar o limiar."
+    )
     st.markdown(
         "**Como interpretar:** poder é a probabilidade de detectar a taxa de falhas "
         "acima da meta quando ela realmente está acima. "
