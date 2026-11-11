@@ -92,9 +92,9 @@ def simulation_params_text(ctx: dict) -> str:
     real_n = len(ctx["real"])
     text = (
         f"**G1 · exemplos ilustrativos** · uma amostra ajustável com n = {ctx['n']} e outra "
-        f"de referência com n = {len(ctx['simulated_reference'])}, próxima das {real_n} execuções reais. "
+        f"de referência com n = {len(ctx['simulated_reference'])} (o padrão é n = 200, próximo das {real_n} reais). "
         f"Ambas usam probabilidade hipotética de falha de {pct(ctx['true_p'], 0)} "
-        f"e sementes independentes {ctx['seed']} e {ctx['seed'] + 1}; "
+        f"e sementes distintas {ctx['seed']} e {ctx['seed'] + 1}; "
         "não representam as 10.000 repetições oficiais. "
         f"**G2** utiliza somente a amostra ajustável de n = {ctx['n']}. "
         "A taxa observada nos dados reais é apresentada separadamente."
@@ -129,7 +129,7 @@ def section_dados(ctx: dict) -> None:
         f"**Por que comparar os tamanhos?** Uma única falha representa "
         f"**{num(100 / len(sim), 2)} p.p.** em n = {len(sim)} e "
         f"**{num(100 / len(reference), 2)} p.p.** em n = {len(reference)}. "
-        "Amostras menores apresentam maior variação relativa; G3/G4 verificam "
+        "Em geral, quanto menor n, maior a variabilidade relativa; G3/G4 verificam "
         "o comportamento dos testes em 10.000 repetições por cenário."
     )
     with st.expander("Parâmetros e justificativa das simulações", expanded=False):
