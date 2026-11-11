@@ -1,0 +1,31 @@
+name: Lab04 · Testes e dashboard
+
+on:
+  push:
+    paths:
+      - "lab04/**"
+      - ".github/workflows/lab04-testes.yml"
+  pull_request:
+    paths:
+      - "lab04/**"
+      - ".github/workflows/lab04-testes.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pytest-lab04:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Instalar dependências do Lab04
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r lab04/requirements.txt
+      - name: Testar dashboard, simulações e resultados
+        run: python -m pytest -q lab04/tests
