@@ -19,7 +19,7 @@ import streamlit as st
 from lab04.src import delivery_config as cfg
 from lab04.src.captions import g1_caption, g2_caption, g3_caption, g4_caption
 from lab04.src.data_adapter import get_real_dataset
-from lab04.src.plots import critical_k, plot_g1, plot_g2, plot_g3, plot_g4
+from lab04.src.plots import critical_k, critical_k_z, plot_g1, plot_g2, plot_g3, plot_g4
 from lab04.src.conclusion import limitations, power_sentence
 from lab04.src.formatting import num, p_value, pct, pp, thousands
 from lab04.src.real_results import calculate_real_results, interpret_real_results
@@ -29,7 +29,7 @@ from lab04.src.simulation import simulate_runs
 from lab04.src.stat_tests import evaluate_tests
 
 
-G1_REFERENCE_N = 200  # Exemplo ilustrativo próximo das 169 execuções reais; Q1/Q2 usam tabelas oficiais.
+G1_REFERENCE_N = 200  # Valor inicial ajustável; Q1/Q2 usam as tabelas oficiais.
 
 
 def decision_text(rejected: bool) -> str:
@@ -48,13 +48,15 @@ def load_s02_context() -> dict:
         return {"s02": None, "s02_missing": [], "s02_error": str(exc)}
 
 
-def build_context(n: int, true_p: float, seed: int, p0: float, alpha: float) -> dict:
+def build_context(n: int, true_p: float, seed: int, p0: float, alpha: float,
+                  reference_n: int = G1_REFERENCE_N) -> dict:
     real_df, source = get_real_dataset()
     real = real_df["failed"].to_numpy(dtype="int8")
     simulated = simulate_runs(n=n, p=true_p, seed=seed)
-    simulated_reference = simulate_runs(n=G1_REFERENCE_N, p=true_p, seed=seed)
+    # Outra semente evita que o painel de referência repita o prefixo da amostra pequena.
+    simulated_reference = simulate_runs(n=reference_n, p=true_p, seed=seed + 1)
     return {
-        "n": n, "true_p": true_p, "seed": seed,
+        "n": n, "reference_n": reference_n, "true_p": true_p, "seed": seed,
         "real_df": real_df, "real": real, "source": source,
         "simulated": simulated,
         "simulated_reference": simulated_reference,
@@ -91,7 +93,8 @@ def simulation_params_text(ctx: dict) -> str:
     text = (
         f"**G1 · exemplos ilustrativos** · uma amostra ajustável com n = {ctx['n']} e outra "
         f"de referência com n = {len(ctx['simulated_reference'])}, próxima das {real_n} execuções reais. "
-        f"Ambas usam probabilidade hipotética de falha de {pct(ctx['true_p'], 0)} e semente {ctx['seed']}; "
+        f"Ambas usam probabilidade hipotética de falha de {pct(ctx['true_p'], 0)} "
+        f"e sementes independentes {ctx['seed']} e {ctx['seed'] + 1}; "
         "não representam as 10.000 repetições oficiais. "
         f"**G2** utiliza somente a amostra ajustável de n = {ctx['n']}. "
         "A taxa observada nos dados reais é apresentada separadamente."
@@ -122,26 +125,45 @@ def section_dados(ctx: dict) -> None:
         len(real), int(real.sum()), len(sim), int(sim.sum()),
         len(reference), int(reference.sum()), ctx["true_p"], cfg.P0,
     ))
-    with st.expander("Parâmetros e justificativa das simulações", expanded=True):
+    st.markdown(
+        f"**Por que comparar os tamanhos?** Uma única falha representa "
+        f"**{num(100 / len(sim), 2)} p.p.** em n = {len(sim)} e "
+        f"**{num(100 / len(reference), 2)} p.p.** em n = {len(reference)}. "
+        "Amostras menores apresentam maior variação relativa; G3/G4 verificam "
+        "o comportamento dos testes em 10.000 repetições por cenário."
+    )
+    with st.expander("Parâmetros e justificativa das simulações", expanded=False):
         st.markdown(simulation_params_text(ctx))
 
 
 def section_testes(ctx: dict) -> None:
     st.header("3. Como os testes funcionam (G2)", anchor="testes")
     res = ctx["sim_results"]
-    st.caption(f"Exploração da amostra ajustável do G1 (não da referência de n = 200) · p₀ = {pct(res['p0'], 0)} e α = {pct(res['alpha'], 0)}.")
+    st.caption(
+        f"Mesma amostra ajustável do G1 (n = {res['n']}, K = {res['k']} falhas); "
+        f"a outra amostra ilustrativa, n = {ctx['reference_n']}, não entra neste teste. "
+        f"p₀ = {pct(res['p0'], 0)} e α = {pct(res['alpha'], 0)}."
+    )
+    z_k = critical_k_z(res["n"], res["p0"], res["alpha"])
+    exact_k = critical_k(res["n"], res["p0"], res["alpha"])
+    z_region = f"K ≥ {z_k}" if z_k is not None else "sem região de rejeição"
+    exact_region = f"K ≥ {exact_k}" if exact_k is not None else "sem região de rejeição"
+    st.markdown(
+        f"**Comparação direta dos limiares (número de falhas):** "
+        f"teste Z **{z_region}** · binomial exato **{exact_region}**. "
+        "No gráfico superior estão as probabilidades binomiais discretas; "
+        "no inferior, a aproximação pela curva normal."
+    )
     st.pyplot(plot_g2(res))
     st.caption(g2_caption(res))
     z, exact = st.columns(2)
     z.metric("Teste Z · p-valor", p_value(res["z_p_value"]))
     z.markdown(f"**Observado** · Z = {num(res['z_statistic'], 3)}  \n"
-               f"**Rejeição** · Z > {num(res['z_critical'], 3)}  \n"
+               f"**Rejeição** · Z > {num(res['z_critical'], 3)} ({z_region})  \n"
                f"**Decisão** · {decision_text(res['reject_z'])}")
     exact.metric("Binomial exato · p-valor", p_value(res["binomial_p_value"]))
-    k_crit = critical_k(res["n"], res["p0"], res["alpha"])
-    region = f"K ≥ {k_crit}" if k_crit is not None else "região vazia neste cenário"
     exact.markdown(f"**Observado** · K = {res['k']} falhas  \n"
-                   f"**Rejeição** · {region}  \n"
+                   f"**Rejeição** · {exact_region}  \n"
                    f"**Decisão** · {decision_text(res['reject_binomial'])}")
     with st.expander("Detalhes numéricos da amostra simulada"):
         st.json(res)
@@ -170,6 +192,23 @@ def section_erro_tipo_i(ctx: dict) -> None:
     st.caption("Q1 · Simulação oficial sob H₀")
     st.pyplot(plot_g3(t1))
     st.caption(g3_caption(t1))
+    st.markdown(
+        "**Como interpretar:** erro tipo I é um falso alarme: concluir que a taxa de falhas "
+        "ultrapassou a meta quando, na realidade, não ultrapassou. "
+        "Erro tipo II é deixar de detectar uma taxa verdadeiramente acima da meta. "
+        "A gravidade depende do custo de investigar falsos alarmes versus deixar falhas passar."
+    )
+    for row in t1.itertuples(index=False):
+        st.markdown(
+            f"**n = {row.n}** · Z: **{pct(row.z_rate)} ({row.z_status})**; "
+            f"binomial exato: **{pct(row.binomial_rate)} ({row.binomial_status})** "
+            f"· α = {pct(row.alpha, 0)}."
+        )
+    st.caption(
+        "Se α fosse reduzido de 5% para 1%, a região de rejeição encolheria "
+        "(ou permaneceria igual), reduzindo ou mantendo erro tipo I e poder. "
+        "Isso não foi recalculado em G3/G4; ajuste α no G2 apenas para explorar o limiar."
+    )
     with st.expander("Tabela agregada usada no G3 (dados simulados)"):
         st.dataframe(t1, hide_index=True)
 
@@ -182,6 +221,25 @@ def section_poder(ctx: dict) -> None:
     st.caption("Q2 e Q3 · Simulação oficial por tamanho do efeito")
     st.pyplot(plot_g4(pw))
     st.caption(g4_caption(pw))
+    st.markdown(
+        "**Como interpretar:** poder é a probabilidade de detectar a taxa de falhas "
+        "acima da meta quando ela realmente está acima. "
+        "Poder maior precisa ser avaliado junto aos falsos alarmes de G3."
+    )
+    small_n = int(pw["n"].min())
+    example = pw[(pw["n"] == small_n) & ((pw["p_true"] - 0.10).abs() < 1e-9)]
+    if not example.empty:
+        r = example.iloc[0]
+        st.markdown(
+            f"**Exemplo do gráfico (n = {small_n}, p verdadeiro = {pct(r['p_true'], 0)}; "
+            f"efeito = +{num(r['effect_pp'], 1)} p.p.):** "
+            f"poder do Z **{pct(r['z_rate'])}** × binomial exato **{pct(r['binomial_rate'])}**."
+        )
+    for condition, group in pw.groupby("condition", sort=False):
+        if len(group) > 1 and ((group["z_rate"] - group["binomial_rate"]).abs() < 1e-12).all():
+            st.markdown(
+                f"**{condition}:** curvas dos dois testes coincidem em todos os efeitos estudados."
+            )
     with st.expander("Tabela agregada usada no G4 (dados simulados)"):
         st.dataframe(pw, hide_index=True)
 
@@ -189,7 +247,15 @@ def section_poder(ctx: dict) -> None:
 def section_dados_reais(ctx: dict) -> None:
     st.header("6. Dados reais", anchor="resultados")
     res = ctx["real_results"]
-    st.markdown(f"**{res['n']} execuções** · **{res['k']} falhas** · **{pct(res['p_hat'])} de falhas observadas**")
+    observed_col, target_col, effect_col = st.columns(3)
+    observed_col.metric("Falhas observadas", pct(res["p_hat"]))
+    target_col.metric("Meta de falhas", pct(res["p0"], 0))
+    effect_col.metric("Diferença observada", f"{num(res['effect_pp'], 2)} p.p.")
+    st.markdown(
+        f"**{res['k']} falhas em {res['n']} execuções**. A diferença em pontos percentuais "
+        "mede o tamanho e a direção do efeito, enquanto os p-valores sustentam "
+        "a decisão estatística. Não rejeitar H₀ não comprova que a meta foi atendida."
+    )
     rows = res["table_rows"]
     table = pd.DataFrame({
         "Teste": [r["test"] for r in rows],
@@ -296,16 +362,22 @@ def main() -> None:
         )
         st.divider()
         st.subheader("Amostra simulada")
-        st.caption("n ajusta a amostra exploratória de G1/G2. G1 também mostra n = 200 fixo; probabilidade e semente afetam as duas simulações.")
-        n = st.number_input("n (execuções de CI)", min_value=5, max_value=1000, value=30, step=5)
+        st.caption(
+            "Ajuste os dois tamanhos de amostra separadamente no G1. "
+            "Só a primeira amostra alimenta o G2; G3/G4 permanecem oficiais e fixos."
+        )
+        n = st.number_input("G1/G2 · Amostra pequena (n)", min_value=5, max_value=1000, value=30, step=5)
+        reference_n = st.number_input("G1 · Amostra de referência (n)", min_value=5, max_value=1000, value=G1_REFERENCE_N, step=5)
         true_p = st.slider("Probabilidade de falha na simulação", 0.0, 0.5, 0.10, 0.01)
-        seed = st.number_input("Semente", min_value=0, value=42, step=1)
+        seed = st.number_input("Semente (G1/G2)", min_value=0, value=42, step=1)
         st.subheader("Hipóteses do G2")
         st.caption("Explore outra meta ou outro α no G2. O cenário oficial permanece em 5%.")
         p0 = st.slider("Meta p₀", 0.01, 0.20, cfg.P0, 0.01)
         alpha = st.select_slider("α", options=[0.01, 0.05, 0.10], value=cfg.ALPHA)
 
-    ctx = build_context(int(n), float(true_p), int(seed), float(p0), float(alpha))
+    ctx = build_context(
+        int(n), float(true_p), int(seed), float(p0), float(alpha), int(reference_n)
+    )
     for index, section in enumerate(SECTIONS):
         if index:
             st.divider()
