@@ -16,7 +16,7 @@ Roteiro de apresentação contínua, seguindo as **sete seções do dashboard** 
 | 4:35–6:40 | **Fernanda** | 11–15 | **G4** para pressupostos, seção 6 (dados reais) e seção 7 (conclusão) |
 | 6:40–7:00 | Grupo | — | Margem de tempo / fechamento |
 
-**Antes de começar:** manter os controles de G1/G2 nos valores iniciais (n = 30, probabilidade hipotética de falha de 10%, semente 42, p₀ = 5% e α = 5%). G3/G4 são resultados oficiais fixos de 10.000 repetições por cenário: os controles da barra lateral **não os recalculam**.
+**Antes de começar:** manter os controles de G1/G2 nos valores iniciais (amostra ajustável n = 30; amostra de referência n = 200; probabilidade hipotética de falha de 10%; semente 42; p₀ = 5%; α = 5%). Os dois tamanhos de amostra do G1 agora podem ser alterados separadamente. Só o primeiro alimenta o G2. G3/G4 são resultados oficiais fixos de 10.000 repetições por cenário: os controles da barra lateral **não os recalculam**.
 
 O texto abaixo é para ser **falado naturalmente**, sem anunciar os números das perguntas. A tabela e as respostas de defesa servem para garantir a cobertura.
 
@@ -42,7 +42,7 @@ O texto abaixo é para ser **falado naturalmente**, sem anunciar os números das
 >
 > As caudas coloridas mostram os p-valores e as áreas hachuradas indicam as regiões de rejeição. O Vinicius vai aprofundar essa diferença e mostrar o que aconteceu nos experimentos.
 
-**Na tela:** apontar para **169 → 30 → 200** e, no G2, **barras → curva**. O G1 é uma ilustração; não usar amostras individuais para afirmar que o Z é pior.
+**Na tela:** apontar para **169 → 30 → 200** e para a frase logo abaixo do G1 que calcula o impacto de uma falha (**3,33 p.p.** em n = 30 e **0,50 p.p.** em n = 200). O texto do G1 mostra também o modelo Bernoulli e a escolha dos tamanhos oficiais. No G2, apontar para **barras → curva**; os limites numéricos de rejeição agora aparecem logo acima das figuras. O G1 é ilustração; não usar amostras individuais para afirmar que o Z é pior.
 
 ## Fala 2 — Vinicius (6–10)
 
@@ -66,7 +66,7 @@ O texto abaixo é para ser **falado naturalmente**, sem anunciar os números das
 >
 > A Fernanda conclui explicando essa diferença e os resultados observados no FastAPI.
 
-**Na tela:** G2 para p-valores/limiares; G3 para **6,05% versus 1,69%**; G4 para o ponto de **efeito +5 p.p.** em **n = 30**. Maior poder sozinho não torna o Z superior.
+**Na tela:** G2 agora compara **K ≥ 4** versus **K ≥ 5** acima do gráfico, além dos p-valores abaixo; G3 mostra **6,05% (liberal)** versus **1,69% (conservador)** no gráfico e no texto; G4 destaca abaixo do gráfico **35,89% versus 17,53%** em **n = 30 e efeito +5 p.p.**. A curva n = 200 sinaliza quando os resultados coincidem. Maior poder sozinho não torna o Z superior.
 
 ## Fala 3 — Fernanda (11–15)
 
@@ -88,7 +88,7 @@ O texto abaixo é para ser **falado naturalmente**, sem anunciar os números das
 >
 > Recomendamos o binomial exato com falhas raras e amostras pequenas. O Z é uma opção quando há mais falhas e sucessos esperados. A limitação é que supomos independência e probabilidade de falha constante; na prática, execuções de CI podem compartilhar causas. Também observamos só um workflow em um período.
 
-**Na tela:** G4/G3 para o pressuposto; seção 6 para **p-valores e −0,86 p.p.**; seção 7 para **expectativa, recomendação e limitações**. A discussão de α = 1% é qualitativa: a seção 3 permite explorar α no G2, **não** recalcula G3/G4.
+**Na tela:** G4 traz n × p₀ = 1,5 no título da condição e, em seu texto, a consequência qualitativa de reduzir α para 1%; seção 6 destaca **4,14% observado × 5% da meta e −0,86 p.p.** e apresenta os p-valores na tabela; seção 7 mostra **expectativa, recomendação e limitações**. A discussão de α = 1% é qualitativa: o controle de α no G2 **não** recalcula G3/G4.
 
 ## Cobertura das 15 perguntas e apoio visual
 
@@ -143,8 +143,8 @@ O texto abaixo é para ser **falado naturalmente**, sem anunciar os números das
 ## Checklist do ensaio
 
 - **Mostrar, não só dizer:** cada integrante aponta a seção/figura/valor no momento em que faz a afirmação. Evitar ler as 15 perguntas como um questionário.
-- **G1:** conferir três painéis atualizados; real n = 169, simulados n = 30 e n = 200. **Não confundir** as amostras individuais com as 10.000 repetições oficiais.
-- **G2:** manter o valor n = 30 do exemplo. Nunca insinuar que alterar α no G2 atualiza G3/G4.
+- **G1:** conferir três painéis atualizados; real n = 169 e simulados n = 30 e n = 200 por padrão. Ambos os n simulados são ajustáveis; reverter aos valores padrão antes do ensaio. **Não confundir** amostras individuais com as 10.000 repetições oficiais.
+- **G2:** manter o valor n = 30 do exemplo e α = 5% para os limiares K ≥ 4 e K ≥ 5. Nunca insinuar que alterar α no G2 atualiza G3/G4.
 - **G3/G4:** mostrar o contraste entre erro tipo I e poder, sem concluir que o Z é sempre melhor porque rejeitou mais.
 - **Seções 6/7:** mostrar valores de p e efeito, a expectativa inicial, a recomendação e as limitações.
 - **Cronometrar:** adequar a quantidade de palavras ao ritmo real e preservar a margem de 20 segundos.
