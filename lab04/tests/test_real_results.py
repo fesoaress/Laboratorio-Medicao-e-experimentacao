@@ -79,6 +79,12 @@ def test_final_dashboard_sections_use_the_real_results(monkeypatch):
         def dataframe(self, value, **_kwargs):
             self.tables.append(value)
 
+        def columns(self, count):
+            return [self for _ in range(count)]
+
+        def metric(self, label, value, **_kwargs):
+            self.texts.append(f"{label}: {value}")
+
         def caption(self, value):
             self.texts.append(value)
 

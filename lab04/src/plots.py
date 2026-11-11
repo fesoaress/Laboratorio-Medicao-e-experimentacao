@@ -47,6 +47,16 @@ def critical_k(n: int, p0: float, alpha: float) -> int | None:
     return None
 
 
+def critical_k_z(n: int, p0: float, alpha: float) -> int | None:
+    """Menor k com p-valor unilateral do Z estritamente inferior a alpha."""
+    stderr = math.sqrt(p0 * (1 - p0) / n)
+    for k in range(n + 1):
+        z = (k / n - p0) / stderr
+        if norm.sf(z) < alpha:
+            return k
+    return None
+
+
 def plot_g1(real, simulated, reference, p0: float = 0.05,
             sim_label: str = "Simulação ajustável") -> Figure:
     """G1: dados reais e duas amostras simuladas, em escalas percentuais iguais.
@@ -55,7 +65,7 @@ def plot_g1(real, simulated, reference, p0: float = 0.05,
     oficiais de 10.000 repetições por cenário.
     """
     # Painéis empilhados preservam a leitura também em telas estreitas.
-    fig = _figure("G1 · Resultados de CI", 8.0)
+    fig = _figure("G1 · Resultados de CI", 6.6)
     axes = fig.subplots(3, 1, sharey=True)
     expected = [1 - p0, p0]
     groups = (
@@ -74,10 +84,13 @@ def plot_g1(real, simulated, reference, p0: float = 0.05,
             ax.hlines(target, x - 0.36, x + 0.36, colors=COLOR_OBS,
                       linestyles="--", linewidth=1.4)
             inside = rate > 0.68
-            y = rate - 0.22 if inside else rate + 0.04
+            # Em barras altas, alinhar o rótulo pelo topo evita que a
+            # linha de referência (95%/5%) atravesse o texto.
+            y = rate - 0.07 if inside else rate + 0.04
             if not inside and abs(y - target) < 0.09:
                 y = target + 0.04 if target < 0.9 else y - 0.09
-            ax.text(x, y, f"{pct(rate)}\n{count}/{n}", ha="center", va="bottom",
+            ax.text(x, y, f"{pct(rate)}\n{count}/{n}", ha="center",
+                    va="top" if inside else "bottom",
                     color="white" if inside else COLOR_OBS, fontsize=11,
                     fontweight="bold")
         ax.set_xticks([0, 1], OUTCOME_LABELS)
@@ -205,6 +218,11 @@ def plot_g4(pw) -> Figure:
                 linestyle="--", marker="D", markersize=4, linewidth=1.6,
                 clip_on=False, label="Binomial exato")
         ax.set_title(condition, loc="left", fontsize=12)
+        if np.allclose(group["z_rate"], group["binomial_rate"], atol=1e-12, rtol=0):
+            ax.text(0.98, 0.08, "Curvas coincidentes",
+                    ha="right", va="bottom", transform=ax.transAxes,
+                    fontsize=10, color=COLOR_OBS,
+                    bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.85})
         ax.set_ylabel("Rejeições (%)")
         ax.set_yticks([0, .25, .50, .75, 1])
         ax.yaxis.set_major_formatter(PercentFormatter(1, decimals=0))

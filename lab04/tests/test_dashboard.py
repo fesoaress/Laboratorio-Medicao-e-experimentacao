@@ -12,7 +12,7 @@ from scipy.stats import binom
 
 from lab04.src.captions import g1_caption, g2_caption
 from lab04.src.data_adapter import get_real_outcomes
-from lab04.src.plots import critical_k, plot_g1, plot_g2
+from lab04.src.plots import critical_k, critical_k_z, plot_g1, plot_g2
 from lab04.src.simulation import simulate_runs
 from lab04.src.stat_tests import evaluate_tests
 
@@ -29,6 +29,17 @@ def test_critical_k_none_when_impossible():
     assert critical_k(2, 0.05, 0.001) is None
 
 
+@pytest.mark.parametrize("n,alpha,z_threshold,exact_threshold", [
+    (30, 0.05, 4, 5),
+    (30, 0.01, 5, 6),
+    (200, 0.05, 16, 16),
+    (200, 0.01, 18, 19),
+])
+def test_g2_thresholds_are_consistent_with_one_sided_p_values(n, alpha, z_threshold, exact_threshold):
+    assert critical_k_z(n, 0.05, alpha) == z_threshold
+    assert critical_k(n, 0.05, alpha) == exact_threshold
+
+
 def test_real_data_is_binary():
     data, provisional, source = get_real_outcomes()
     assert set(np.unique(data)).issubset({0, 1})
@@ -38,7 +49,7 @@ def test_real_data_is_binary():
 @pytest.mark.parametrize("n,p", [(30, 0.10), (30, 0.0), (30, 1.0), (200, 0.05)])
 def test_g1_g2_build_without_error(n, p):
     sim = simulate_runs(n, p, seed=42)
-    reference = simulate_runs(200, p, seed=42)
+    reference = simulate_runs(200, p, seed=43)
     res = evaluate_tests(sim)
     real, _, _ = get_real_outcomes()
     g1 = plot_g1(real, sim, reference)
@@ -88,6 +99,13 @@ def test_g2_legend_matches_the_two_tail_fills_and_the_rejection_markers():
         for key in (observed, threshold):
             assert any(line.get_color() == key.get_color() and line.get_linestyle() == key.get_linestyle()
                        for line in ax.lines)
+
+
+def test_reference_sample_does_not_repeat_small_sample_prefix():
+    small = simulate_runs(30, 0.1, seed=42)
+    ref = simulate_runs(200, 0.1, seed=43)
+    assert not np.array_equal(small, ref[:30])
+    assert np.array_equal(ref, simulate_runs(200, 0.1, seed=43))
 
 
 def test_streamlit_app_runs_without_exception():
