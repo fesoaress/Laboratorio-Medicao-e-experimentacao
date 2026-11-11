@@ -108,6 +108,16 @@ def test_conclusion_uses_versioned_results(monkeypatch):
         assert expected in conclusion
 
 
+def test_default_dashboard_has_explainable_thresholds_and_power_example(results_dir):
+    at = run_app()
+    assert not at.exception
+    md = " ".join(m.value for m in at.markdown)
+    assert "teste Z **K ≥ 4** · binomial exato **K ≥ 5**" in md
+    assert "p verdadeiro = 10%" in md
+    assert "Amostras menores" not in md
+    assert "erro tipo I" in md.lower() and "erro tipo II" in md.lower()
+
+
 def test_exploration_changes_g2_and_preserves_official_results(results_dir):
     at = run_app()
     official_tables = [table.value.copy() for table in at.dataframe]
@@ -118,13 +128,19 @@ def test_exploration_changes_g2_and_preserves_official_results(results_dir):
         assert expected in initial_conclusion
     initial_p = at.metric[0].value
     at.sidebar.number_input[0].set_value(40)
+    at.sidebar.number_input[1].set_value(250)
     at.sidebar.slider[0].set_value(0.15)
-    at.sidebar.number_input[1].set_value(21)
+    at.sidebar.number_input[2].set_value(21)
     at.sidebar.slider[1].set_value(0.10)
     at.sidebar.select_slider[0].set_value(0.01)
     at.run()
     assert not at.exception and not at.error and not at.warning
     assert at.metric[0].value != initial_p
+    text = " ".join(m.value for m in at.markdown) + " ".join(c.value for c in at.caption)
+    assert "n = 250" in text and "n = 40" in text
+    assert "Por que comparar os tamanhos?" in text
+    assert "Comparação direta dos limiares" in text
+    assert "Amostras menores" not in text
     assert any("p₀ = 10% e α = 1%" in c.value for c in at.caption)
     assert any("Hipóteses e α do cenário oficial (p₀ = 0,05, α = 0,05)" in c.value for c in at.caption)
     assert len(at.dataframe) == len(official_tables) == 3
