@@ -45,21 +45,26 @@ python -m streamlit run lab04/app.py
 ```
 
 O dashboard abre em `http://localhost:8501` por padrão. A barra lateral
-oferece navegação pelas sete seções. Os controles de tamanho, probabilidade
-e semente alteram a amostra ilustrativa ajustável de G1/G2. O G1 também
-mostra uma amostra simulada de referência com n = 200, gerada com a mesma
-probabilidade e semente; apenas o tamanho desse terceiro painel é fixo.
-A meta e o α ajustáveis valem para a exploração de G2. O cenário oficial, os resultados reais e
-as simulações de G3/G4 usam p₀ e α de 5%.
+oferece navegação pelas sete seções. O G1 permite **ajustar separadamente**
+os tamanhos das duas amostras ilustrativas, inicialmente n = 30 e n = 200,
+além da probabilidade hipotética e da semente. A segunda amostra utiliza
+semente + 1 para não repetir o prefixo da primeira; só a primeira amostra
+alimenta G2. A meta e o α ajustáveis valem para a exploração de G2. 
+O cenário oficial, os resultados reais e as simulações de G3/G4
+**não mudam com os controles** e mantêm p₀ e α de 5%.
 
 G1 apresenta três painéis na mesma escala percentual: 169 execuções reais,
 uma amostra simulada ajustável (n = 30 por padrão) e uma amostra simulada de
 referência com n = 200. As duas amostras simuladas do G1 são exemplos individuais,
 não as 10.000 repetições por cenário dos experimentos oficiais de G3/G4;
 as contagens e proporções são calculadas a partir das amostras geradas.
-G2 separa o p-valor observado da região crítica. G3 apresenta as
-taxas de erro tipo I e a incerteza de Monte Carlo, e G4 compara o poder em
-painéis com escalas compartilhadas.
+G2 separa o p-valor observado da região crítica e compara os limiares
+em número de falhas para ambos os testes, com valores recalculados ao alterar n,
+p₀ ou α. G3 apresenta as taxas de erro tipo I, sua classificação frente a α,
+a incerteza de Monte Carlo e a distinção entre erros tipo I e II. G4 compara
+o poder em painéis com escalas compartilhadas, destacando as curvas coincidentes
+e valores pontuais dos resultados oficiais. A seção de dados reais traz
+taxa observada, meta, efeito em pontos percentuais e tabela de p-valores.
 
 O grupo precisa fornecer ou confirmar a URL do quadro GitHub Projects
 associado ao Lab04. Depois de verificado, o endereço pode ser registrado
