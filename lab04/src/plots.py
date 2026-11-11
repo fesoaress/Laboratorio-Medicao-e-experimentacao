@@ -84,10 +84,13 @@ def plot_g1(real, simulated, reference, p0: float = 0.05,
             ax.hlines(target, x - 0.36, x + 0.36, colors=COLOR_OBS,
                       linestyles="--", linewidth=1.4)
             inside = rate > 0.68
-            y = rate - 0.22 if inside else rate + 0.04
+            # Em barras altas, alinhar o rótulo pelo topo evita que a
+            # linha de referência (95%/5%) atravesse o texto.
+            y = rate - 0.07 if inside else rate + 0.04
             if not inside and abs(y - target) < 0.09:
                 y = target + 0.04 if target < 0.9 else y - 0.09
-            ax.text(x, y, f"{pct(rate)}\n{count}/{n}", ha="center", va="bottom",
+            ax.text(x, y, f"{pct(rate)}\n{count}/{n}", ha="center",
+                    va="top" if inside else "bottom",
                     color="white" if inside else COLOR_OBS, fontsize=11,
                     fontweight="bold")
         ax.set_xticks([0, 1], OUTCOME_LABELS)
