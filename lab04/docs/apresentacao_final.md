@@ -24,73 +24,71 @@ O texto abaixo é para ser **falado naturalmente**, sem anunciar os números das
 
 ### Tela: seção 1 — Cenário
 
-> Boa noite! Nosso estudo compara dois testes de hipótese para entender como eles se comportam e em quais situações usar cada um.
+> Boa noite! Nosso estudo compara dois testes de hipótese para entender quando cada um é mais adequado.
 >
-> Nosso cenário é avaliar a taxa de falhas de um processo de integração contínua, o CI. A meta considerada é de, no máximo, 5% de falhas.
+> Avaliamos a taxa de falhas de execuções concluídas de integração contínua, ou CI, diante de uma meta de no máximo 5%. H₀ afirma que a taxa é menor ou igual a 5%, e H₁, que é maior. Portanto, usamos testes unilaterais à direita: só queremos detectar quando a taxa ultrapassa a meta.
+
+### Tela: seção 2 — G1, três painéis
+
+> Coletamos 169 execuções do GitHub Actions do FastAPI: 162 sucessos e sete falhas, ou 4,14% de falhas. Cada execução tem resultado binário, modelado por Bernoulli.
 >
-> Nossa hipótese nula, H₀, afirma que a taxa é menor ou igual a 5%, enquanto H₁ afirma que ela é maior que 5%. Portanto, os testes são unilaterais à direita: queremos investigar especificamente se a taxa ultrapassa essa meta.
-
-### Tela: seção 2 — G1, agora com três painéis
-
-> Coletamos 169 execuções concluídas do GitHub Actions do projeto FastAPI, com 162 sucessos e sete falhas. Foram consideradas somente execuções com resultado sucesso ou falha. Como cada execução tem dois resultados possíveis, podemos representá-la como uma variável de Bernoulli. Observamos 4,14% de falhas, com concentração de sucessos.
+> No G1, vemos os dados reais e duas amostras simuladas, de 30 e 200 execuções. Escolhemos 200 por ser próximo dos 169 dados reais e 30 para avaliar uma amostra pequena. Uma falha representa 3,33 pontos percentuais em 30 execuções, mas só 0,5 em 200. Esse é o motivo para investigar o efeito do tamanho amostral.
 >
-> No G1, vemos três painéis: os 169 dados reais e duas amostras simuladas, com 30 e 200 execuções. A comparação mostra por que o tamanho importa: com 30 execuções, uma única falha muda a proporção muito mais do que com 200.
+> As duas simulações visíveis são exemplos com probabilidade hipotética de falha de 10%; não são as 10.000 repetições oficiais, analisadas nos próximos gráficos.
+
+### Tela: seção 3 — G2, introdução
+
+> No G2, os dois testes avaliam a mesma proporção de falhas contra 5%. Acima, cada barra do binomial exato representa a probabilidade de uma contagem de falhas. Abaixo, o Z usa uma aproximação normal, aquela curva em sino.
 >
-> O tamanho 200 foi escolhido por ser próximo das 169 execuções reais; o tamanho 30 permite investigar uma situação com poucas falhas esperadas. As amostras do G1 são exemplos individuais, inicialmente com probabilidade hipotética de falha de 10%. Os resultados oficiais, com 10.000 repetições por cenário e probabilidades de 5% a 20%, aparecem em G3 e G4.
+> As caudas coloridas mostram os p-valores e as áreas hachuradas indicam as regiões de rejeição. O Vinicius vai aprofundar essa diferença e mostrar o que aconteceu nos experimentos.
 
-### Tela: seção 3 — G2, abertura
-
-> No G2, comparamos como os dois testes analisam a **mesma proporção de falhas** em relação à meta de 5%. No gráfico superior, o binomial exato trabalha diretamente com a contagem de falhas; cada barra representa uma quantidade possível. No inferior, o teste Z usa uma aproximação normal, mostrada pela curva.
->
-> As áreas coloridas mostram as caudas associadas aos p-valores, e as áreas hachuradas mostram onde rejeitaríamos H₀. O Vinicius vai explicar como essas regiões são definidas e o que observamos nas simulações.
-
-**Ponte visual:** no G1 apontar para **169 → 30 → 200**; no G2 apontar **barras superiores → curva inferior**. Não afirmar que o G1, por si só, demonstra que o teste Z é pior.
+**Na tela:** apontar para **169 → 30 → 200** e, no G2, **barras → curva**. O G1 é uma ilustração; não usar amostras individuais para afirmar que o Z é pior.
 
 ## Fala 2 — Vinicius (6–10)
 
 ### Tela: seção 3 — G2, aprofundamento
 
-> Sob a fronteira da hipótese nula, usamos p = 5%. No binomial exato, a quantidade K de falhas segue uma distribuição binomial. No Z, a referência é a distribuição normal padrão, usada como aproximação.
+> Sob a fronteira de H₀, a taxa é 5%. O binomial exato calcula a cauda de uma contagem binomial; o Z aproxima essa probabilidade pela normal.
 >
-> Como queremos detectar taxas acima da meta, as regiões de rejeição estão à direita. Com n = 30 e α = 5%, o Z começa a rejeitar quando aparecem quatro falhas; o binomial exato exige pelo menos cinco.
+> Como o teste é à direita, procuramos contagens altas. Com 30 execuções e α de 5%, o Z rejeita a partir de quatro falhas, e o exato só a partir de cinco. Assim, podem tomar decisões diferentes.
 >
-> O p-valor indica, supondo a taxa de 5%, a probabilidade de um resultado tão extremo quanto o observado ou mais, na direção de H₁. Ele **não** é a probabilidade de H₀ ser verdadeira.
+> O p-valor é a probabilidade, supondo H₀ na fronteira, de obter um resultado pelo menos tão extremo quanto o observado; não é a chance de H₀ estar correta.
 >
-> Nosso objetivo também é controlar erros: tipo I é sinalizar que a taxa excedeu 5% quando não excedeu; tipo II é deixar passar uma taxa que realmente excedeu. No CI, deixar passar problemas pode atrasar uma investigação, mas falsos alarmes também custam tempo; a gravidade depende desse contexto.
+> Erro tipo I é dar um falso alarme quando a taxa não supera 5%. Erro tipo II é não detectar quando supera. No CI, ambos têm custos, entre investigações desnecessárias e falhas ignoradas.
 
 ### Tela: seção 4 — G3
 
-> Em G3, comparamos o erro tipo I ao nível nominal de 5%. Na condição de 30 execuções, o Z rejeitou indevidamente em 6,05% das simulações, ficando liberal, enquanto o binomial exato ficou em 1,69%, sendo conservador. Já com 200 execuções, ambos ficaram em 4,48%, próximos do nível escolhido.
+> O G3 mede falsos alarmes sob H₀. Com 30 execuções, o Z teve 6,05%, acima do α de 5%, e foi liberal; o binomial exato teve 1,69%, sendo conservador. Com 200, ambos tiveram 4,48%.
 
 ### Tela: seção 5 — G4
 
-> Em G4, vemos o poder: a chance de detectar que a taxa realmente supera a meta. O poder tende a aumentar conforme aumenta o tamanho do efeito. Com 30 execuções e taxa verdadeira de 10%, o Z atingiu 35,89% e o binomial exato 17,53%. Mas essa vantagem do Z veio acompanhada do excesso de falsos alarmes visto no G3.
+> O G4 mostra poder, isto é, a capacidade de detectar uma taxa acima da meta. Com 30 execuções e taxa verdadeira de 10%, o Z teve 35,89% e o exato 17,53%. Mas o Z também gerou falsos alarmes demais, como vimos no G3. Com 200 execuções, as curvas coincidiram nos cenários estudados.
 >
-> Com 200 execuções, as curvas coincidiram nos cenários estudados. A Fernanda vai fechar explicando o motivo dessa diferença e o que concluímos nos dados reais.
+> A Fernanda conclui explicando essa diferença e os resultados observados no FastAPI.
 
-**Ponte visual:** G2 explica **o que cada teste calcula**; G3 mostra **falsos alarmes sob H₀**; G4 mostra **detecção quando H₁ é verdadeira**. Ao dizer 35,89% e 17,53%, apontar o cenário n = 30, p = 10% (efeito +5 pontos percentuais). Não apresentar maior poder do Z isoladamente como superioridade geral.
+**Na tela:** G2 para p-valores/limiares; G3 para **6,05% versus 1,69%**; G4 para o ponto de **efeito +5 p.p.** em **n = 30**. Maior poder sozinho não torna o Z superior.
 
 ## Fala 3 — Fernanda (11–15)
 
-### Tela: seção 5 — G4 e relação com G3
+### Tela: seção 5 — G4, relacionando com G3
 
-> A principal dificuldade da aproximação normal aparece quando temos poucas falhas esperadas. Com 30 execuções e uma meta de 5%, esperamos somente 1,5 falha sob H₀. Por isso, a distribuição discreta pode ficar distante da aproximação normal e os testes passam a tomar decisões diferentes. Com 200 execuções, esperamos dez falhas, e os dois testes tiveram o mesmo limiar de rejeição nas condições estudadas.
+> Por que houve diferença? Sob H₀, com 30 execuções esperamos só 1,5 falha. Essa quantidade pequena torna a aproximação normal pouco adequada. Com 200 execuções, esperamos dez falhas, e os testes concordaram nas condições estudadas.
 >
-> Se reduzíssemos α de 5% para 1%, rejeitar H₀ se tornaria mais difícil: o erro tipo I e o poder só poderiam diminuir ou permanecer iguais, mantendo o mesmo cenário. **Isso é uma previsão metodológica, não um resultado calculado em G3/G4 para 1%.** O controle de α no G2 permite explorar a mudança de região crítica sem alterar os resultados oficiais.
+> Se diminuíssemos α para 1%, ficaria mais difícil rejeitar H₀, então tanto o erro tipo I quanto o poder não aumentariam. Isso é uma consequência teórica; G3 e G4 não foram recalculados para α de 1%.
 
 ### Tela: seção 6 — Dados reais
 
-> Nos dados reais, observamos sete falhas em 169 execuções, ou 4,14%. O teste Z obteve p-valor de 0,6956 e o binomial exato, de 0,7452. Nenhum dos testes rejeitou H₀: não encontramos evidência suficiente para afirmar que a taxa supera 5%.
+> Nos dados reais, foram sete falhas em 169 execuções, uma taxa de 4,14%. O p-valor do Z foi 0,6956 e o do binomial exato 0,7452. Nenhum rejeitou H₀. Portanto, não há evidência suficiente de que a taxa excede 5%, mas isso não prova que a meta esteja garantida.
 >
-> A diferença observada para a meta foi de −0,86 ponto percentual. Esse tamanho do efeito indica a direção e a magnitude da diferença; não basta olhar só o p-valor, e não rejeitar H₀ também não prova que a taxa está necessariamente abaixo da meta.
+> O efeito observado foi de −0,86 ponto percentual em relação à meta, indicando uma diferença pequena e para baixo.
 
 ### Tela: seção 7 — Conclusão
 
-> A expectativa inicial era de maior dificuldade para o Z quando poucas falhas fossem esperadas. Foi o que observamos com n = 30; com n = 200, as decisões coincidiram nos cenários estudados.
+> A expectativa era de maior dificuldade para o Z com poucas falhas esperadas, e a simulação confirmou isso em n = 30. Em n = 200, ambos concordaram nos cenários analisados.
 >
-> Por isso, recomendamos o binomial exato principalmente para falhas raras e amostras pequenas. O Z pode ser útil quando há contagens esperadas maiores. Nossa principal limitação é que assumimos execuções independentes e uma probabilidade de falha constante; na prática, execuções de CI podem compartilhar causas de falha. Além disso, os dados reais cobrem apenas um workflow e um período.
+> Recomendamos o binomial exato com falhas raras e amostras pequenas. O Z é uma opção quando há mais falhas e sucessos esperados. A limitação é que supomos independência e probabilidade de falha constante; na prática, execuções de CI podem compartilhar causas. Também observamos só um workflow em um período.
 
-**Ponte visual:** o trecho sobre α = 1% é uma **hipótese de sensibilidade**, não uma nova curva em G3/G4; a barra lateral do G2 mostra que α pode ser explorado, mas não substitui uma simulação oficial. Na seção 6, apontar p-valores e a coluna de efeito; na seção 7, a expectativa, a recomendação e as limitações estão no texto do dashboard.
+**Na tela:** G4/G3 para o pressuposto; seção 6 para **p-valores e −0,86 p.p.**; seção 7 para **expectativa, recomendação e limitações**. A discussão de α = 1% é qualitativa: a seção 3 permite explorar α no G2, **não** recalcula G3/G4.
 
 ## Cobertura das 15 perguntas e apoio visual
 
