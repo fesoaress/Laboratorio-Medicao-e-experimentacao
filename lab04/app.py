@@ -166,8 +166,8 @@ def g2_selected_results(ctx: dict, selected: str) -> dict:
 def section_testes(ctx: dict) -> None:
     st.header("3. Como os testes funcionam (G2)", anchor="testes")
     labels = {
-        "sim_small": f"Simulada · n = {ctx['n']}",
-        "sim_reference": f"Simulada · n = {ctx['reference_n']}",
+        "sim_small": f"Simulada pequena · n = {ctx['n']}",
+        "sim_reference": f"Simulada referência · n = {ctx['reference_n']}",
         "real": f"Real · n = {len(ctx['real'])}",
     }
     st.markdown(
