@@ -161,8 +161,8 @@ def plot_g2(results: dict) -> Figure:
     b_side = k > k_max
     ax_b.text(
         0.02 if b_side else 0.98, 0.98,
-        f"Observado: K = {k}\\n"
-        f"Crítico: {f'K ≥ {k_crit}' if k_crit is not None else 'sem rejeição'}\\n"
+        f"Observado: K = {k}\n"
+        f"Crítico: {f'K ≥ {k_crit}' if k_crit is not None else 'sem rejeição'}\n"
         f"p-valor = {p_value(results['binomial_p_value'])}",
         transform=ax_b.transAxes, ha="left" if b_side else "right", va="top",
         fontsize=9, fontweight="medium", color=COLOR_OBS,
@@ -192,8 +192,8 @@ def plot_g2(results: dict) -> Figure:
     z_side = z_obs > hi
     ax_z.text(
         0.02 if z_side else 0.98, 0.98,
-        f"Observado: Z = {num(z_obs, 3)}\\n"
-        f"Crítico: Z = {num(z_crit, 3)}\\n"
+        f"Observado: Z = {num(z_obs, 3)}\n"
+        f"Crítico: Z = {num(z_crit, 3)}\n"
         f"p-valor = {p_value(results['z_p_value'])}",
         transform=ax_z.transAxes, ha="left" if z_side else "right", va="top",
         fontsize=9, fontweight="medium", color=COLOR_OBS,
