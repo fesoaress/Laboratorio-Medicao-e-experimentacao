@@ -11,7 +11,7 @@ from matplotlib.patches import Patch
 from matplotlib.ticker import MaxNLocator, PercentFormatter, StrMethodFormatter
 from scipy.stats import binom, norm
 
-from lab04.src.formatting import num, pct
+from lab04.src.formatting import num, pct, p_value
 
 COLOR_Z = "#1f77b4"
 COLOR_BINOMIAL = "#d95f02"
@@ -143,7 +143,33 @@ def plot_g2(results: dict) -> Figure:
         ax_b.axvline(k_crit, color=COLOR_CRIT, linestyle="--", linewidth=1.6, zorder=5)
     _observed_line(ax_b, k, k_min, k_max)
     ax_b.set_xlim(k_min - 0.6, k_max + 0.6)
-    ax_b.set_ylim(0, max(pmf) * 1.24)
+    ax_b.set_ylim(0, max(pmf) * 1.36)
+    # Probabilidade de cada contagem: rótulos de massa relevante, calculados
+    # diretamente da PMF. Em explorações com muitas barras, espaçar os rótulos.
+    label_indices = np.flatnonzero(pmf >= 0.0005)
+    if len(label_indices) > 18:
+        label_indices = label_indices[np.unique(
+            np.linspace(0, len(label_indices) - 1, 18, dtype=int)
+        )]
+    for idx in label_indices:
+        ax_b.annotate(
+            pct(float(pmf[idx]), 2), (int(ks[idx]), float(pmf[idx])),
+            xytext=(0, 4), textcoords="offset points", ha="center", va="bottom",
+            fontsize=8, color=COLOR_OBS,
+            bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.88, "pad": 0.1},
+        )
+    b_side = k > k_max
+    ax_b.text(
+        0.02 if b_side else 0.98, 0.98,
+        f"Observado: K = {k}\n"
+        f"Crítico: {f'K ≥ {k_crit}' if k_crit is not None else 'sem rejeição'}\n"
+        f"p-valor = {p_value(results['binomial_p_value'])}",
+        transform=ax_b.transAxes, ha="left" if b_side else "right", va="top",
+        fontsize=9, fontweight="medium", color=COLOR_OBS,
+        bbox={"facecolor": "white", "edgecolor": COLOR_BINOMIAL,
+              "alpha": 0.96, "boxstyle": "round,pad=0.4"},
+        zorder=7,
+    )
     ax_b.xaxis.set_major_locator(MaxNLocator(nbins=7, integer=True))
     ax_b.yaxis.set_major_formatter(PercentFormatter(1, decimals=1))
     ax_b.set(xlabel="K · número de falhas", ylabel="Probabilidade (%)")
@@ -163,6 +189,18 @@ def plot_g2(results: dict) -> Figure:
     ax_z.set(xlim=(lo, hi), ylim=(0, 0.48), xlabel="Z · desvios-padrão sob H₀", ylabel="Densidade")
     ax_z.yaxis.set_major_formatter(StrMethodFormatter("{x:.1f}"))
     ax_z.set_title("Teste Z · aproximação normal N(0, 1)", loc="left", fontsize=12)
+    z_side = z_obs > hi
+    ax_z.text(
+        0.02 if z_side else 0.98, 0.98,
+        f"Observado: Z = {num(z_obs, 3)}\n"
+        f"Crítico: Z = {num(z_crit, 3)}\n"
+        f"p-valor = {p_value(results['z_p_value'])}",
+        transform=ax_z.transAxes, ha="left" if z_side else "right", va="top",
+        fontsize=9, fontweight="medium", color=COLOR_OBS,
+        bbox={"facecolor": "white", "edgecolor": COLOR_Z,
+              "alpha": 0.96, "boxstyle": "round,pad=0.4"},
+        zorder=7,
+    )
 
     fig.legend(handles=[
         Patch(facecolor=COLOR_BINOMIAL, label="Cauda do p-valor · binomial"),
@@ -207,7 +245,7 @@ def plot_g3(t1) -> Figure:
 def plot_g4(pw) -> Figure:
     """G4: uma figura com um painel por condição, em escalas compartilhadas."""
     groups = list(pw.sort_values(["n", "effect_pp"]).groupby("condition", sort=False))
-    fig = _figure("G4 · Poder por tamanho de efeito", 2.4 * len(groups) + 0.7)
+    fig = _figure("G4 · Poder por tamanho de efeito", 2.95 * len(groups) + 0.7)
     axes = fig.subplots(len(groups), 1, sharex=True, sharey=True, squeeze=False).ravel()
     effects = sorted(pw["effect_pp"].unique())
     for ax, (condition, group) in zip(axes, groups):
@@ -218,11 +256,49 @@ def plot_g4(pw) -> Figure:
                 linestyle="--", marker="D", markersize=4, linewidth=1.6,
                 clip_on=False, label="Binomial exato")
         ax.set_title(condition, loc="left", fontsize=12)
-        if np.allclose(group["z_rate"], group["binomial_rate"], atol=1e-12, rtol=0):
-            ax.text(0.98, 0.08, "Curvas coincidentes",
+        all_same = np.allclose(group["z_rate"], group["binomial_rate"],
+                              atol=1e-12, rtol=0)
+        if all_same:
+            ax.text(0.98, 0.08, "Curvas coincidentes (Z = exato)",
                     ha="right", va="bottom", transform=ax.transAxes,
                     fontsize=10, color=COLOR_OBS,
                     bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.85})
+        # Cada ponto tem o percentual oficial de rejeições.
+        # Quando os testes coincidem, um único rótulo vale para os dois.
+        # Para curvas distintas, deslocar Z para cima e exato para baixo,
+        # com exceções nas extremidades de 0%/100%.
+        min_x = float(group["effect_pp"].min())
+        max_x = float(group["effect_pp"].max())
+        for point in group.itertuples(index=False):
+            x, z_y, b_y = float(point.effect_pp), float(point.z_rate), float(point.binomial_rate)
+            horizontal = "left" if x == min_x else "right" if x == max_x else "center"
+            box_style = {"facecolor": "white", "edgecolor": "none", "alpha": 0.9, "pad": 0.12}
+            if math.isclose(z_y, b_y, rel_tol=0, abs_tol=1e-12):
+                above = z_y <= 0.86
+                ax.annotate(
+                    pct(z_y), (x, z_y), xytext=(0, 8 if above else -12),
+                    textcoords="offset points", ha=horizontal,
+                    va="bottom" if above else "top",
+                    fontsize=8.5, fontweight="bold", color=COLOR_OBS,
+                    bbox=box_style, zorder=6,
+                )
+            else:
+                above_z = z_y <= 0.85
+                ax.annotate(
+                    pct(z_y), (x, z_y), xytext=(0, 10 if above_z else -12),
+                    textcoords="offset points", ha=horizontal,
+                    va="bottom" if above_z else "top",
+                    fontsize=8.5, fontweight="bold", color=COLOR_Z,
+                    bbox=box_style, zorder=6,
+                )
+                above_b = b_y < 0.06
+                ax.annotate(
+                    pct(b_y), (x, b_y), xytext=(0, 5 if above_b else -9),
+                    textcoords="offset points", ha=horizontal,
+                    va="bottom" if above_b else "top",
+                    fontsize=8.5, fontweight="bold", color=COLOR_BINOMIAL,
+                    bbox=box_style, zorder=6,
+                )
         ax.set_ylabel("Rejeições (%)")
         ax.set_yticks([0, .25, .50, .75, 1])
         ax.yaxis.set_major_formatter(PercentFormatter(1, decimals=0))

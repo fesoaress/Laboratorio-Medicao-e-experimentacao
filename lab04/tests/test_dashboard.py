@@ -13,6 +13,7 @@ from scipy.stats import binom
 from lab04.src.captions import g1_caption, g2_caption
 from lab04.src.data_adapter import get_real_outcomes
 from lab04.src.plots import critical_k, critical_k_z, plot_g1, plot_g2
+from lab04.src.formatting import pct, p_value
 from lab04.src.simulation import simulate_runs
 from lab04.src.stat_tests import evaluate_tests
 
@@ -99,6 +100,24 @@ def test_g2_legend_matches_the_two_tail_fills_and_the_rejection_markers():
         for key in (observed, threshold):
             assert any(line.get_color() == key.get_color() and line.get_linestyle() == key.get_linestyle()
                        for line in ax.lines)
+
+
+def test_g2_labels_match_actual_binomial_pmf_and_test_results():
+    simulated = simulate_runs(30, 0.10, seed=42)
+    results = evaluate_tests(simulated)
+    fig = plot_g2(results)
+    binomial_ax, z_ax = fig.axes
+    labels = [t.get_text() for t in binomial_ax.texts]
+    assert pct(binom.pmf(0, 30, 0.05), 2) in labels
+    assert pct(binom.pmf(1, 30, 0.05), 2) in labels
+    summary = next(t for t in labels if "Observado: K" in t)
+    assert f"Observado: K = {results['k']}" in summary
+    assert "Crítico: K ≥ 5" in summary
+    assert f"p-valor = {p_value(results['binomial_p_value'])}" in summary
+    assert "\\n" not in summary  # linhas reais, não barras invertidas literais
+    z_text = next(t.get_text() for t in z_ax.texts if "Observado: Z" in t.get_text())
+    assert f"p-valor = {p_value(results['z_p_value'])}" in z_text
+    assert "Crítico: Z = " in z_text
 
 
 def test_reference_sample_does_not_repeat_small_sample_prefix():
