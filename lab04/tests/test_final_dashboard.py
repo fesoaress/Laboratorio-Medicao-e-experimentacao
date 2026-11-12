@@ -118,6 +118,63 @@ def test_default_dashboard_has_explainable_thresholds_and_power_example(results_
     assert "erro tipo i" in md.lower() and "erro tipo ii" in md.lower()
 
 
+def test_g2_selects_the_three_existing_samples_and_preserves_official_data(results_dir):
+    from lab04 import app
+
+    ctx = app.build_context(n=30, true_p=0.10, seed=42, p0=0.05, alpha=0.05)
+    assert app.g2_selected_results(ctx, "sim_small") is ctx["sim_results"]
+    assert app.g2_selected_results(ctx, "sim_reference") is ctx["reference_results"]
+    assert app.g2_selected_results(ctx, "real") is ctx["real_results"]["tests"]
+    assert app.g2_selected_results(ctx, "sim_reference")["n"] == 200
+    assert (app.g2_selected_results(ctx, "real")["n"],
+            app.g2_selected_results(ctx, "real")["k"]) == (169, 7)
+    with pytest.raises(ValueError, match="Amostra G2 desconhecida"):
+        app.g2_selected_results(ctx, "desconhecida")
+
+    at = run_app()
+    assert not at.exception and len(at.radio) == 1
+    assert at.radio[0].value == "sim_small"
+    assert "K ≥ 4" in " ".join(m.value for m in at.markdown)
+    original_tables = [table.value.copy() for table in at.dataframe]
+    original_conclusion = conclusion_text(at)
+
+    at.radio[0].set_value("sim_reference").run()
+    assert not at.exception and not at.error
+    selected_captions = " ".join(c.value for c in at.caption)
+    assert "n = 200" in selected_captions
+    assert "K = " in selected_captions
+    assert "p₀ = 5% e α = 5%" in selected_captions
+    assert "teste Z **K ≥ 16** · binomial exato **K ≥ 16**" in " ".join(
+        m.value for m in at.markdown
+    )
+
+    at.radio[0].set_value("real").run()
+    assert not at.exception and not at.error
+    selected_captions = " ".join(c.value for c in at.caption)
+    assert "GitHub Actions · dados observados, sem simulação" in selected_captions
+    assert "n = 169, K = 7 falhas" in selected_captions
+    assert at.metric[0].value == "0,6956"
+    assert at.metric[1].value == "0,7452"
+    assert "Parâmetros oficiais fixos" in selected_captions
+
+    at.sidebar.slider[1].set_value(0.10)
+    at.sidebar.select_slider[0].set_value(0.01)
+    at.run()
+    assert not at.exception and not at.error
+    assert at.radio[0].value == "real"
+    assert at.metric[0].value == "0,6956"
+    assert at.metric[1].value == "0,7452"
+    assert "p₀ = 5% e α = 5%" in " ".join(c.value for c in at.caption)
+    for actual, expected in zip([table.value for table in at.dataframe], original_tables):
+        pd.testing.assert_frame_equal(actual, expected)
+    assert conclusion_text(at) == original_conclusion
+
+    at.radio[0].set_value("sim_reference").run()
+    assert not at.exception and not at.error
+    assert "p₀ = 10% e α = 1%" in " ".join(c.value for c in at.caption)
+    assert at.radio[0].value == "sim_reference"
+
+
 def test_exploration_changes_g2_and_preserves_official_results(results_dir):
     at = run_app()
     official_tables = [table.value.copy() for table in at.dataframe]
