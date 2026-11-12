@@ -222,12 +222,12 @@ def section_testes(ctx: dict) -> None:
     st.caption(g2_caption(res))
     z, exact = st.columns(2)
     z.metric("Teste Z · p-valor", p_value(res["z_p_value"]))
-    z.markdown(f"**Observado** · Z = {num(res['z_statistic'], 3)}  \\n"
-               f"**Rejeição** · Z > {num(res['z_critical'], 3)} ({z_region})  \\n"
+    z.markdown(f"**Observado** · Z = {num(res['z_statistic'], 3)}  \n"
+               f"**Rejeição** · Z > {num(res['z_critical'], 3)} ({z_region})  \n"
                f"**Decisão** · {decision_text(res['reject_z'])}")
     exact.metric("Binomial exato · p-valor", p_value(res["binomial_p_value"]))
-    exact.markdown(f"**Observado** · K = {res['k']} falhas  \\n"
-                   f"**Rejeição** · {exact_region}  \\n"
+    exact.markdown(f"**Observado** · K = {res['k']} falhas  \n"
+                   f"**Rejeição** · {exact_region}  \n"
                    f"**Decisão** · {decision_text(res['reject_binomial'])}")
     with st.expander("Detalhes numéricos da amostra selecionada"):
         st.json(res)
