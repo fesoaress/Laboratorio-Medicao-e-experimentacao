@@ -16,7 +16,7 @@ Roteiro de apresentação contínua, seguindo as **sete seções do dashboard** 
 | 4:35–6:40 | **Fernanda** | 11–15 | **G4** para pressupostos, seção 6 (dados reais) e seção 7 (conclusão) |
 | 6:40–7:00 | Grupo | — | Margem de tempo / fechamento |
 
-**Antes de começar:** manter os controles de G1/G2 nos valores iniciais (amostra ajustável n = 30; amostra de referência n = 200; probabilidade hipotética de falha de 10%; semente 42; p₀ = 5%; α = 5%). Os dois tamanhos de amostra do G1 agora podem ser alterados separadamente. Só o primeiro alimenta o G2. G3/G4 são resultados oficiais fixos de 10.000 repetições por cenário: os controles da barra lateral **não os recalculam**.
+**Antes de começar:** manter os controles de G1/G2 nos valores iniciais (amostra ajustável n = 30; amostra de referência n = 200; probabilidade hipotética de falha de 10%; semente 42; p₀ = 5%; α = 5%). Os dois tamanhos de amostra do G1 podem ser alterados separadamente. **O G2 seleciona qual amostra analisar:** simulada pequena (inicial), simulada de referência ou real. Para as simuladas, p₀/α vêm dos controles; na real, são os 5% oficiais usados também na seção 6. G3/G4 são resultados oficiais fixos de 10.000 repetições por cenário: os controles da barra lateral **não os recalculam**.
 
 O texto abaixo é para ser **falado naturalmente**, sem anunciar os números das perguntas. A tabela e as respostas de defesa servem para garantir a cobertura.
 
@@ -38,11 +38,11 @@ O texto abaixo é para ser **falado naturalmente**, sem anunciar os números das
 
 ### Tela: seção 3 — G2, introdução
 
-> No G2, os dois testes avaliam a mesma proporção de falhas contra 5%. Acima, cada barra do binomial exato representa a probabilidade de uma contagem de falhas. Abaixo, o Z usa uma aproximação normal, aquela curva em sino.
+> No G2, podemos selecionar qualquer uma dessas três amostras do G1 para aplicar os dois testes. Vamos começar pela de 30. Acima, cada barra do binomial exato representa a probabilidade de uma contagem de falhas. Abaixo, o Z usa uma aproximação normal, aquela curva em sino.
 >
 > As caudas coloridas mostram os p-valores e as áreas hachuradas indicam as regiões de rejeição. O Vinicius vai aprofundar essa diferença e mostrar o que aconteceu nos experimentos.
 
-**Na tela:** apontar para **169 → 30 → 200** e para a frase logo abaixo do G1 que calcula o impacto de uma falha (**3,33 p.p.** em n = 30 e **0,50 p.p.** em n = 200). O texto do G1 mostra também o modelo Bernoulli e a escolha dos tamanhos oficiais. No G2, apontar para **barras → curva**; os limites numéricos de rejeição agora aparecem logo acima das figuras. O G1 é ilustração; não usar amostras individuais para afirmar que o Z é pior.
+**Na tela:** apontar para **169 → 30 → 200** e para a frase logo abaixo do G1 que calcula o impacto de uma falha (**3,33 p.p.** em n = 30 e **0,50 p.p.** em n = 200). O texto do G1 mostra também o modelo Bernoulli e a escolha dos tamanhos oficiais. No G2, deixar selecionada **Simulada pequena · n = 30**, apontar para **barras → curva**; os limites numéricos de rejeição aparecem logo acima das figuras. A opção real também usa a amostra original do G1, sem reamostragem. O G1 é ilustração; não usar amostras individuais para afirmar que o Z é pior.
 
 ## Fala 2 — Vinicius (6–10)
 
@@ -50,7 +50,7 @@ O texto abaixo é para ser **falado naturalmente**, sem anunciar os números das
 
 > Sob a fronteira de H₀, a taxa é 5%. O binomial exato calcula a cauda de uma contagem binomial; o Z aproxima essa probabilidade pela normal.
 >
-> Como o teste é à direita, procuramos contagens altas. Com 30 execuções e α de 5%, o Z rejeita a partir de quatro falhas, e o exato só a partir de cinco. Assim, podem tomar decisões diferentes.
+> Como o teste é à direita, procuramos contagens altas. Com 30 execuções e α de 5%, o Z rejeita a partir de quatro falhas, e o exato só a partir de cinco. Mas, se selecionarmos a amostra de 200, ambos rejeitam a partir de 16 falhas. Essa comparação mostra por que o tamanho importa.
 >
 > O p-valor é a probabilidade, supondo H₀ na fronteira, de obter um resultado pelo menos tão extremo quanto o observado; não é a chance de H₀ estar correta.
 >
@@ -66,7 +66,7 @@ O texto abaixo é para ser **falado naturalmente**, sem anunciar os números das
 >
 > A Fernanda conclui explicando essa diferença e os resultados observados no FastAPI.
 
-**Na tela:** G2 agora compara **K ≥ 4** versus **K ≥ 5** acima do gráfico, além dos p-valores abaixo; G3 mostra **6,05% (liberal)** versus **1,69% (conservador)** no gráfico e no texto; G4 destaca abaixo do gráfico **35,89% versus 17,53%** em **n = 30 e efeito +5 p.p.**. A curva n = 200 sinaliza quando os resultados coincidem. Maior poder sozinho não torna o Z superior.
+**Na tela:** primeiro G2 em **Simulada pequena (n = 30)**: **K ≥ 4** versus **K ≥ 5**. Em seguida, selecionar **Simulada referência (n = 200)**: ambos **K ≥ 16**. Os gráficos e p-valores acompanham a amostra; G3 mostra **6,05% (liberal)** versus **1,69% (conservador)** no gráfico e no texto; G4 destaca abaixo do gráfico **35,89% versus 17,53%** em **n = 30 e efeito +5 p.p.**. A curva n = 200 sinaliza quando os resultados coincidem. Maior poder sozinho não torna o Z superior.
 
 ## Fala 3 — Fernanda (11–15)
 
@@ -144,7 +144,7 @@ O texto abaixo é para ser **falado naturalmente**, sem anunciar os números das
 
 - **Mostrar, não só dizer:** cada integrante aponta a seção/figura/valor no momento em que faz a afirmação. Evitar ler as 15 perguntas como um questionário.
 - **G1:** conferir três painéis atualizados; real n = 169 e simulados n = 30 e n = 200 por padrão. Ambos os n simulados são ajustáveis; reverter aos valores padrão antes do ensaio. **Não confundir** amostras individuais com as 10.000 repetições oficiais.
-- **G2:** manter o valor n = 30 do exemplo e α = 5% para os limiares K ≥ 4 e K ≥ 5. Nunca insinuar que alterar α no G2 atualiza G3/G4.
+- **G2:** começar com **Simulada pequena (n = 30)**, p₀ = α = 5%, para K ≥ 4 e K ≥ 5; mostrar brevemente **Simulada referência (n = 200)** para K ≥ 16 em ambos; a opção **Real (n = 169)** reutiliza os sete resultados de falha e os parâmetros oficiais da seção 6. Nunca insinuar que alterar α no G2 atualiza G3/G4 ou os resultados reais.
 - **G3/G4:** mostrar o contraste entre erro tipo I e poder, sem concluir que o Z é sempre melhor porque rejeitou mais.
 - **Seções 6/7:** mostrar valores de p e efeito, a expectativa inicial, a recomendação e as limitações.
 - **Cronometrar:** adequar a quantidade de palavras ao ritmo real e preservar a margem de 20 segundos.
