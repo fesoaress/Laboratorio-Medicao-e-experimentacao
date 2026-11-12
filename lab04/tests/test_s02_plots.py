@@ -11,6 +11,7 @@ import pandas as pd
 import pytest
 
 from lab04.src.captions import g3_caption, g4_caption
+from lab04.src.formatting import pct
 from lab04.src.plots import COLOR_BINOMIAL, COLOR_Z, plot_g3, plot_g4
 from lab04.src.s02_results import (
     REQUIRED_COLUMNS, classify_type1, combine_conditions, load_s02_tables,
@@ -139,6 +140,36 @@ def test_g4_lines_match_aggregated_table_and_start_at_zero(cond):
             assert line.get_color() == color
         assert z.get_marker() != exact.get_marker()
         assert z.get_linestyle() != exact.get_linestyle()
+
+
+def test_g4_all_points_have_exact_data_labels_and_identical_curves_share_one_label(cond):
+    pw = power_table(cond)
+    fig = plot_g4(pw)
+    for ax, n in zip(fig.axes, (30, 200)):
+        group = pw[pw["n"] == n]
+        point_labels = [t.get_text() for t in ax.texts if "%" in t.get_text()]
+        for row in group.itertuples(index=False):
+            assert pct(row.z_rate) in point_labels
+            assert pct(row.binomial_rate) in point_labels
+        # A fixture mantém curvas diferentes em ambos os grupos:
+        # cada ponto tem um rótulo para cada teste.
+        assert len(point_labels) == len(group) * 2
+
+
+def test_g4_coincident_curves_have_one_correct_label_per_effect():
+    # Dados oficiais versionados: em n=200, as séries coincidem de fato.
+    tables = load_s02_tables()
+    cond = combine_conditions([t for t in tables.values() if t is not None])
+    pw = power_table(cond)
+    fig = plot_g4(pw)
+    groups = list(pw.sort_values(["n", "effect_pp"]).groupby("condition", sort=False))
+    for ax, (_, group) in zip(fig.axes, groups):
+        values = [t.get_text() for t in ax.texts if "%" in t.get_text()]
+        same = np.allclose(group["z_rate"], group["binomial_rate"], atol=1e-12, rtol=0)
+        assert len(values) == len(group) * (1 if same else 2)
+        for row in group.itertuples(index=False):
+            assert pct(row.z_rate) in values
+            assert pct(row.binomial_rate) in values
 
 
 def test_captions_are_neutral_and_mention_simulation(cond):
