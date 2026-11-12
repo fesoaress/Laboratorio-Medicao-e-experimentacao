@@ -27,8 +27,10 @@ def g2_caption(res: dict) -> str:
     return (
         "Na fronteira p = p₀, o binomial exato soma as probabilidades das contagens a partir "
         "do K observado, enquanto o teste Z aproxima a cauda pela normal. "
-        "O preenchimento marca a cauda do p-valor e a hachura mostra a região de rejeição "
-        "definida por α. Uma seta indica quando a estatística observada fica fora do eixo exibido."
+        "Os rótulos das barras mostram probabilidades de contagens individuais; "
+        "as caixas informam o p-valor total da cauda, o observado e o limiar crítico. "
+        "A hachura mostra a região de rejeição definida por α; uma seta indica "
+        "quando a estatística observada fica fora do eixo exibido."
         f"{caution}"
     )
 
@@ -65,6 +67,8 @@ def g4_caption(pw) -> str:
         findings.append(f"Em n = {int(group['n'].iloc[0])}, {power_sentence(group)}{example}.")
     return (
         f"Cada ponto usa {reps} repetições simuladas, com o efeito medido em pontos percentuais acima de p₀. "
+        "Os rótulos mostram as porcentagens exatas das taxas de rejeição; "
+        "quando as curvas coincidem, um único rótulo vale para ambos os testes. "
         "No efeito zero, a taxa de rejeição estima o erro tipo I. "
         + " ".join(findings)
     )
