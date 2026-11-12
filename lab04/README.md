@@ -48,10 +48,13 @@ O dashboard abre em `http://localhost:8501` por padrão. A barra lateral
 oferece navegação pelas sete seções. O G1 permite **ajustar separadamente**
 os tamanhos das duas amostras ilustrativas, inicialmente n = 30 e n = 200,
 além da probabilidade hipotética e da semente. A segunda amostra utiliza
-semente + 1 para não repetir o prefixo da primeira; só a primeira amostra
-alimenta G2. A meta e o α ajustáveis valem para a exploração de G2. 
-O cenário oficial, os resultados reais e as simulações de G3/G4
-**não mudam com os controles** e mantêm p₀ e α de 5%.
+semente + 1 para não repetir o prefixo da primeira. O **G2 tem um
+seletor independente** para analisar a amostra simulada pequena (n = 30 por
+padrão), a de referência (n = 200 por padrão) ou as **169 execuções reais**.
+Ele usa as próprias amostras já apresentadas no G1, sem sorteá-las novamente.
+A meta e o α ajustáveis valem **somente para as duas opções simuladas do G2**.
+Na opção real, o G2 mostra os mesmos testes oficiais da seção 6 (p₀ = α = 5%).
+Os resultados reais e as simulações de G3/G4 **não mudam com os controles**.
 
 G1 apresenta três painéis na mesma escala percentual: 169 execuções reais,
 uma amostra simulada ajustável (n = 30 por padrão) e uma amostra simulada de
@@ -59,8 +62,10 @@ referência com n = 200. As duas amostras simuladas do G1 são exemplos individu
 não as 10.000 repetições por cenário dos experimentos oficiais de G3/G4;
 as contagens e proporções são calculadas a partir das amostras geradas.
 G2 separa o p-valor observado da região crítica e compara os limiares
-em número de falhas para ambos os testes, com valores recalculados ao alterar n,
-p₀ ou α. G3 apresenta as taxas de erro tipo I, sua classificação frente a α,
+em número de falhas para ambos os testes, **conforme a amostra selecionada**.
+Alternar de 30 para 200 permite ver diretamente a diferença entre os limiares
+K ≥ 4 / K ≥ 5 e os limiares coincidentes K ≥ 16 / K ≥ 16 sob p₀ = α = 5%.
+A opção real mostra K = 7 em n = 169, com as mesmas decisões da seção 6. G3 apresenta as taxas de erro tipo I, sua classificação frente a α,
 a incerteza de Monte Carlo e a distinção entre erros tipo I e II. G4 compara
 o poder em painéis com escalas compartilhadas, destacando as curvas coincidentes
 e valores pontuais dos resultados oficiais. A seção de dados reais traz

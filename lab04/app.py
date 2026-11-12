@@ -62,6 +62,7 @@ def build_context(n: int, true_p: float, seed: int, p0: float, alpha: float,
         "simulated_reference": simulated_reference,
         **load_s02_context(),
         "sim_results": evaluate_tests(simulated, p0=p0, alpha=alpha),
+        "reference_results": evaluate_tests(simulated_reference, p0=p0, alpha=alpha),
         "real_results": calculate_real_results(real_df, p0=cfg.P0, alpha=cfg.ALPHA),
     }
 
@@ -96,8 +97,9 @@ def simulation_params_text(ctx: dict) -> str:
         f"Ambas usam probabilidade hipotética de falha de {pct(ctx['true_p'], 0)} "
         f"e sementes distintas {ctx['seed']} e {ctx['seed'] + 1}; "
         "não representam as 10.000 repetições oficiais. "
-        f"**G2** utiliza somente a amostra ajustável de n = {ctx['n']}. "
-        "A taxa observada nos dados reais é apresentada separadamente."
+        "**G2** permite selecionar qualquer uma das duas amostras simuladas ou os dados reais. "
+        "Nas simulações, p₀ e α podem ser explorados; os dados reais usam os parâmetros "
+        "oficiais de 5%, assim como a seção 6."
     )
     cond = ctx.get("s02")
     if cond is None:
@@ -143,13 +145,59 @@ def section_dados(ctx: dict) -> None:
         st.markdown(simulation_params_text(ctx))
 
 
+G2_OPTIONS = ("sim_small", "sim_reference", "real")
+
+
+def g2_selected_results(ctx: dict, selected: str) -> dict:
+    """Devolve os testes da amostra selecionada, sem ressorteio ou reamostragem.
+
+    A seleção real utiliza os mesmos resultados oficiais da seção 6.
+    Os controles exploratórios p₀/α só afetam as duas amostras simuladas.
+    """
+    if selected == "sim_small":
+        return ctx["sim_results"]
+    if selected == "sim_reference":
+        return ctx["reference_results"]
+    if selected == "real":
+        return ctx["real_results"]["tests"]
+    raise ValueError(f"Amostra G2 desconhecida: {selected}")
+
+
 def section_testes(ctx: dict) -> None:
     st.header("3. Como os testes funcionam (G2)", anchor="testes")
-    res = ctx["sim_results"]
+    labels = {
+        "sim_small": f"Simulada pequena · n = {ctx['n']}",
+        "sim_reference": f"Simulada referência · n = {ctx['reference_n']}",
+        "real": f"Real · n = {len(ctx['real'])}",
+    }
+    st.markdown(
+        "**Escolha a amostra do G1 para analisar no G2.** "
+        "Os dois gráficos e seus rótulos mostram os testes calculados para "
+        "a mesma amostra selecionada."
+    )
+    selected = st.radio(
+        "Amostra analisada no G2",
+        options=G2_OPTIONS,
+        format_func=lambda key: labels[key],
+        horizontal=True,
+        key="g2_amostra",
+    )
+    res = g2_selected_results(ctx, selected)
+    is_real = selected == "real"
+    source = "GitHub Actions · dados observados, sem simulação" if is_real else (
+        f"Simulação ilustrativa do G1 · probabilidade hipotética de falha de "
+        f"{pct(ctx['true_p'], 0)}"
+    )
     st.caption(
-        f"Mesma amostra ajustável do G1 (n = {res['n']}, K = {res['k']} falhas); "
-        f"a outra amostra ilustrativa, n = {ctx['reference_n']}, não entra neste teste. "
-        f"p₀ = {pct(res['p0'], 0)} e α = {pct(res['alpha'], 0)}."
+        f"**{source}** · n = {res['n']}, K = {res['k']} falhas "
+        f"(taxa observada de {pct(res['p_hat'])}); "
+        f"p₀ = {pct(res['p0'], 0)} e α = {pct(res['alpha'], 0)}. "
+        + (
+            "Parâmetros oficiais fixos, iguais aos da seção 6; os controles laterais "
+            "de meta e α não alteram os dados reais."
+            if is_real else
+            "Meta e α podem ser alterados na barra lateral, sem modificar G3/G4."
+        )
     )
     z_k = critical_k_z(res["n"], res["p0"], res["alpha"])
     exact_k = critical_k(res["n"], res["p0"], res["alpha"])
@@ -160,6 +208,15 @@ def section_testes(ctx: dict) -> None:
         f"teste Z **{z_region}** · binomial exato **{exact_region}**. "
         "No gráfico superior estão as probabilidades binomiais discretas; "
         "no inferior, a aproximação pela curva normal."
+    )
+    st.markdown(
+        f"**Por que esse tamanho importa?** Sob H₀ na fronteira, esperamos "
+        f"**{num(res['n'] * res['p0'], 1)} falhas** em {res['n']} execuções. "
+        + (
+            "Com poucas falhas esperadas, a aproximação normal do Z pode ser inadequada."
+            if res["z_normal_approximation_caution"] else
+            "Com mais falhas e sucessos esperados, a aproximação normal tende a ser mais adequada."
+        )
     )
     st.pyplot(plot_g2(res))
     st.caption(g2_caption(res))
@@ -172,7 +229,7 @@ def section_testes(ctx: dict) -> None:
     exact.markdown(f"**Observado** · K = {res['k']} falhas  \n"
                    f"**Rejeição** · {exact_region}  \n"
                    f"**Decisão** · {decision_text(res['reject_binomial'])}")
-    with st.expander("Detalhes numéricos da amostra simulada"):
+    with st.expander("Detalhes numéricos da amostra selecionada"):
         st.json(res)
 
 
@@ -371,14 +428,18 @@ def main() -> None:
         st.subheader("Amostra simulada")
         st.caption(
             "Ajuste os dois tamanhos de amostra separadamente no G1. "
-            "Só a primeira amostra alimenta o G2; G3/G4 permanecem oficiais e fixos."
+            "O G2 permite escolher qualquer uma das amostras do G1, incluindo a real. "
+            "G3/G4 permanecem oficiais e fixos."
         )
-        n = st.number_input("G1/G2 · Amostra pequena (n)", min_value=5, max_value=1000, value=30, step=5)
+        n = st.number_input("G1 · Amostra pequena (n)", min_value=5, max_value=1000, value=30, step=5)
         reference_n = st.number_input("G1 · Amostra de referência (n)", min_value=5, max_value=1000, value=G1_REFERENCE_N, step=5)
         true_p = st.slider("Probabilidade de falha na simulação", 0.0, 0.5, 0.10, 0.01)
         seed = st.number_input("Semente (G1/G2)", min_value=0, value=42, step=1)
         st.subheader("Hipóteses do G2")
-        st.caption("Explore outra meta ou outro α no G2. O cenário oficial permanece em 5%.")
+        st.caption(
+            "Meta e α ajustam apenas as duas amostras simuladas do G2. "
+            "A opção real e o cenário oficial permanecem em 5%."
+        )
         p0 = st.slider("Meta p₀", 0.01, 0.20, cfg.P0, 0.01)
         alpha = st.select_slider("α", options=[0.01, 0.05, 0.10], value=cfg.ALPHA)
 
