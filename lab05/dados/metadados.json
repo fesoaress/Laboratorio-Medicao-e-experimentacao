@@ -1,0 +1,23 @@
+{
+  "coleta_inicio_utc": "2026-11-21T14:45:25+00:00",
+  "sqlite": "3.46.1",
+  "python": "3.13.5",
+  "os": "Linux x86_64",
+  "rows_per_table": 60000,
+  "sessions": 10,
+  "blocks_per_session": 8,
+  "queries_per_block": 50,
+  "seed": 20261121,
+  "pragmas": {
+    "automatic_index": "OFF",
+    "cache_size": "-2048 KiB",
+    "temp_store": "MEMORY"
+  },
+  "plan_sem": "SCAN pedidos_sem",
+  "plan_com": "SEARCH pedidos_com USING INDEX idx_chave_pedidos_com (chave=?)",
+  "page_size_bytes": 4096,
+  "pages_before": 1101,
+  "pages_after": 1262,
+  "index_extra_bytes": 659456,
+  "notes": "cenário local; dados sintéticos"
+}

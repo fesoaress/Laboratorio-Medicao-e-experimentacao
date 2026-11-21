@@ -1,0 +1,21 @@
+{
+  "status": "coleta local sintética; não é medição em produção",
+  "alpha": 0.05,
+  "sessoes": 10,
+  "blocos_pareados": 80,
+  "consultas_por_tratamento": 4000,
+  "mediana_sem_ms": 2.10297321,
+  "mediana_com_ms": 0.00635496,
+  "diferenca_ms": 2.09661825,
+  "razao_medianas_x": 330.9184023188187,
+  "reducao_pct": 99.69781070106927,
+  "teste": "teste exato unilateral dos sinais sobre 10 sessoes",
+  "p_valor": 0.0009765625,
+  "intervalo_bootstrap_95_aceleracao_sessoes_x": [
+    320.3808746566783,
+    355.39726208431136
+  ],
+  "indice_extra_bytes": 659456,
+  "indice_extra_kib": 644,
+  "observacao": "não tratar 8000 SQL como réplicas inferenciais; revalidar no equipamento do grupo"
+}
