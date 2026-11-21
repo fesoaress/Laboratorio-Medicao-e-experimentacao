@@ -27,14 +27,14 @@ Esses resultados são de um benchmark local específico e **não representam des
 
 ## Documentação
 
-O relatório do repositório usa as seções exigidas pelo arquivo \`Template_Relatorio_Laboratorio.docx\`: Introdução, Contexto, Metodologia (3.1–3.6), Resultados (4.1–4.3), Conclusão e Referências.
+O relatório do repositório usa as seções exigidas pelo arquivo `Template_Relatorio_Laboratorio.docx`: Introdução, Contexto, Metodologia (3.1–3.6), Resultados (4.1–4.3), Conclusão e Referências.
 
 O pacote local inclui também uma versão DOCX/PDF do mesmo relatório, os gráficos, os slides e os scripts completos. Estes arquivos binários **ainda não estão nesta branch do GitHub**; não são substituídos por links de sandbox. Os scripts e resultados versionados identificam a medição; verificar contra o pacote original antes da entrega.
 
 ## Reprodutibilidade
 
 - Coleta local: Python, SQLite, tabela sintética e 10 sessões.
-- Arquivos de dados desta branch: \`dados/resumo_sessoes.csv\`, \`dados/analise.json\`, \`dados/metadados.json\`.
+- Arquivos de dados desta branch: `dados/resumo_sessoes.csv`, `dados/analise.json`, `dados/metadados.json`.
 - Atenção: a leitura de benchmarks precisa separar o piloto da coleta principal e não tratar as 8.000 consultas como observações independentes.
 
 **Pendências:** registrar as issues/Projects, confirmar que outro grupo não escolheu SQLite, preencher nomes completos e realizar a revisão do trio. Os dados foram gerados em ambiente computacional de apoio, não declarados como coleta pessoal dos integrantes.

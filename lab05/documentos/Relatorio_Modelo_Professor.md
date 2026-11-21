@@ -14,7 +14,7 @@ Este estudo avalia um problema de otimização de software real: índices secund
 
 **RQ1:** Quanto o índice reduz a latência de uma busca pontual em uma tabela de 60.000 linhas?
 
-**RQ2:** O plano de execução muda de \`SCAN\` para \`SEARCH ... USING INDEX\`?
+**RQ2:** O plano de execução muda de `SCAN` para `SEARCH ... USING INDEX`?
 
 **RQ3:** Quanto espaço adicional o índice exige?
 
@@ -46,7 +46,7 @@ A medição de consultas com poucos microssegundos é sensível a aquecimento de
 
 **Hipótese estatística de RQ1:** para cada sessão, D = mediana(sem índice) - mediana(com índice). H₀: mediana de D ≤ 0; H₁: mediana de D > 0. Alfa = 0,05. Teste exato unilateral dos sinais sobre as 10 sessões; bootstrap percentil com 20.000 reamostragens de sessões, não das consultas individuais. A razão entre medianas de blocos é uma medida descritiva, diferente do estimando testado.
 
-**Tratamentos:** A = tabela \`pedidos_sem\` sem índice secundário sobre \`chave\`; B = tabela \`pedidos_com\` com índice \`idx_chave_pedidos_com\` sobre \`chave\`. Ambas armazenam as mesmas 60.000 linhas e valores. Consulta: \`SELECT valor FROM pedidos_* WHERE chave = ?\` com chave única por linha. Variável independente: presença do índice. Variável dependente: tempo por consulta. Controles: dados, consulta, chaves, motor, máquina, condições de cache, quantidade de buscas e ordem intercalada.
+**Tratamentos:** A = tabela `pedidos_sem` sem índice secundário sobre `chave`; B = tabela `pedidos_com` com índice `idx_chave_pedidos_com` sobre `chave`. Ambas armazenam as mesmas 60.000 linhas e valores. Consulta: `SELECT valor FROM pedidos_* WHERE chave = ?` com chave única por linha. Variável independente: presença do índice. Variável dependente: tempo por consulta. Controles: dados, consulta, chaves, motor, máquina, condições de cache, quantidade de buscas e ordem intercalada.
 
 **Sete categorias de pesquisa:**
 
@@ -73,7 +73,7 @@ Os papéis acima são **proposta de divisão**, não atribuição de execução 
 
 ### 3.4 Ferramentas
 
-Python 3.13.5, biblioteca sqlite3 (SQLite 3.46.1), Linux x86_64, \`time.perf_counter_ns()\`, seed 20261121, SQLite com \`PRAGMA automatic_index=OFF\`, cache ~2 MiB e \`temp_store=MEMORY\`. Análise com pandas, NumPy, SciPy (\`binomtest\`), Matplotlib; artefatos: CSV por blocos, CSV por sessão e JSON de metadados/resultados. A reexecução deve conservar o snapshot original em outra pasta.
+Python 3.13.5, biblioteca sqlite3 (SQLite 3.46.1), Linux x86_64, `time.perf_counter_ns()`, seed 20261121, SQLite com `PRAGMA automatic_index=OFF`, cache ~2 MiB e `temp_store=MEMORY`. Análise com pandas, NumPy, SciPy (`binomtest`), Matplotlib; artefatos: CSV por blocos, CSV por sessão e JSON de metadados/resultados. A reexecução deve conservar o snapshot original em outra pasta.
 
 ### 3.5 Tabela de Métricas
 
@@ -100,7 +100,7 @@ Duas tabelas sintéticas de 60.000 registros; 10 sessões × 8 pares de blocos �
 
 **RQ1 — Latência:** 2,10297 ms sem índice versus 0,006355 ms com índice. A pasta de gráficos do pacote local contém a comparação, a aceleração das sessões e os boxplots logarítmicos.
 
-**RQ2 — Planos SQL:** \`SCAN pedidos_sem\` sem índice; \`SEARCH pedidos_com USING INDEX idx_chave_pedidos_com (chave=?)\` com índice. Trata-se de categorias nominais; a diferença é visualizada em um diagrama comparativo.
+**RQ2 — Planos SQL:** `SCAN pedidos_sem` sem índice; `SEARCH pedidos_com USING INDEX idx_chave_pedidos_com (chave=?)` com índice. Trata-se de categorias nominais; a diferença é visualizada em um diagrama comparativo.
 
 **RQ3 — Espaço:** 1.101 páginas antes do índice e 1.262 depois, com páginas de 4.096 bytes, ou 644 KiB adicionais.
 
