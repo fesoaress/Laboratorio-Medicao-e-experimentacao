@@ -1,0 +1,24 @@
+{
+  "tipo": "piloto exploratório; não inferência principal nem produção",
+  "seed": 20261119,
+  "n_linhas_por_tabela": 60000,
+  "blocos": 20,
+  "consultas_por_bloco_por_tratamento": 50,
+  "sqlite_version": "3.46.1",
+  "python_version": "3.13.5",
+  "planos_sql": {
+    "sem_indice": [
+      "SCAN sem_indice"
+    ],
+    "com_indice": [
+      "SEARCH com_indice USING INDEX idx_com_indice_chave (chave=?)"
+    ]
+  },
+  "mediana_tempo_por_consulta_ms": {
+    "sem_indice": 3.839227,
+    "com_indice": 0.0123545
+  },
+  "aceleracao_razao_de_medianas": 310.76,
+  "armazenamento_adicional_indice_bytes_estimado": 659456,
+  "observacao": "Piloto e coleta final não devem ser misturados"
+}
