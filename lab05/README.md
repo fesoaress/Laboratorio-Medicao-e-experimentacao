@@ -18,6 +18,10 @@ Projeto da disciplina **Laboratório de Experimentação de Software**, PUC Mina
 
 Esses resultados são de um benchmark local específico e **não representam desempenho garantido em produção**.
 
+## Divisão do trio no GitHub
+
+[Ver plano de 12 issues por sprint e integrante](documentos/Plano_Issues_Sprints.md). A divisão representa responsabilidades propostas; não presume a execução histórica por cada integrante.
+
 ## Entregas
 
 - **S01 (5 pontos):** proposta, critérios do software, hipóteses, GQM, sete categorias e piloto.
