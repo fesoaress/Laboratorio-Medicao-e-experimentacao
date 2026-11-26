@@ -7,6 +7,7 @@ documentação e artefatos finais separados por estudo.
 - [Lab02 — Assistentes de IA versus codificação manual](lab02/README.md)
 - [Lab03 — Mineração de métricas DORA](lab03/README.md)
 - [Lab04 — Teste Z para proporção e binomial exato](https://github.com/fesoaress/Laboratorio-Medicao-e-experimentacao/blob/Laboratorio-4/lab04/README.md) · [Dashboard público](https://lab04-medicao-pucminas.streamlit.app/)
+- [Lab05 — Experimento em software real (SQLite)](lab05/README.md)
 
 ## Estrutura
 
@@ -19,7 +20,8 @@ documentação e artefatos finais separados por estudo.
 ├── lab01/                 # coleta, análise, dados, snapshots e relatórios
 ├── lab02/                 # katas, trials, métricas, análises e relatórios
 ├── lab03/                 # seleção, metadados, funil e hipóteses iniciais
-└── lab04/                 # testes de proporção, simulações e dashboard
+├── lab04/                 # testes de proporção, simulações e dashboard
+└── lab05/                 # SQLite: experimentação, dados, análise e relatório
 ```
 
 Cada laboratório possui suas próprias dependências e instruções de execução.

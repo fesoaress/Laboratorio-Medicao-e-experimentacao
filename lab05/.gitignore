@@ -1,0 +1,4 @@
+dados/sqlite_experimento.db
+__pycache__/
+*.pyc
+.venv/
